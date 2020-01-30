@@ -9,11 +9,11 @@ import './index.css';
 import App from './App';
 
 import store from './store/store';
-import { dbInit } from '../electron/backend/db/db.service';
+import { initSender } from './services/ipcSender.service';
 
 // moment.locale('pt-br');
 
-dbInit().then(() => {
+initSender().then(() => {
   ReactDOM.render(
     <Provider store={store}>
       {/* <ConfigProvider locale={ptBR}> */}

@@ -1,20 +1,9 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../connect';
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-export default class Endereco extends Model {
-  public id!: number;
-  public logradouro!: string | null;
-  public numero!: string | null;
-  public complemento!: string | null;
-  public bairro!: string | null;
-  public cidade!: string | null;
-  public estado!: string | null;
-  public pais!: string | null;
-  public cep!: string | null;
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../connect');
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
+class Endereco extends Model {}
 
 Endereco.init({
   id: {
@@ -35,3 +24,5 @@ Endereco.init({
   modelName: 'endereco',
   sequelize,
 });
+
+module.exports = Endereco;

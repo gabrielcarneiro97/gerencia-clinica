@@ -1,14 +1,14 @@
 const { ipcRenderer } = window.require('electron');
 
-let listenerId = null;
-let activeChannels = [];
+let listenerId: number | null = null;
+let activeChannels: string[] = [];
 
-async function initSender() {
+export async function initSender(): Promise<boolean> {
   ipcRenderer.send('request-listenerId');
-  ipcRenderer.once('response-listenerId', ((e, id) => {
+  ipcRenderer.once('response-listenerId', ((e: any, id: number) => {
     listenerId = id;
     ipcRenderer.sendTo(id, 'request-channels');
-    ipcRenderer.once('response-channels', (e2, channels) => {
+    ipcRenderer.once('response-channels', (e2: any, channels: string[]) => {
       activeChannels = channels;
     });
   }));
@@ -16,19 +16,14 @@ async function initSender() {
   return true;
 }
 
-async function request(channelName, data) {
+export async function request<T = any>(channelName: string, data?: any): Promise<T> {
   return new Promise((resolve, reject) => {
     if (!activeChannels.includes(channelName)) return reject(new Error('Channel not fould!'));
     if (listenerId === null) return reject(new Error('Sender isn\'t working, please execute initSender'));
 
     ipcRenderer.sendTo(listenerId, `request-${channelName}`, data);
-    ipcRenderer.once(`response-${channelName}`, (e, res) => resolve(res));
+    ipcRenderer.once(`response-${channelName}`, (e: any, res: T) => resolve(res));
 
     return true;
   });
 }
-
-module.exports = {
-  initSender,
-  request,
-};

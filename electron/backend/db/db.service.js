@@ -1,12 +1,14 @@
-import sequelize from './connect';
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-import Paciente from './models/Paciente';
-import Contato from './models/Contato';
-import Endereco from './models/Endereco';
-import Consulta from './models/Consulta';
-import ConsultaProcedimento from './models/ConsultaProcedimento';
+const sequelize = require('./connect');
 
-export async function dbInit(): Promise<boolean> {
+const Paciente = require('./models/Paciente');
+const Contato = require('./models/Contato');
+const Endereco = require('./models/Endereco');
+const Consulta = require('./models/Consulta');
+const ConsultaProcedimento = require('./models/ConsultaProcedimento');
+
+export async function dbInit() {
   try {
     await sequelize.authenticate();
     await Paciente.sync({ alter: true });
@@ -21,7 +23,7 @@ export async function dbInit(): Promise<boolean> {
   }
 }
 
-export async function excluirConsulta(consultaId: number): Promise<void> {
+export async function excluirConsulta(consultaId) {
   const consulta = await Consulta.findByPk(consultaId);
 
   if (consulta) {
@@ -36,11 +38,3 @@ export async function excluirConsulta(consultaId: number): Promise<void> {
     await consulta.destroy();
   }
 }
-
-export const models = {
-  Paciente,
-  Contato,
-  Endereco,
-  Consulta,
-  ConsultaProcedimento,
-};

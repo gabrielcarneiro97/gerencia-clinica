@@ -1,5 +1,7 @@
-import { Sequelize } from 'sequelize';
-import * as pg from 'pg';
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+const { Sequelize } = require('sequelize');
+
 
 const sequelize = new Sequelize(
   'clinica', // db
@@ -8,7 +10,6 @@ const sequelize = new Sequelize(
   {
     host: 'localhost',
     dialect: 'postgres',
-    dialectModule: pg,
     logging: false,
   },
 );

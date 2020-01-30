@@ -1,24 +1,14 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../connect';
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-import Endereco from './Endereco';
-import Contato from './Contato';
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../connect');
 
-export default class Paciente extends Model {
-  public id!: number;
-  public cpf!: string | null;
-  public nome!: string | null;
-  public filiacao1!: string | null;
-  public filiacao2!: string | null;
-  public sexo!: string | null;
-  public nascimento!: Date | null;
-  public enderecoId!: number | null;
-  public contatoId!: number | null;
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+const Endereco = require('./Endereco');
+const Contato = require('./Contato');
 
-  public getIniciais(): string {
+class Paciente extends Model {
+  getIniciais() {
     const nome = this.getDataValue('nome');
 
     if (!nome) return '';
@@ -32,21 +22,21 @@ export default class Paciente extends Model {
     }, '');
   }
 
-  public async getEndereco(): Promise<Endereco> {
+  async getEndereco() {
     const enderecoId = this.getDataValue('enderecoId');
     if (!enderecoId) return Endereco.build();
 
-    return (await Endereco.findByPk(enderecoId as number)) || Endereco.build();
+    return (await Endereco.findByPk(enderecoId)) || Endereco.build();
   }
 
-  public async getContato(): Promise<Contato> {
+  async getContato() {
     const contatoId = this.getDataValue('contatoId');
     if (!contatoId) return Contato.build();
 
-    return (await Contato.findByPk(contatoId as number)) || Contato.build();
+    return (await Contato.findByPk(contatoId)) || Contato.build();
   }
 
-  public async saveAll(endereco?: Endereco | null, contato?: Contato | null): Promise<void> {
+  async saveAll(endereco, contato) {
     if (endereco) {
       await endereco.save();
       const enderecoId = endereco.getDataValue('id');
@@ -97,3 +87,5 @@ Paciente.init({
   modelName: 'paciente',
   sequelize,
 });
+
+module.exports = Paciente;

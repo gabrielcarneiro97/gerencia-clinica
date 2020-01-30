@@ -4,6 +4,8 @@ import moment, { Moment } from 'moment';
 
 import ConsultaModal from './ConsultaModal';
 
+import { consultaDb, pacienteDb, pacienteMethods } from '../services/db.service';
+
 type propTypes = {
   id: number;
 }
@@ -18,28 +20,29 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
   const [telefone, setTelefone] = useState('');
 
   const getData = async (): Promise<void> => {
-    const consulta = await Consulta.findByPk(id);
+    const consulta = await consultaDb.getById(id);
 
     if (consulta) {
-      const pacienteId = consulta.getDataValue('pacienteId');
-      const data = consulta.getDataValue('data');
-      const resp = consulta.getDataValue('responsavel');
-      const s = consulta.getDataValue('status');
+      const { pacienteId, data } = consulta;
+
+      const resp = consulta.responsavel;
+      const s = consulta.status;
 
       setResponsavel(resp || '');
       setDataHora(data ? moment(data) : null);
       setStatus(s || 0);
 
-      const paciente = await Paciente.findByPk(pacienteId);
+      const paciente = await pacienteDb.getById(pacienteId);
 
       if (paciente) {
-        setPacienteNome(paciente.getIniciais());
+        setPacienteNome(pacienteMethods.getIniciais(paciente));
 
-        const contato = await paciente.getContato();
+        const contato = await pacienteMethods.getContato(paciente);
 
-        const telefone1 = contato.getDataValue('telefone1');
-
-        setTelefone(telefone1 || '');
+        if (contato) {
+          const { telefone1 } = contato;
+          setTelefone(telefone1 || '');
+        }
       }
     }
   };

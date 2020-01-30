@@ -1,15 +1,9 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../connect';
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-export default class Contato extends Model {
-  public id!: number;
-  public email!: string | null;
-  public telefone1!: string | null;
-  public telefone2!: string | null;
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../connect');
 
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
+class Contato extends Model {}
 
 Contato.init({
   id: {
@@ -25,3 +19,5 @@ Contato.init({
   modelName: 'contato',
   sequelize,
 });
+
+module.exports = Contato;
