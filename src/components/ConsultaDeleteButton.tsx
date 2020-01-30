@@ -10,9 +10,7 @@ import {
 import { Store } from '../store/store';
 import { PacienteStore, carregarConsultas } from '../store/paciente';
 
-import { excluirConsulta, models } from '../../electron/backend/db/db.service';
-
-const { Consulta } = models;
+import { pacienteMethods, consultaDb } from '../services/db.service';
 
 type propTypes = {
   id: number;
@@ -29,19 +27,13 @@ export default function ConsultaDeleteButton(props: propTypes): JSX.Element {
 
     if (!infosPessoais) return;
 
-    const pacienteId = infosPessoais.getDataValue('id');
-
-    const consultas = await Consulta.findAll({
-      where: {
-        pacienteId,
-      },
-    });
+    const consultas = await pacienteMethods.getConsultas(infosPessoais);
 
     dispatch(carregarConsultas(consultas));
   };
 
   const confirm = async (): Promise<void> => {
-    await excluirConsulta(id);
+    await consultaDb.delById(id);
     atualizaOnPaciente();
     message.success('Consulta Excluída!', 1);
   };

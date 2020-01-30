@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import {
@@ -7,16 +7,13 @@ import {
 
 import moment from 'moment';
 
-import { models } from '../../electron/backend/db/db.service';
-import ConsultaClass from '../../electron/backend/db/models/Consulta';
-
 import { Store } from '../store/store';
 
 import { PacienteStore, carregarConsultas } from '../store/paciente';
 import ConsultaModal from './ConsultaModal';
 import ConsultaDeleteButton from './ConsultaDeleteButton';
-
-const { Consulta } = models;
+import { pacienteMethods } from '../services/db.service';
+import { Consulta } from '../types';
 
 export default function PacienteConsultasTable(): JSX.Element {
   const paciente = useSelector<Store, PacienteStore>((store) => store.paciente);
@@ -24,16 +21,14 @@ export default function PacienteConsultasTable(): JSX.Element {
 
   const { consultas, infosPessoais } = paciente;
 
-  const pacienteId = infosPessoais?.getDataValue('id') || 0;
+  const pacienteId = infosPessoais?.id || 0;
   const temConsultas = consultas.length > 0;
 
   useEffect(() => {
-    if (consultas.length === 0) {
-      Consulta.findAll({
-        where: {
-          pacienteId,
-        },
-      }).then((consultasDb) => dispatch(carregarConsultas(consultasDb)));
+    if (consultas.length === 0 && infosPessoais) {
+      pacienteMethods.getConsultas(infosPessoais).then(
+        (cons) => dispatch(carregarConsultas(cons)),
+      );
     }
   }, [pacienteId]);
 
@@ -113,12 +108,12 @@ export default function PacienteConsultasTable(): JSX.Element {
     },
   ];
 
-  const dataSource = temConsultas ? (consultas as ConsultaClass[]).map(
+  const dataSource = temConsultas ? (consultas as Consulta[]).map(
     (c) => {
-      const consultaId = c.getDataValue('id');
+      const consultaId = c.id;
 
       return {
-        ...c.toJSON(),
+        ...c,
         action: consultaId,
       };
     },

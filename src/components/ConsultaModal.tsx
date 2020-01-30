@@ -11,13 +11,13 @@ import {
 import ConsultaModalForm from './ConsultaModalForm';
 import ConsultaModalProcedimentosTable from './ConsultaModalProcedimentosTable';
 
-import { models } from '../../electron/backend/db/db.service';
-
 import { carregarInfos, carregarProcedimentos, limparConsulta } from '../store/consulta';
 import { Store } from '../store/store';
 import ConsultaModalSaveButton from './ConsultaModalSaveButton';
 
-const { Consulta, ConsultaProcedimento } = models;
+import { consultaMethods, consultaDb } from '../services/db.service';
+
+import { Consulta } from '../types';
 
 type propTypes = {
   id?: number;
@@ -42,25 +42,23 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
 
   const dispatch = useDispatch();
   const { paciente } = useSelector<Store, Store>((store) => store);
-  const pacienteId = paciente.infosPessoais?.getDataValue('id');
+  const pacienteId = paciente.infosPessoais?.id;
 
   const [visible, setVisible] = useState(visibleProp || false);
 
   useEffect(() => {
     if (visible && !id && pacienteId) {
-      const consulta = Consulta.build({
+      const consulta: Consulta = {
         pacienteId,
         status: 1,
-      });
+      };
       dispatch(carregarInfos(consulta));
     } else if (visible && id) {
-      ConsultaProcedimento.findAll({
-        where: {
-          consultaId: id,
-        },
-      }).then((p) => {
-        dispatch(carregarProcedimentos(p));
-        Consulta.findByPk(id).then((c) => dispatch(carregarInfos(c)));
+      consultaDb.getById(id).then(async (consulta) => {
+        const procedimentos = await consultaMethods.getProcedimentos(consulta);
+
+        dispatch(carregarProcedimentos(procedimentos));
+        dispatch(carregarInfos(consulta));
       });
     } else {
       dispatch(limparConsulta());

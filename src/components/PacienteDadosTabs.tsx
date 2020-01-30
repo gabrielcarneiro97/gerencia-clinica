@@ -3,7 +3,6 @@ import {
   Tabs,
   Row,
   Col,
-  Button,
 } from 'antd';
 
 import PacienteInfosPessoaisForm from './PacienteInfosPessoaisForm';

@@ -4,7 +4,6 @@ import {
   Table,
   Row,
   Col,
-  Typography,
   Button,
   Icon,
   Input,
@@ -15,11 +14,8 @@ import {
   modificarProcedimento, mudou, removerProcedimento, adicionarProcedimento, ConsultaStore,
 } from '../store/consulta';
 
-import { models } from '../../electron/backend/db/db.service';
+import { ConsultaProcedimento } from '../types';
 
-const { ConsultaProcedimento } = models;
-
-const { Text } = Typography;
 
 export default function ConsultaModalProcedimentosTable(): JSX.Element {
   const { procedimentos, infos } = useSelector<Store, ConsultaStore>(
@@ -42,9 +38,10 @@ export default function ConsultaModalProcedimentosTable(): JSX.Element {
           shape="circle"
           style={{ fontSize: '25px' }}
           onClick={() => {
-            const procedimento = ConsultaProcedimento.build({
+            const procedimento: ConsultaProcedimento = {
               consultaId,
-            });
+              descricao: '',
+            };
             dispatch(adicionarProcedimento(procedimento));
             dispatch(mudou());
           }}
@@ -55,7 +52,7 @@ export default function ConsultaModalProcedimentosTable(): JSX.Element {
     </Row>
   );
 
-  const dataSource = procedimentos.map((p, i) => ({ ...p.toJSON(), key: i }));
+  const dataSource = procedimentos.map((p, i) => ({ ...p, key: i }));
 
   const columns: any[] = [
     {
@@ -66,10 +63,10 @@ export default function ConsultaModalProcedimentosTable(): JSX.Element {
         const i = d.key;
         return (
           <Input
-            value={procedimentos[i].getDataValue('descricao') || ''}
+            value={procedimentos[i].descricao || ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               const procedimento = procedimentos[i];
-              procedimento.setDataValue('descricao', e.target.value);
+              procedimento.descricao = e.target.value;
               dispatch(modificarProcedimento(procedimento, i));
               dispatch(mudou());
             }}

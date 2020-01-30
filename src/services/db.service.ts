@@ -1,9 +1,27 @@
 import { request } from './ipcSender.service';
 
-import { Consulta, Paciente, Contato } from '../types';
+import {
+  Consulta, Paciente, Contato, ConsultaProcedimento,
+} from '../types';
 
 export const consultaDb = {
   getById: async (consultaId: number): Promise<Consulta> => request<Consulta>('consulta.getById', consultaId),
+  findAll: async (findAll: object): Promise<Consulta[]> => request<Consulta[]>('consulta.findAll', findAll),
+  delById: async (consultaId: number): Promise<boolean> => request<boolean>('consulta.delById', consultaId),
+};
+
+export const consultaProcedimentoDb = {
+  findAll: async (
+    findAll: object,
+  ): Promise<ConsultaProcedimento[]> => request<ConsultaProcedimento[]>(
+    'consultaProcedimento.findAll', findAll,
+  ),
+  save: async (
+    procedimento: ConsultaProcedimento,
+  ): Promise<boolean> => request<boolean>('consultaProcedimento.save', procedimento),
+  destroy: async (
+    procedimento: ConsultaProcedimento,
+  ): Promise<boolean> => request<boolean>('consultaProcedimento.destroy', procedimento),
 };
 
 export const contatoDb = {
@@ -33,8 +51,21 @@ export const pacienteMethods = {
     if (!contatoId) return null;
     return contatoDb.getById(contatoId);
   },
+  getConsultas: async (paciente: Paciente): Promise<Consulta[]> => consultaDb.findAll({
+    where: {
+      pacienteId: paciente.id,
+    },
+  }),
 };
 
-export function getEndereco(enderecoId: number) {
+export const consultaMethods = {
+  getProcedimentos: async (consulta: Consulta): Promise<ConsultaProcedimento[]> => {
+    const { id } = consulta;
 
-}
+    return consultaProcedimentoDb.findAll({
+      where: {
+        consultaId: id,
+      },
+    });
+  },
+};

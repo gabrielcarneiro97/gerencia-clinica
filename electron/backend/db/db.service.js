@@ -8,7 +8,7 @@ const Endereco = require('./models/Endereco');
 const Consulta = require('./models/Consulta');
 const ConsultaProcedimento = require('./models/ConsultaProcedimento');
 
-export async function dbInit() {
+export default async function dbInit() {
   try {
     await sequelize.authenticate();
     await Paciente.sync({ alter: true });
@@ -20,21 +20,5 @@ export async function dbInit() {
   } catch (err) {
     console.error(err);
     return false;
-  }
-}
-
-export async function excluirConsulta(consultaId) {
-  const consulta = await Consulta.findByPk(consultaId);
-
-  if (consulta) {
-    const procedimentos = await ConsultaProcedimento.findAll({
-      where: {
-        consultaId,
-      },
-    });
-
-    await Promise.all(procedimentos.map(async (p) => p.destroy()));
-
-    await consulta.destroy();
   }
 }

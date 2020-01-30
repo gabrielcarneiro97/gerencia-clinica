@@ -1,9 +1,12 @@
 import { Reducer } from 'redux';
 
-import Paciente from '../../electron/backend/db/models/Paciente';
-import Endereco from '../../electron/backend/db/models/Endereco';
-import Contato from '../../electron/backend/db/models/Contato';
-import Consulta from '../../electron/backend/db/models/Consulta';
+
+import {
+  Consulta,
+  Paciente,
+  Endereco,
+  Contato,
+} from '../types';
 
 type Handlers = { [key: string]: (state?: PacienteStore, action?: Action) => PacienteStore };
 

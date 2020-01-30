@@ -12,8 +12,9 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import ContatoClass from '../../electron/backend/db/models/Contato';
 import { carregarContato, PacienteStore, mudou } from '../store/paciente';
+
+import { Contato } from '../types';
 
 const { Item } = Form;
 
@@ -54,7 +55,7 @@ function PacienteContatosForm(props: FormComponentProps): JSX.Element {
 export default connect(
   ({ paciente }: Store) => ({ paciente }),
   (dispatch: any) => ({
-    atualizaContato(contato: ContatoClass): void {
+    atualizaContato(contato: Contato): void {
       dispatch(mudou());
       dispatch(carregarContato(contato));
     },
@@ -66,7 +67,7 @@ export default connect(
       atualizaContato,
       paciente,
     }: {
-      atualizaContato: (contato: ContatoClass) => void;
+      atualizaContato: (contato: Contato) => void;
       paciente: PacienteStore;
     } = props;
 
@@ -76,7 +77,8 @@ export default connect(
 
     const fieldName = Object.keys(changedFields)[0];
 
-    contato.setDataValue(fieldName as any, changedFields[fieldName].value);
+    contato[fieldName] = changedFields[fieldName].value;
+
     atualizaContato(contato);
   },
   mapPropsToFields(props: any) {
@@ -86,7 +88,7 @@ export default connect(
 
     const createField = (fieldName: string) => ({
       [fieldName]: Form.createFormField({
-        value: contato?.getDataValue(fieldName as any),
+        value: contato && contato[fieldName],
       }),
     });
 

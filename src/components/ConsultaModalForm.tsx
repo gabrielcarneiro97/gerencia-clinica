@@ -15,7 +15,9 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import ConsultaClass from '../../electron/backend/db/models/Consulta';
+
+import { Consulta } from '../types';
+
 import { ConsultaStore, carregarInfos, mudou } from '../store/consulta';
 
 const { Option } = Select;
@@ -76,7 +78,7 @@ function ConsultaModalForm(props: FormComponentProps): JSX.Element {
 export default connect(
   ({ consulta }: Store) => ({ consulta }),
   (dispatch: any) => ({
-    atualizaConsulta(consulta: ConsultaClass): void {
+    atualizaConsulta(consulta: Consulta): void {
       dispatch(mudou());
       dispatch(carregarInfos(consulta));
     },
@@ -88,7 +90,7 @@ export default connect(
       atualizaConsulta,
       consulta,
     }: {
-      atualizaConsulta: (consulta: ConsultaClass) => void;
+      atualizaConsulta: (consulta: Consulta) => void;
       consulta: ConsultaStore;
     } = props;
 
@@ -99,14 +101,10 @@ export default connect(
     const fieldName = Object.keys(changedFields)[0];
 
     if (fieldName === 'data') {
-      infos.setDataValue(
-        fieldName as any,
-        changedFields[fieldName].value
-          ? (changedFields[fieldName].value as Moment).toDate()
-          : null,
-      );
+      infos[fieldName] = changedFields[fieldName].value
+        ? (changedFields[fieldName].value as Moment).toDate() : null;
     } else {
-      infos.setDataValue(fieldName as any, changedFields[fieldName].value);
+      infos[fieldName] = changedFields[fieldName].value;
     }
 
     atualizaConsulta(infos);

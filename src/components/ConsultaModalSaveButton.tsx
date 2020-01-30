@@ -2,14 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, message } from 'antd';
 
-import { models } from '../../electron/backend/db/db.service';
-
 import { Store } from '../store/store';
 import { persitido } from '../store/consulta';
 import { carregarConsultas } from '../store/paciente';
-
-const { Consulta } = models;
-
+import { pacienteMethods, consultaProcedimentoDb } from '../services/db.service';
 
 type propTypes = {
   onEnd?: Function;
@@ -36,13 +32,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
 
     if (!infosPessoais) return;
 
-    const pacienteId = infosPessoais.getDataValue('id');
-
-    const consultas = await Consulta.findAll({
-      where: {
-        pacienteId,
-      },
-    });
+    const consultas = await pacienteMethods.getConsultas(infosPessoais);
 
     dispatch(carregarConsultas(consultas));
   };
@@ -52,10 +42,10 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
     const { procedimentos, procedimentosRemovidos, infos } = consulta;
     try {
       await Promise.all(procedimentos.map(async (p): Promise<any> => {
-        if (p.getDataValue('descricao')) return p.save();
+        if (p.descricao) return consultaProcedimentoDb.save(p);
         return false;
       }));
-      await Promise.all(procedimentosRemovidos.map(async (p) => p.destroy()));
+      await Promise.all(procedimentosRemovidos.map(async (p) => consultaProcedimentoDb.destroy(p)));
       await infos?.save();
 
       if (emitter === 'paciente') await atualizaOnPaciente();
