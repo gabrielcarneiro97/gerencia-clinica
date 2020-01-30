@@ -8,6 +8,8 @@ const os = require('os');
 let mainWindow;
 let backWindow;
 
+require('electron-reload')(path.join(__dirname, 'electron'));
+
 function createApp() {
   if (isDev) {
     BrowserWindow.addDevToolsExtension(
@@ -63,10 +65,9 @@ function createApp() {
   });
 
   ipcMain.on('request-listenerId', (event) => {
-    const { senderId } = event;
     const listenerId = backWindow.webContents.id;
 
-    ipcMain.sendTo(senderId, 'response-listenerId', listenerId);
+    event.reply('response-listenerId', listenerId);
   });
 }
 

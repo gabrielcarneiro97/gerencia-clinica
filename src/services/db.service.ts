@@ -1,12 +1,13 @@
 import { request } from './ipcSender.service';
 
 import {
-  Consulta, Paciente, Contato, ConsultaProcedimento,
+  Consulta, Paciente, Contato, ConsultaProcedimento, Endereco,
 } from '../types';
 
 export const consultaDb = {
   getById: async (consultaId: number): Promise<Consulta> => request<Consulta>('consulta.getById', consultaId),
   findAll: async (findAll: object): Promise<Consulta[]> => request<Consulta[]>('consulta.findAll', findAll),
+  save: async (consulta: Consulta): Promise<boolean> => request<boolean>('consulta.save', consulta),
   delById: async (consultaId: number): Promise<boolean> => request<boolean>('consulta.delById', consultaId),
 };
 
@@ -30,6 +31,17 @@ export const contatoDb = {
 
 export const pacienteDb = {
   getById: async (pacienteId: number): Promise<Paciente> => request<Paciente>('paciente.getById', pacienteId),
+  findAll: async (findAll: object): Promise<Paciente[]> => request<Paciente[]>('paciente.findAll', findAll),
+  findByName: async (nome: string): Promise<Paciente[]> => request<Paciente[]>('paciente.findByName', nome),
+  saveAll: async (
+    paciente: Paciente,
+    endereco?: Endereco | null,
+    contato?: Contato | null,
+  ): Promise<boolean> => request<boolean>('paciente.saveAll', { paciente, endereco, contato }),
+};
+
+export const enderecoDb = {
+  getById: async (enderecoId: number): Promise<Endereco> => request<Endereco>('endereco.getById', enderecoId),
 };
 
 export const pacienteMethods = {
@@ -50,6 +62,13 @@ export const pacienteMethods = {
     const { contatoId } = paciente;
     if (!contatoId) return null;
     return contatoDb.getById(contatoId);
+  },
+  getEndereco: async (paciente: Paciente): Promise<Endereco | null> => {
+    const { enderecoId } = paciente;
+
+    if (!enderecoId) return null;
+
+    return enderecoDb.getById(enderecoId);
   },
   getConsultas: async (paciente: Paciente): Promise<Consulta[]> => consultaDb.findAll({
     where: {

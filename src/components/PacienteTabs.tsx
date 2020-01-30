@@ -5,8 +5,9 @@ import { Tabs } from 'antd';
 import PacienteDadosTabs from './PacienteDadosTabs';
 
 import { Store } from '../store/store';
-import Paciente from '../../electron/backend/db/models/Paciente';
 import PacienteConsultasTable from './PacienteConsultasTable';
+
+import { Paciente } from '../types';
 
 
 const { TabPane } = Tabs;
@@ -18,7 +19,7 @@ export default function PacienteTabs(): JSX.Element {
 
   const [activeTab, setActiveTab] = useState('1');
 
-  const pacienteNoBanco = infosPessoais && infosPessoais.getDataValue('id');
+  const pacienteNoBanco = infosPessoais && infosPessoais.id;
 
   useEffect(() => {
     if (!pacienteNoBanco) setActiveTab('1');

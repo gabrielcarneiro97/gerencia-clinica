@@ -12,7 +12,8 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import EnderecoClass from '../../electron/backend/db/models/Endereco';
+
+import { Endereco } from '../types';
 
 import { carregarEndereco, PacienteStore, mudou } from '../store/paciente';
 
@@ -95,7 +96,7 @@ function PacienteEnderecoForm(props: FormComponentProps): JSX.Element {
 export default connect(
   ({ paciente }: Store) => ({ paciente }),
   (dispatch: any) => ({
-    atualizaEndereco(endereco: EnderecoClass): void {
+    atualizaEndereco(endereco: Endereco): void {
       dispatch(mudou());
       dispatch(carregarEndereco(endereco));
     },
@@ -107,7 +108,7 @@ export default connect(
       atualizaEndereco,
       paciente,
     }: {
-      atualizaEndereco: (paciente: EnderecoClass) => void;
+      atualizaEndereco: (endereco: Endereco) => void;
       paciente: PacienteStore;
     } = props;
 
@@ -116,7 +117,7 @@ export default connect(
     if (!endereco) return;
 
     const fieldName = Object.keys(changedFields)[0];
-    endereco.setDataValue(fieldName as any, changedFields[fieldName].value);
+    endereco[fieldName] = changedFields[fieldName].value;
 
     atualizaEndereco(endereco);
   },
@@ -127,7 +128,7 @@ export default connect(
 
     const createField = (fieldName: string) => ({
       [fieldName]: Form.createFormField({
-        value: endereco?.getDataValue(fieldName as any),
+        value: endereco && endereco[fieldName],
       }),
     });
 

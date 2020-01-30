@@ -3,7 +3,7 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../connect');
 
-const { Consulta } = require('./Consulta');
+const Consulta = require('./Consulta');
 
 class ConsultaProcedimento extends Model {}
 

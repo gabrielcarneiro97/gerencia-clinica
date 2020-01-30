@@ -11,7 +11,7 @@ export type Consulta = {
 export type ConsultaProcedimento = {
   id?: number;
   descricao?: string | null;
-  consultaId: number;
+  consultaId?: number | null;
 }
 
 export type Contato = {
@@ -23,6 +23,7 @@ export type Contato = {
 }
 
 export type Endereco = {
+  [key: string]: any;
   id?: number;
   logradouro?: string | null;
   numero?: string | null;
@@ -35,6 +36,7 @@ export type Endereco = {
 }
 
 export type Paciente = {
+  [key: string]: any;
   id?: number;
   cpf?: string | null;
   nome?: string | null;

@@ -115,7 +115,7 @@ export default connect(
     const { infos } = consulta;
 
     const createField = (fieldName: string) => {
-      const field = infos?.getDataValue(fieldName as any);
+      const field = infos && infos[fieldName];
 
       return ({
         [fieldName]: Form.createFormField({

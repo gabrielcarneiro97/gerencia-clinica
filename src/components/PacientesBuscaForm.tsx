@@ -12,8 +12,7 @@ import { DataSourceItemType } from 'antd/lib/auto-complete';
 
 import { Op } from 'sequelize';
 
-import { models } from '../../electron/backend/db/db.service';
-import PacienteClass from '../../electron/backend/db/models/Paciente';
+import { Paciente, Endereco, Contato } from '../types';
 
 import { Store } from '../store/store';
 
@@ -23,18 +22,18 @@ import {
   carregarContato,
   limparPaciente,
 } from '../store/paciente';
+import { pacienteDb, pacienteMethods } from '../services/db.service';
 
-const { Paciente } = models;
 
 export default function PacienteBuscaForm(): JSX.Element {
   const dispatch = useDispatch();
 
-  const infosPessoais = useSelector<Store, PacienteClass | null>(
+  const infosPessoais = useSelector<Store, Paciente | null>(
     (store) => store.paciente.infosPessoais,
   );
 
   const [searchString, setSearchString] = useState();
-  const [pacientesBusca, setPacientesBusca]: [PacienteClass[], Function] = useState([]);
+  const [pacientesBusca, setPacientesBusca]: [Paciente[], Function] = useState([]);
   const [pacientesNomes, setPacientesNomes]: [DataSourceItemType[], Function] = useState([]);
 
   useEffect(() => () => {
@@ -45,17 +44,11 @@ export default function PacienteBuscaForm(): JSX.Element {
     setSearchString(value);
 
     if (value !== '') {
-      const pacientesDb = await Paciente.findAll({
-        where: {
-          nome: {
-            [Op.iLike]: `%${value}%`,
-          },
-        },
-      });
-
-      setPacientesBusca(pacientesDb);
-      setPacientesNomes(pacientesDb.map(
-        (p) => ({ text: p.getDataValue('nome'), value: p.getDataValue('id') }),
+      const pacientes = await pacienteDb.findByName(value as string);
+      console.log(pacientes);
+      setPacientesBusca(pacientes);
+      setPacientesNomes(pacientes.map(
+        (p) => ({ text: p.nome, value: p.id }),
       ));
     } else {
       setPacientesBusca([]);
@@ -67,23 +60,24 @@ export default function PacienteBuscaForm(): JSX.Element {
 
   const handleSelect = async (pacienteId: SelectValue): Promise<void> => {
     const pacienteSelecionado = pacientesBusca.find(
-      (p) => p.getDataValue('id') === parseInt(pacienteId as string, 10),
+      (p) => p.id === parseInt(pacienteId as string, 10),
     );
 
     if (pacienteSelecionado) {
-      const endereco = await pacienteSelecionado.getEndereco();
-      const contato = await pacienteSelecionado.getContato();
+      const endereco = await pacienteMethods.getEndereco(pacienteSelecionado);
+      console.log(endereco);
+      const contato = await pacienteMethods.getContato(pacienteSelecionado);
 
       dispatch(carregarInfosPessoais(pacienteSelecionado));
-      dispatch(carregarEndereco(endereco));
-      dispatch(carregarContato(contato));
+      if (endereco) dispatch(carregarEndereco(endereco));
+      if (contato) dispatch(carregarContato(contato));
     }
   };
 
-  const handleNovo = async () => {
-    const paciente = Paciente.build();
-    const endereco = await paciente.getEndereco();
-    const contato = await paciente.getContato();
+  const handleNovo = (): void => {
+    const paciente: Paciente = {};
+    const endereco: Endereco = {};
+    const contato: Contato = {};
 
     setSearchString('');
     dispatch(limparPaciente());

@@ -2,7 +2,6 @@
 
 const { Sequelize } = require('sequelize');
 
-
 const sequelize = new Sequelize(
   'clinica', // db
   'postgres', // login
@@ -14,4 +13,4 @@ const sequelize = new Sequelize(
   },
 );
 
-export default sequelize;
+module.exports = sequelize;

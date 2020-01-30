@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const { Op } = require('sequelize');
 
 const { initListener, createListener } = require('./services/ipcListener.service');
 const dbInit = require('./db/db.service');
@@ -7,6 +8,7 @@ const Consulta = require('./db/models/Consulta');
 const Contato = require('./db/models/Contato');
 const Paciente = require('./db/models/Paciente');
 const ConsultaProcedimento = require('./db/models/ConsultaProcedimento');
+const Endereco = require('./db/models/Endereco');
 
 dbInit().then(() => {
   initListener().then(() => {
@@ -19,6 +21,13 @@ dbInit().then(() => {
       const consultas = await Consulta.findAll(find);
 
       return consultas.map((c) => c.toJSON());
+    });
+
+    createListener('consulta.save', async (c) => {
+      const consulta = c.id ? await Consulta.findByPk(c.id) : Consulta.build();
+      consulta.set(c);
+      await consulta.save();
+      return true;
     });
 
     createListener('consulta.delById', async (consultaId) => {
@@ -46,13 +55,17 @@ dbInit().then(() => {
     });
 
     createListener('consultaProcedimento.save', async (p) => {
-      const procedimento = ConsultaProcedimento.build(p);
+      const procedimento = p.id
+        ? await ConsultaProcedimento.findByPk(p.id) : ConsultaProcedimento.build();
+      procedimento.set(p);
       await procedimento.save();
       return true;
     });
 
     createListener('consultaProcedimento.destroy', async (p) => {
-      const procedimento = ConsultaProcedimento.build(p);
+      const procedimento = p.id
+        ? await ConsultaProcedimento.findByPk(p.id) : ConsultaProcedimento.build();
+      procedimento.set(p);
       await procedimento.destroy();
       return true;
     });
@@ -65,6 +78,58 @@ dbInit().then(() => {
     createListener('paciente.getById', async (pacienteId) => {
       const paciente = await Paciente.findByPk(pacienteId);
       return paciente.toJSON();
+    });
+
+    createListener('paciente.findAll', async (find) => {
+      const pacientes = await Paciente.findAll(find);
+
+      return pacientes.map((c) => c.toJSON());
+    });
+
+    createListener('paciente.findByName', async (nome) => {
+      const pacientes = await Paciente.findAll({
+        where: {
+          nome: {
+            [Op.iLike]: `%${nome}%`,
+          },
+        },
+      });
+
+      return pacientes.map((c) => c.toJSON());
+    });
+
+    createListener('paciente.saveAll', async ({ paciente: p, contato: c, endereco: e }) => {
+      const paciente = p.id ? await Paciente.findByPk(p.id) : Paciente.build();
+      paciente.set(p);
+
+      if (e) {
+        const endereco = e.id ? await Endereco.findByPk(e.id) : Endereco.build();
+        endereco.set(e);
+        await endereco.save();
+        const enderecoId = endereco.getDataValue('id');
+        paciente.setDataValue('enderecoId', enderecoId);
+      }
+
+      if (c) {
+        const contato = c.id ? await Contato.findByPk(c.id) : Contato.build();
+        contato.set(c);
+        await contato.save();
+        const contatoId = contato.getDataValue('id');
+        paciente.setDataValue('contatoId', contatoId);
+      }
+
+      try {
+        await paciente.save();
+        return true;
+      } catch (err) {
+        return false;
+      }
+    });
+
+    createListener('endereco.getById', async (enderecoId) => {
+      const endereco = await Endereco.findByPk(enderecoId);
+
+      return endereco.toJSON();
     });
   });
 });

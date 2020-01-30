@@ -5,6 +5,7 @@ import { Button, message } from 'antd';
 import { Store } from '../store/store';
 
 import { PacienteStore, persitido } from '../store/paciente';
+import { pacienteDb } from '../services/db.service';
 
 export default function PacienteSaveButton(): JSX.Element {
   const [loading, setLoading] = useState(false);
@@ -16,7 +17,7 @@ export default function PacienteSaveButton(): JSX.Element {
 
   const { diferenteDoDb, infosPessoais } = pacienteStore;
 
-  const nome = infosPessoais?.getDataValue('nome');
+  const { nome } = infosPessoais || { nome: '' };
 
   useEffect(() => {
     if (!nome) {
@@ -31,12 +32,11 @@ export default function PacienteSaveButton(): JSX.Element {
     const { endereco, contato } = pacienteStore;
     setLoading(true);
     if (infosPessoais) {
-      try {
-        await infosPessoais.saveAll(endereco, contato);
+      const res = await pacienteDb.saveAll(infosPessoais, endereco, contato);
+      if (res) {
         dispatch(persitido());
         message.success('Salvo!', 1);
-      } catch (error) {
-        console.error(error);
+      } else {
         message.error('CPF já cadastrado!', 1);
       }
     }

@@ -23,7 +23,7 @@ export default function ConsultaModalProcedimentosTable(): JSX.Element {
   );
   const dispatch = useDispatch();
 
-  const consultaId = infos?.getDataValue('id');
+  const consultaId = (infos && infos.id);
 
   const header = () => (
     <Row gutter={8}>

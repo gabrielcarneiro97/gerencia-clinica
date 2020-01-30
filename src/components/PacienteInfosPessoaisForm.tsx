@@ -15,8 +15,9 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import PacienteClass from '../../electron/backend/db/models/Paciente';
 import { carregarInfosPessoais, PacienteStore, mudou } from '../store/paciente';
+
+import { Paciente } from '../types';
 
 const { Item } = Form;
 const { Option } = Select;
@@ -89,7 +90,7 @@ function PacienteInfosPessoaisForm(props: FormComponentProps): JSX.Element {
 export default connect(
   ({ paciente }: Store) => ({ paciente }),
   (dispatch: any) => ({
-    atualizaInfosPessoais(paciente: PacienteClass): void {
+    atualizaInfosPessoais(paciente: Paciente): void {
       dispatch(mudou());
       dispatch(carregarInfosPessoais(paciente));
     },
@@ -101,7 +102,7 @@ export default connect(
       atualizaInfosPessoais,
       paciente,
     }: {
-      atualizaInfosPessoais: (paciente: PacienteClass) => void;
+      atualizaInfosPessoais: (paciente: Paciente) => void;
       paciente: PacienteStore;
     } = props;
 
@@ -111,14 +112,11 @@ export default connect(
 
     const fieldName = Object.keys(changedFields)[0];
     if (fieldName === 'nascimento') {
-      infosPessoais.setDataValue(
-        fieldName as any,
-        changedFields[fieldName].value
-          ? (changedFields[fieldName].value as Moment).toDate()
-          : null,
-      );
+      infosPessoais[fieldName] = changedFields[fieldName].value
+        ? (changedFields[fieldName].value as Moment).toDate()
+        : null;
     } else {
-      infosPessoais.setDataValue(fieldName as any, changedFields[fieldName].value);
+      infosPessoais[fieldName] = changedFields[fieldName].value;
     }
     atualizaInfosPessoais(infosPessoais);
   },
@@ -128,7 +126,7 @@ export default connect(
     const { infosPessoais } = paciente;
 
     const createField = (fieldName: string) => {
-      const field = infosPessoais?.getDataValue(fieldName as any);
+      const field = infosPessoais && infosPessoais[fieldName];
 
       return {
         [fieldName]: Form.createFormField({

@@ -5,7 +5,7 @@ import { Button, message } from 'antd';
 import { Store } from '../store/store';
 import { persitido } from '../store/consulta';
 import { carregarConsultas } from '../store/paciente';
-import { pacienteMethods, consultaProcedimentoDb } from '../services/db.service';
+import { pacienteMethods, consultaProcedimentoDb, consultaDb } from '../services/db.service';
 
 type propTypes = {
   onEnd?: Function;
@@ -46,7 +46,8 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
         return false;
       }));
       await Promise.all(procedimentosRemovidos.map(async (p) => consultaProcedimentoDb.destroy(p)));
-      await infos?.save();
+
+      if (infos) consultaDb.save(infos);
 
       if (emitter === 'paciente') await atualizaOnPaciente();
 
