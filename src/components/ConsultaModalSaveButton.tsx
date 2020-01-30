@@ -47,7 +47,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
       }));
       await Promise.all(procedimentosRemovidos.map(async (p) => consultaProcedimentoDb.destroy(p)));
 
-      if (infos) consultaDb.save(infos);
+      if (infos) await consultaDb.save(infos);
 
       if (emitter === 'paciente') await atualizaOnPaciente();
 
