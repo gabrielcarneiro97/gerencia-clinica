@@ -50,7 +50,6 @@ dbInit().then(() => {
 
     createListener('consultaProcedimento.findAll', async (find) => {
       const consultaProcedimentos = await ConsultaProcedimento.findAll(find);
-
       return consultaProcedimentos.map((c) => c.toJSON());
     });
 
