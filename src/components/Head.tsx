@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { dbInit } from '../db/db.service';
 
 const { Paragraph } = Typography;
 

@@ -11,7 +11,7 @@ import {
 import ConsultaModalForm from './ConsultaModalForm';
 import ConsultaModalProcedimentosTable from './ConsultaModalProcedimentosTable';
 
-import { models } from '../db/db.service';
+import { models } from '../../electron/backend/db/db.service';
 
 import { carregarInfos, carregarProcedimentos, limparConsulta } from '../store/consulta';
 import { Store } from '../store/store';

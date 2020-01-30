@@ -15,7 +15,7 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import ConsultaClass from '../db/models/Consulta';
+import ConsultaClass from '../../electron/backend/db/models/Consulta';
 import { ConsultaStore, carregarInfos, mudou } from '../store/consulta';
 
 const { Option } = Select;

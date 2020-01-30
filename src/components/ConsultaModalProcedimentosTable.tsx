@@ -15,7 +15,7 @@ import {
   modificarProcedimento, mudou, removerProcedimento, adicionarProcedimento, ConsultaStore,
 } from '../store/consulta';
 
-import { models } from '../db/db.service';
+import { models } from '../../electron/backend/db/db.service';
 
 const { ConsultaProcedimento } = models;
 

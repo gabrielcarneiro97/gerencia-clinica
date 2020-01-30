@@ -1,11 +1,14 @@
-import { BrowserWindow, app } from 'electron';
-import * as isDev from 'electron-is-dev';
-import * as path from 'path';
-import * as os from 'os';
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-let mainWindow: BrowserWindow | null;
+const { BrowserWindow, app, ipcMain } = require('electron');
+const isDev = require('electron-is-dev');
+const path = require('path');
+const os = require('os');
 
-function createApp(): void {
+let mainWindow;
+let backWindow;
+
+function createApp() {
   if (isDev) {
     BrowserWindow.addDevToolsExtension(
       path.join(
@@ -31,17 +34,39 @@ function createApp(): void {
     },
   });
 
+  backWindow = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      nodeIntegration: true,
+      webSecurity: false,
+    },
+  });
+
   mainWindow.maximize();
   mainWindow.show();
 
   if (isDev) {
     mainWindow.webContents.openDevTools({ mode: 'right' });
+    backWindow.webContents.openDevTools({ mode: 'detach' });
   }
 
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
+  backWindow.loadFile('./backend/index.html');
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+    backWindow.close();
+  });
+
+  backWindow.on('closed', () => {
+    backWindow = null;
+  });
+
+  ipcMain.on('request-listenerId', (event) => {
+    const { senderId } = event;
+    const listenerId = backWindow.webContents.id;
+
+    ipcMain.sendTo(senderId, 'response-listenerId', listenerId);
   });
 }
 

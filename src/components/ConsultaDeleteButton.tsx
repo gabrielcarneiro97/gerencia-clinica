@@ -10,7 +10,7 @@ import {
 import { Store } from '../store/store';
 import { PacienteStore, carregarConsultas } from '../store/paciente';
 
-import { excluirConsulta, models } from '../db/db.service';
+import { excluirConsulta, models } from '../../electron/backend/db/db.service';
 
 const { Consulta } = models;
 

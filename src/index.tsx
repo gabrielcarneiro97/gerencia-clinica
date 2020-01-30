@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
 // import moment from 'moment';
-import './misc/antd.min.css';
+import 'antd/dist/antd.min.css';
 
 import './index.css';
 import App from './App';
 
 import store from './store/store';
-import { dbInit } from './db/db.service';
+import { dbInit } from '../electron/backend/db/db.service';
 
 // moment.locale('pt-br');
 

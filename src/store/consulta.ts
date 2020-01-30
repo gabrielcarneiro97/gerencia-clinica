@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 
-import Consulta from '../db/models/Consulta';
-import ConsultaProcedimento from '../db/models/ConsultaProcedimento';
+import Consulta from '../../electron/backend/db/models/Consulta';
+import ConsultaProcedimento from '../../electron/backend/db/models/ConsultaProcedimento';
 
 type Handlers = { [key: string]: (state?: ConsultaStore, action?: Action) => ConsultaStore };
 

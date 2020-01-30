@@ -15,7 +15,7 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import PacienteClass from '../db/models/Paciente';
+import PacienteClass from '../../electron/backend/db/models/Paciente';
 import { carregarInfosPessoais, PacienteStore, mudou } from '../store/paciente';
 
 const { Item } = Form;

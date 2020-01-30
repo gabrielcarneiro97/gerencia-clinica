@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Tag } from 'antd';
 import moment, { Moment } from 'moment';
 
-import { models } from '../db/db.service';
 import ConsultaModal from './ConsultaModal';
-
-const { Consulta, Paciente } = models;
 
 type propTypes = {
   id: number;

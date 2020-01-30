@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, message } from 'antd';
 
-import { models } from '../db/db.service';
+import { models } from '../../electron/backend/db/db.service';
 
 import { Store } from '../store/store';
 import { persitido } from '../store/consulta';

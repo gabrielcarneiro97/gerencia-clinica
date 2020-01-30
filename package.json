@@ -7,8 +7,8 @@
     "react-build": "react-scripts build",
     "react-test": "react-scripts test",
     "react-eject": "react-scripts eject",
-    "electron-build": "tsc -p electron.tsconfig.json",
-    "start": "yarn electron-build&&concurrently \"set BROWSER=none&&yarn react-start\" \"wait-on http://localhost:3000 && electron ./build-backend/electron.js\""
+    "electron-start": "electron ./electron/electron.js",
+    "start": "concurrently \"set BROWSER=none&&yarn react-start\" \"wait-on http://localhost:3000 && yarn electron-start\""
   },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -16,6 +16,7 @@
     "@testing-library/user-event": "^7.1.2",
     "antd": "^3.26.7",
     "electron-is-dev": "^1.1.0",
+    "moment": "^2.24.0",
     "pg": "^7.17.1",
     "pg-hstore": "^2.3.3",
     "pg-native": "^3.0.0",

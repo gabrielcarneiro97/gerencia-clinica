@@ -1,17 +1,11 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../connect';
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-import Consulta from './Consulta';
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../connect');
 
-export default class ConsultaProcedimento extends Model {
-  public id!: number;
-  public descricao!: string | null;
+const { Consulta } = require('./Consulta');
 
-  public consultaId!: number;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
-}
+class ConsultaProcedimento extends Model {}
 
 ConsultaProcedimento.init({
   id: {
@@ -33,3 +27,5 @@ ConsultaProcedimento.init({
   modelName: 'consultaProcedimento',
   sequelize,
 });
+
+module.exports = ConsultaProcedimento;

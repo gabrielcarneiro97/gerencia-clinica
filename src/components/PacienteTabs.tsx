@@ -5,7 +5,7 @@ import { Tabs } from 'antd';
 import PacienteDadosTabs from './PacienteDadosTabs';
 
 import { Store } from '../store/store';
-import Paciente from '../db/models/Paciente';
+import Paciente from '../../electron/backend/db/models/Paciente';
 import PacienteConsultasTable from './PacienteConsultasTable';
 
 

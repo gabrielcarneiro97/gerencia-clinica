@@ -12,7 +12,7 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import EnderecoClass from '../db/models/Endereco';
+import EnderecoClass from '../../electron/backend/db/models/Endereco';
 
 import { carregarEndereco, PacienteStore, mudou } from '../store/paciente';
 

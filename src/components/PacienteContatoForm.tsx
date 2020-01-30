@@ -12,7 +12,7 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import ContatoClass from '../db/models/Contato';
+import ContatoClass from '../../electron/backend/db/models/Contato';
 import { carregarContato, PacienteStore, mudou } from '../store/paciente';
 
 const { Item } = Form;

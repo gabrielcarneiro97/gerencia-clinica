@@ -7,8 +7,8 @@ import {
 
 import moment from 'moment';
 
-import { models } from '../db/db.service';
-import ConsultaClass from '../db/models/Consulta';
+import { models } from '../../electron/backend/db/db.service';
+import ConsultaClass from '../../electron/backend/db/models/Consulta';
 
 import { Store } from '../store/store';
 

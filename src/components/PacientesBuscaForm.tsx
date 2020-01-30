@@ -12,8 +12,8 @@ import { DataSourceItemType } from 'antd/lib/auto-complete';
 
 import { Op } from 'sequelize';
 
-import { models } from '../db/db.service';
-import PacienteClass from '../db/models/Paciente';
+import { models } from '../../electron/backend/db/db.service';
+import PacienteClass from '../../electron/backend/db/models/Paciente';
 
 import { Store } from '../store/store';
 
