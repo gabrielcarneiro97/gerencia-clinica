@@ -26,8 +26,8 @@ dbInit().then(() => {
     createListener('consulta.save', async (c) => {
       const consulta = c.id ? await Consulta.findByPk(c.id) : Consulta.build();
       consulta.set(c);
-      await consulta.save();
-      return true;
+      const { id } = await consulta.save();
+      return id;
     });
 
     createListener('consulta.delById', async (consultaId) => {

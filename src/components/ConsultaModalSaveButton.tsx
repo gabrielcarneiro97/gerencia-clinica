@@ -40,27 +40,37 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
   const handleClick = async (): Promise<void> => {
     setLoading(true);
     const { procedimentos, procedimentosRemovidos, infos } = consulta;
-    try {
-      await Promise.all(procedimentos.map(async (p): Promise<any> => {
-        if (p.descricao) return consultaProcedimentoDb.save(p);
-        return false;
-      }));
-      await Promise.all(procedimentosRemovidos.map(async (p) => consultaProcedimentoDb.destroy(p)));
 
-      if (infos) await consultaDb.save(infos);
+    if (infos) {
+      const id = await consultaDb.save(infos);
 
-      if (emitter === 'paciente') await atualizaOnPaciente();
 
-      dispatch(persitido());
+      try {
+        await Promise.all(procedimentos.map(async (p): Promise<any> => {
+          if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
+          if (p.descricao) return consultaProcedimentoDb.save(p);
+          return false;
+        }));
+        await Promise.all(procedimentosRemovidos.map(
+          async (p) => {
+            if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
+            consultaProcedimentoDb.destroy(p);
+          },
+        ));
 
-      message.success('Consulta Atualizada com Sucesso!', 1);
-    } catch (err) {
-      console.error(err);
-      message.error('Erro ao Salvar a Consulta!', 1);
+        if (emitter === 'paciente') await atualizaOnPaciente();
+
+        dispatch(persitido());
+
+        message.success('Consulta Atualizada com Sucesso!', 1);
+      } catch (err) {
+        console.error(err);
+        message.error('Erro ao Salvar a Consulta!', 1);
+      }
+      setLoading(false);
+
+      if (onEnd) onEnd();
     }
-    setLoading(false);
-
-    if (onEnd) onEnd();
   };
 
   return (
