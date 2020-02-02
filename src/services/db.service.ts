@@ -7,6 +7,7 @@ import {
 export const consultaDb = {
   getById: async (consultaId: number): Promise<Consulta> => request<Consulta>('consulta.getById', consultaId),
   findAll: async (findAll: object): Promise<Consulta[]> => request<Consulta[]>('consulta.findAll', findAll),
+  findByDate: async (date: Date): Promise<Consulta[]> => request<Consulta[]>('consulta.findByDate', date),
   save: async (consulta: Consulta): Promise<number> => request<number>('consulta.save', consulta),
   delById: async (consultaId: number): Promise<boolean> => request<boolean>('consulta.delById', consultaId),
 };
