@@ -17,7 +17,6 @@ async function backend() {
 
   createListener('consulta.getById', async (consultaId) => {
     const consulta = await Consulta.findByPk(consultaId);
-    console.log(consultaId);
     return consulta.toJSON();
   });
 
@@ -41,6 +40,22 @@ async function backend() {
     });
 
     return consultas.map((c) => c.toJSON());
+  });
+
+  createListener('consulta.updateStatus', async ({ consultaId, status }) => {
+    const consulta = await Consulta.findByPk(consultaId);
+
+    if (!consulta) return false;
+
+    consulta.setDataValue('status', status);
+
+    try {
+      await consulta.save();
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
   });
 
   createListener('consulta.save', async (c) => {

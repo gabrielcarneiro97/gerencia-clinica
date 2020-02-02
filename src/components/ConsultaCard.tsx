@@ -106,7 +106,7 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
     <Card
       type="inner"
       loading={loading}
-      style={{ ...style, fontSize: 'small' }}
+      style={{ ...style, fontSize: 'small', marginBottom: '12px' }}
       // bodyStyle={{ padding: '8px' }}
       size="small"
     >
