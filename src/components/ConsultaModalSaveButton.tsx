@@ -69,7 +69,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
       }
       setLoading(false);
 
-      if (onEnd) onEnd();
+      if (onEnd) onEnd(id);
     }
   };
 

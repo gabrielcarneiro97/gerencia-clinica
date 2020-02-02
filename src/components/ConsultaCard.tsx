@@ -15,12 +15,13 @@ import { consultaDb, pacienteDb, pacienteMethods } from '../services/db.service'
 type propTypes = {
   id: number;
   style?: React.CSSProperties;
+  saveEnd?: Function;
 }
 
 const { Meta } = Card;
 
 export default function ConsultaCard(props: propTypes): JSX.Element {
-  const { id, style } = props;
+  const { id, style, saveEnd } = props;
 
   const [pacienteNome, setPacienteNome] = useState('');
   const [responsavel, setResponsavel] = useState('');
@@ -76,7 +77,10 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       <Col span={5}>
         <ConsultaModal
           id={id}
-          saveEnd={getData}
+          saveEnd={(consultaId: number) => {
+            if (saveEnd) saveEnd(consultaId);
+            getData();
+          }}
         />
       </Col>
     </Row>
