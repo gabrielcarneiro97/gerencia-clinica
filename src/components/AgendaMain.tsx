@@ -19,7 +19,10 @@ export default function AgendaMain(): JSX.Element {
     emAtendimento,
     concluidas,
     ausentes,
+    // consultas,
   } = useSelector<Store, AgendaStore>((store) => store.agenda);
+
+  console.log(agendadas, salaDeEspera);
 
   useEffect(() => {
     consultaDb.findByDate(new Date()).then((c) => (dispatch(carregarConsultas(c))));
@@ -29,10 +32,10 @@ export default function AgendaMain(): JSX.Element {
     <DndProvider backend={Backend}>
       <Row gutter={8}>
         <Col span={6}>
-          <AgendaBoardDropabble title="Agendados" consultasId={[]} />
+          <AgendaBoardDropabble title="Agendados" consultasId={agendadas} />
         </Col>
         <Col span={6}>
-          <AgendaBoardDropabble title="Sala de Espera" consultasId={[]} />
+          <AgendaBoardDropabble title="Sala de Espera" consultasId={salaDeEspera} />
         </Col>
       </Row>
     </DndProvider>

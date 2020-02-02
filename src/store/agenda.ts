@@ -35,17 +35,21 @@ function carregarConsultasHandler(state = initialState, action?: Action): Agenda
 
   const { consultas = [] } = action;
 
+  const emptyArr: Array<number[]> = [[], [], [], [], []];
+
+  const res = consultas.reduce((acc, crr) => {
+    const { status, id } = crr;
+    if (status && id) acc[status - 1].push(id);
+    return acc;
+  }, emptyArr);
+
   const [
     agendadas,
     salaDeEspera,
     emAtendimento,
     concluidas,
     ausentes,
-  ] = consultas.reduce((acc, crr) => {
-    const { status, id } = crr;
-    if (status && id) acc[status - 1].push(id);
-    return acc;
-  }, new Array<number[]>(5).fill([]));
+  ] = res;
 
   return {
     ...state,

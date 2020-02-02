@@ -17,6 +17,7 @@ async function backend() {
 
   createListener('consulta.getById', async (consultaId) => {
     const consulta = await Consulta.findByPk(consultaId);
+    console.log(consultaId);
     return consulta.toJSON();
   });
 
