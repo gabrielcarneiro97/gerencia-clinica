@@ -6,6 +6,7 @@ import { Store } from '../store/store';
 import { persitido } from '../store/consulta';
 import { carregarConsultas } from '../store/paciente';
 import { pacienteMethods, consultaProcedimentoDb, consultaDb } from '../services/db.service';
+import { acharERemoverBoardElement, adicionarBoardElement } from '../store/agenda';
 
 type propTypes = {
   onEnd?: Function;
@@ -37,6 +38,20 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
     dispatch(carregarConsultas(consultas));
   };
 
+  const atualizaOnAgenda = async (): Promise<void> => {
+    const { infos } = consulta;
+
+    if (!infos) return;
+
+    const { id, status } = infos;
+
+    if (!id || (!status && status !== 0)) return;
+
+    dispatch(acharERemoverBoardElement(id));
+
+    dispatch(adicionarBoardElement(status - 1, -1, id));
+  };
+
   const handleClick = async (): Promise<void> => {
     setLoading(true);
     const { procedimentos, procedimentosRemovidos, infos } = consulta;
@@ -59,6 +74,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
         ));
 
         if (emitter === 'paciente') await atualizaOnPaciente();
+        if (emitter === 'agenda') await atualizaOnAgenda();
 
         dispatch(persitido());
 

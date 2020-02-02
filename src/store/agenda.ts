@@ -22,6 +22,7 @@ const initialState: AgendaStore = {
 
 const CARREGAR_CONSULTAS = 'CARREGAR_CONSULTAS';
 const LIMPAR_AGENDA = 'LIMPAR_AGENDA';
+const ACHAR_E_REMOVER_BOARD_ELEMENT = 'ACHAR_E_REMOVER_BOARD_ELEMENT';
 const REMOVER_BOARD_ELEMENT = 'REMOVER_BOARD_ELEMENT';
 const ADICIONAR_BOARD_ELEMENT = 'ADICIONAR_BOARD_ELEMENT';
 
@@ -41,6 +42,34 @@ function carregarConsultasHandler(state = initialState, action?: Action): Agenda
   return {
     ...state,
     boards,
+  };
+}
+
+function acharERemoverBoardElementHandler(state = initialState, action?: Action): AgendaStore {
+  if (!action) return { ...state };
+
+  const { boards } = state;
+  const { element } = action;
+
+  if (!element && element !== 0) return { ...state };
+
+  const newBoards = [...boards];
+
+  const boardId = newBoards.findIndex((nums) => nums.includes(element));
+
+  if (boardId === -1) return { ...state };
+
+  const newBoard = [...newBoards[boardId]];
+
+  const elementId = newBoard.findIndex((el) => el === element);
+
+  newBoard.splice(elementId, 1);
+
+  newBoards[boardId] = newBoard;
+
+  return {
+    ...state,
+    boards: newBoards,
   };
 }
 
@@ -84,7 +113,8 @@ function adicionarBoardElementHandler(state = initialState, action?: Action): Ag
 
   const newBoard = [...newBoards[boardId]];
 
-  newBoard.splice(elementId, 0, element);
+  if (elementId === -1) newBoard.push(element);
+  else newBoard.splice(elementId, 0, element);
 
   newBoards[boardId] = newBoard;
 
@@ -101,6 +131,7 @@ function limparAgendaHandler(): AgendaStore {
 const reducer: Reducer = (state: AgendaStore = initialState, action: Action): AgendaStore => {
   const handlers: Handlers = {
     [CARREGAR_CONSULTAS]: carregarConsultasHandler,
+    [ACHAR_E_REMOVER_BOARD_ELEMENT]: acharERemoverBoardElementHandler,
     [REMOVER_BOARD_ELEMENT]: removerBoardElementHandler,
     [ADICIONAR_BOARD_ELEMENT]: adicionarBoardElementHandler,
     [LIMPAR_AGENDA]: limparAgendaHandler,
@@ -115,6 +146,13 @@ export function carregarConsultas(consultas: Consulta[]): Action {
   return {
     type: CARREGAR_CONSULTAS,
     consultas,
+  };
+}
+
+export function acharERemoverBoardElement(element: number): Action {
+  return {
+    type: ACHAR_E_REMOVER_BOARD_ELEMENT,
+    element,
   };
 }
 

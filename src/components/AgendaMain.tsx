@@ -18,22 +18,22 @@ export default function AgendaMain(): JSX.Element {
 
   return (
     <DndProvider backend={Backend}>
-      <Row gutter={8}>
-        <Col span={6}>
+      <Row gutter={16} type="flex" justify="space-between">
+        <Col span={5}>
           <AgendaBoardDropabble title="Agendados" boardIndex={0} />
         </Col>
-        <Col span={6}>
+        <Col span={5}>
           <AgendaBoardDropabble title="Sala de Espera" boardIndex={1} />
         </Col>
-        <Col span={6}>
+        <Col span={5}>
           <AgendaBoardDropabble title="Em Atendimento" boardIndex={2} />
         </Col>
-        <Col span={6}>
+        <Col span={5}>
           <AgendaBoardDropabble title="Atendimento Concluído" boardIndex={3} />
         </Col>
-        {/* <Col span={6}>
+        <Col span={4}>
           <AgendaBoardDropabble title="Não Compareceu" boardIndex={4} />
-        </Col> */}
+        </Col>
       </Row>
     </DndProvider>
   );

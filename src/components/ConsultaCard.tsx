@@ -74,13 +74,11 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
           && <Badge status="error" />
         }
       </Col>
-      <Col span={5}>
+      <Col span={5} style={{ textAlign: 'end' }}>
         <ConsultaModal
           id={id}
-          saveEnd={(consultaId: number) => {
-            if (saveEnd) saveEnd(consultaId);
-            getData();
-          }}
+          saveEnd={getData}
+          emitter="agenda"
         />
       </Col>
     </Row>

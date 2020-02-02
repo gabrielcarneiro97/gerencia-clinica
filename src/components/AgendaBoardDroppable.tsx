@@ -71,7 +71,7 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
     <div ref={drop}>
       <Card
         title={title}
-        style={{ minHeight: firstCardY + cardHeight }}
+        style={{ minHeight: 242 }}
       >
         {consultasId.map(
           (id, index) => (
