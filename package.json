@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "react-start": "react-scripts start",
+    "react-start": "set BROWSER=none&&react-scripts start",
     "react-build": "react-scripts build",
     "react-test": "react-scripts test",
     "react-eject": "react-scripts eject",
     "electron-start": "electron ./electron/electron.js",
-    "start": "concurrently \"set BROWSER=none&&yarn react-start\" \"yarn electron-start\""
+    "start": "concurrently \"npm run react-start\" \"npm run electron-start\""
   },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
