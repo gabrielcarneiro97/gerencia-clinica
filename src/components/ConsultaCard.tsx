@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Tag } from 'antd';
+import {
+  Card,
+  Tag,
+  Row,
+  Col,
+  Badge,
+} from 'antd';
 import moment, { Moment } from 'moment';
 
 import ConsultaModal from './ConsultaModal';
@@ -8,16 +14,21 @@ import { consultaDb, pacienteDb, pacienteMethods } from '../services/db.service'
 
 type propTypes = {
   id: number;
+  style?: React.CSSProperties;
+  saveEnd?: Function;
 }
 
+const { Meta } = Card;
+
 export default function ConsultaCard(props: propTypes): JSX.Element {
-  const { id } = props;
+  const { id, style, saveEnd } = props;
 
   const [pacienteNome, setPacienteNome] = useState('');
   const [responsavel, setResponsavel] = useState('');
   const [dataHora, setDataHora] = useState<Moment | null>(moment());
-  const [status, setStatus] = useState<number>(0);
+  const [status, setStatus] = useState(0);
   const [telefone, setTelefone] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const getData = async (): Promise<void> => {
     const consulta = await consultaDb.getById(id);
@@ -48,44 +59,63 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
   };
 
   useEffect(() => {
-    getData();
+    getData().then(() => setLoading(false));
   }, []);
 
-  return (
-    <Card
-      title={pacienteNome}
-      extra={(
+  const pStyle: React.CSSProperties = { marginBottom: '3px' };
+
+  const title = (
+    <Row gutter={8} type="flex" justify="space-around" align="middle">
+      <Col span={19}>
+        {pacienteNome}
+        &nbsp;
+        {
+          ((dataHora && dataHora.isBefore(moment().add(-5, 'm'))) && status === 1)
+          && <Badge status="error" />
+        }
+      </Col>
+      <Col span={5} style={{ textAlign: 'end' }}>
         <ConsultaModal
           id={id}
           saveEnd={getData}
+          emitter="agenda"
         />
-      )}
-      style={{
-        fontSize: 'smaller',
-      }}
-      size="small"
-    >
-      <p>
-        Horário:
+      </Col>
+    </Row>
+  );
+
+  const description = (
+    <>
+      <p style={pStyle}>
+        <strong>Horário:</strong>
         &nbsp;
         {dataHora ? dataHora.format('HH:mm') : ''}
-        &nbsp;
-        &nbsp;
-        {
-          dataHora && dataHora.isBefore(moment().add(-5, 'm')) && status === 1
-          && <Tag color="red" style={{ fontSize: 'x-small' }}>ATRASADO</Tag>
-        }
       </p>
-      <p>
-        Responsável:
+      <p style={pStyle}>
+        <strong>Responsável:</strong>
         &nbsp;
         {responsavel}
       </p>
-      <p>
-        Contato:
+      <p style={pStyle}>
+        <strong>Contato:</strong>
         &nbsp;
         {telefone}
       </p>
+    </>
+  );
+
+  return (
+    <Card
+      type="inner"
+      loading={loading}
+      style={{ ...style, fontSize: 'small', marginBottom: '12px' }}
+      // bodyStyle={{ padding: '8px' }}
+      size="small"
+    >
+      <Meta
+        title={title}
+        description={description}
+      />
     </Card>
   );
 }

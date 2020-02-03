@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import moment from 'moment';
 
-// import moment from 'moment';
+import { ConfigProvider } from 'antd';
+import ptBR from 'antd/lib/locale/pt_BR';
 import 'antd/dist/antd.min.css';
 
 import './index.css';
@@ -10,16 +12,34 @@ import App from './App';
 
 import store from './store/store';
 import { initSender } from './services/ipcSender.service';
+import LoadingScreen from './components/LoadingScreen';
 
-// moment.locale('pt-br');
+moment.locale('pt-br');
 
-initSender().then(() => {
-  ReactDOM.render(
+function Index(): JSX.Element {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    initSender().then(() => setLoading(false));
+  }, []);
+
+  return (
     <Provider store={store}>
-      {/* <ConfigProvider locale={ptBR}> */}
-      <App />
-      {/* </ConfigProvider> */}
-    </Provider>,
-    document.getElementById('root'),
+      <ConfigProvider locale={ptBR}>
+        {
+          loading
+          && <LoadingScreen />
+        }
+        {
+          !loading
+          && <App />
+        }
+      </ConfigProvider>
+    </Provider>
   );
-});
+}
+
+ReactDOM.render(
+  <Index />,
+  document.getElementById('root'),
+);

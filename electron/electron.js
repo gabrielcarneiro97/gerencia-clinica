@@ -5,10 +5,11 @@ const isDev = require('electron-is-dev');
 const path = require('path');
 const os = require('os');
 
+require('electron-reload')(path.join(__dirname));
+
 let mainWindow;
 let backWindow;
 
-require('electron-reload')(path.join(__dirname, 'electron'));
 
 function createApp() {
   if (isDev) {
