@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card,
-  Tag,
   Row,
   Col,
   Badge,
@@ -15,13 +14,12 @@ import { consultaDb, pacienteDb, pacienteMethods } from '../services/db.service'
 type propTypes = {
   id: number;
   style?: React.CSSProperties;
-  saveEnd?: Function;
 }
 
 const { Meta } = Card;
 
 export default function ConsultaCard(props: propTypes): JSX.Element {
-  const { id, style, saveEnd } = props;
+  const { id, style } = props;
 
   const [pacienteNome, setPacienteNome] = useState('');
   const [responsavel, setResponsavel] = useState('');
