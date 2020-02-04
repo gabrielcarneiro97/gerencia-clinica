@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, XYCoord } from 'react-dnd';
-import { Card } from 'antd';
+import { Card, Row } from 'antd';
 
 import ConsultaCardDraggable from './ConsultaCardDraggable';
 
@@ -15,17 +15,21 @@ type propTypes = {
   bgColor?: string;
 }
 
-const cardHeight = 122/* height */ + 12/* margin-bottom */;
+const boardsY = 96;
 
-const firstCardY = 57/* head */ + 24/* padding */;
+const cardHeight = 87/* height */ + 12/* margin-bottom */;
 
-const firstCardMidY = cardHeight / 2 + firstCardY;
+const firstCardY = 31/* head */ + 8/* padding */;
+
+const firstCardMidY = (cardHeight / 2) + firstCardY + boardsY;
 
 export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
   const {
     title = '',
     boardIndex,
   } = props;
+
+  console.log(firstCardMidY);
 
   const dispatch = useDispatch();
   const { boards } = useSelector<Store, AgendaStore>((store) => store.agenda);
@@ -56,7 +60,9 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
     accept: 'consulta',
     drop: async (item: any, monitor) => {
       const newBoard = boardIndex;
-      const newElementIndex = calcIndex(monitor.getSourceClientOffset());
+      const newElementIndex = calcIndex(monitor.getClientOffset());
+
+      console.log(monitor.getClientOffset(), monitor.getSourceClientOffset());
 
       const oldBoard = item.boardIndex;
       const oldElementIndex = item.arrayIndex;
@@ -72,21 +78,26 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
   return (
     <div ref={drop}>
       <Card
-        title={title}
+        // title={title}
         style={{ borderRadius: 5 }}
         bodyStyle={{ minHeight: 242, padding: 8 }}
         headStyle={{ fontWeight: 600, fontSize: 15 }}
       >
-        {consultasId.map(
-          (id, index) => (
-            <ConsultaCardDraggable
-              consultaId={id}
-              key={id}
-              boardIndex={boardIndex}
-              arrayIndex={index}
-            />
-          ),
-        )}
+        <Row style={{ marginBottom: 10, fontWeight: 600 }}>
+          {title}
+        </Row>
+        <Row>
+          {consultasId.map(
+            (id, index) => (
+              <ConsultaCardDraggable
+                consultaId={id}
+                key={id}
+                boardIndex={boardIndex}
+                arrayIndex={index}
+              />
+            ),
+          )}
+        </Row>
       </Card>
     </div>
   );

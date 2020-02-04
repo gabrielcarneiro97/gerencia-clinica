@@ -101,6 +101,7 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       </p>
       <p style={pStyle}>
         {telefone}
+        &nbsp;
       </p>
     </>
   );
