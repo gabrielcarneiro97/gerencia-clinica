@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, XYCoord } from 'react-dnd';
 import { Card, Row } from 'antd';
@@ -28,8 +28,6 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
     title = '',
     boardIndex,
   } = props;
-
-  console.log(firstCardMidY);
 
   const dispatch = useDispatch();
   const { boards } = useSelector<Store, AgendaStore>((store) => store.agenda);
@@ -62,8 +60,6 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
       const newBoard = boardIndex;
       const newElementIndex = calcIndex(monitor.getClientOffset());
 
-      console.log(monitor.getClientOffset(), monitor.getSourceClientOffset());
-
       const oldBoard = item.boardIndex;
       const oldElementIndex = item.arrayIndex;
 
@@ -78,10 +74,8 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
   return (
     <div ref={drop}>
       <Card
-        // title={title}
-        style={{ borderRadius: 5 }}
-        bodyStyle={{ minHeight: 242, padding: 8 }}
-        headStyle={{ fontWeight: 600, fontSize: 15 }}
+        style={{ borderRadius: 5, background: '#fafafa' }}
+        bodyStyle={{ minHeight: 500, padding: 8 }}
       >
         <Row style={{ marginBottom: 10, fontWeight: 600 }}>
           {title}

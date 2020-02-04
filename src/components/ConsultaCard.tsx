@@ -111,11 +111,11 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       type="inner"
       loading={loading}
       style={{
-        ...style,
         fontSize: 'small',
         marginBottom: '12px',
         border: `1px solid ${blue[1]}`,
         borderRadius: 5,
+        ...style,
       }}
       hoverable
       bodyStyle={{ padding: '8px' }}

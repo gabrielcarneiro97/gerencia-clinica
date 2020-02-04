@@ -22,7 +22,7 @@ export default function Main(): JSX.Element {
         <Layout>
           <Content
             style={{
-              padding: 24,
+              padding: 12,
               margin: 0,
               minHeight: window.innerHeight - 64 /* altura header */ - 69 /* altura footer */,
             }}
