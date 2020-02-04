@@ -23,6 +23,7 @@ type propTypes = {
   id?: number;
   buttonSize?: string | number;
   icon?: string;
+  iconRotate?: number;
   buttonFill?: boolean;
   emitter?: string;
   visible?: boolean;
@@ -31,7 +32,14 @@ type propTypes = {
 
 export default function ConsultaModal(props: propTypes): JSX.Element {
   const {
-    icon = 'info-circle', buttonSize = 20, buttonFill = false, id, emitter, visible: visibleProp, saveEnd,
+    icon = 'info-circle',
+    iconRotate = 0,
+    buttonSize = 20,
+    buttonFill = false,
+    id,
+    emitter,
+    visible: visibleProp,
+    saveEnd,
   } = props;
 
   const dispatch = useDispatch();
@@ -85,7 +93,7 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
         style={{ fontSize: buttonSize }}
         onClick={showModal}
       >
-        <Icon type={icon} theme={buttonFill ? 'filled' : 'outlined'} />
+        <Icon type={icon} rotate={iconRotate} theme={buttonFill ? 'filled' : 'outlined'} />
       </Button>
 
       <Modal
