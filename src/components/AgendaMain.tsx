@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  Row, Col, Layout, DatePicker,
+  Row,
+  Col,
+  DatePicker,
 } from 'antd';
 import Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
@@ -25,7 +27,7 @@ export default function AgendaMain(): JSX.Element {
 
   return (
     <DndProvider backend={Backend}>
-      <Layout>
+      <div>
         <Row style={{ marginBottom: 12 }}>
           <DatePicker format="DD/MM/YYYY" value={data} onChange={setData} />
         </Row>
@@ -46,7 +48,7 @@ export default function AgendaMain(): JSX.Element {
             <AgendaBoardDropabble title="Atendimento Concluído" boardIndex={3} />
           </Col>
         </Row>
-      </Layout>
+      </div>
     </DndProvider>
   );
 }
