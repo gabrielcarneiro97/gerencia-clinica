@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, Icon } from 'antd';
 
@@ -13,16 +13,14 @@ export default function SideMenu(): JSX.Element {
       selectedKeys={[pathname.split('?')[0]]}
       style={{ height: '92%', borderRight: 0, backgroundColor: 'white' }}
     >
-      <Menu.Item key="/pacientes">
+      <Menu.Item key="/pacientes" title="Pacientes">
         <Link to="/pacientes">
           <Icon type="team" />
-          Pacientes
         </Link>
       </Menu.Item>
-      <Menu.Item key="/agenda">
+      <Menu.Item key="/agenda" title="Agenda">
         <Link to="/agenda">
           <Icon type="calendar" />
-          Agenda
         </Link>
       </Menu.Item>
     </Menu>

@@ -41,11 +41,9 @@ export default function PacienteConsultasTable(): JSX.Element {
       </Col>
       <Col span={12} style={{ textAlign: 'end' }}>
         <ConsultaModal
-          buttonConfig={{
-            icon: 'plus-circle',
-            filled: true,
-            size: '25px',
-          }}
+          icon="plus-circle"
+          buttonFill
+          buttonSize="25px"
           emitter="paciente"
         />
       </Col>

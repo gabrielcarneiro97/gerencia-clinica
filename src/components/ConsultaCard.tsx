@@ -7,6 +7,7 @@ import {
 } from 'antd';
 import moment, { Moment } from 'moment';
 
+import { blue } from '@ant-design/colors';
 import ConsultaModal from './ConsultaModal';
 
 import { consultaDb, pacienteDb, pacienteMethods } from '../services/db.service';
@@ -63,40 +64,42 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
   const pStyle: React.CSSProperties = { marginBottom: '3px' };
 
   const title = (
-    <Row gutter={8} type="flex" justify="space-around" align="middle">
-      <Col span={19}>
+    <p style={{ ...pStyle }}>
+      <span style={{
+        textAlign: 'start',
+        width: '70%',
+        display: 'inline-block',
+        fontWeight: 500,
+      }}
+      >
         {pacienteNome}
         &nbsp;
         {
           ((dataHora && dataHora.isBefore(moment().add(-5, 'm'))) && status === 1)
           && <Badge status="error" />
         }
-      </Col>
-      <Col span={5} style={{ textAlign: 'end' }}>
+      </span>
+      <span style={{ textAlign: 'end', width: '30%', display: 'inline-block' }}>
         <ConsultaModal
           id={id}
           saveEnd={getData}
           emitter="agenda"
+          buttonSize={13}
         />
-      </Col>
-    </Row>
+      </span>
+    </p>
   );
 
   const description = (
     <>
       <p style={pStyle}>
-        <strong>Horário:</strong>
-        &nbsp;
         {dataHora ? dataHora.format('HH:mm') : ''}
-      </p>
-      <p style={pStyle}>
-        <strong>Responsável:</strong>
+        &nbsp;
+        -
         &nbsp;
         {responsavel}
       </p>
       <p style={pStyle}>
-        <strong>Contato:</strong>
-        &nbsp;
         {telefone}
       </p>
     </>
@@ -106,13 +109,24 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
     <Card
       type="inner"
       loading={loading}
-      style={{ ...style, fontSize: 'small', marginBottom: '12px' }}
-      // bodyStyle={{ padding: '8px' }}
+      style={{
+        ...style,
+        fontSize: 'small',
+        marginBottom: '12px',
+        border: `1px solid ${blue[1]}`,
+        borderRadius: 5,
+      }}
+      hoverable
+      bodyStyle={{ padding: '8px' }}
       size="small"
     >
       <Meta
-        title={title}
-        description={description}
+        description={(
+          <>
+            {title}
+            {description}
+          </>
+        )}
       />
     </Card>
   );

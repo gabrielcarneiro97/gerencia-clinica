@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Row, Col } from 'antd';
+import { red } from '@ant-design/colors';
 import Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
@@ -18,7 +19,7 @@ export default function AgendaMain(): JSX.Element {
 
   return (
     <DndProvider backend={Backend}>
-      <Row gutter={16} type="flex" justify="space-between">
+      <Row gutter={4} type="flex" justify="space-between">
         <Col span={5}>
           <AgendaBoardDropabble title="Agendados" boardIndex={0} />
         </Col>

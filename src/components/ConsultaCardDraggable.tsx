@@ -26,7 +26,7 @@ export default function ConsultaCardDraggable(props: propTypes): JSX.Element {
 
   return (
     <div ref={dragRef}>
-      <ConsultaCard id={consultaId} style={{ opacity }} />
+      <ConsultaCard id={consultaId} style={{ opacity, cursor: 'all-scroll' }} />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useDrop, XYCoord } from 'react-dnd';
 import { Card } from 'antd';
+
 import ConsultaCardDraggable from './ConsultaCardDraggable';
 
 import { AgendaStore, removerBoardElement, adicionarBoardElement } from '../store/agenda';
@@ -11,6 +12,7 @@ import { consultaDb } from '../services/db.service';
 type propTypes = {
   title?: string;
   boardIndex: number;
+  bgColor?: string;
 }
 
 const cardHeight = 122/* height */ + 12/* margin-bottom */;
@@ -71,7 +73,9 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
     <div ref={drop}>
       <Card
         title={title}
-        style={{ minHeight: 242 }}
+        style={{ borderRadius: 5 }}
+        bodyStyle={{ minHeight: 242, padding: 8 }}
+        headStyle={{ fontWeight: 600, fontSize: 15 }}
       >
         {consultasId.map(
           (id, index) => (
