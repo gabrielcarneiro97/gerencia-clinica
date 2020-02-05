@@ -12,9 +12,10 @@ function getId(): number {
 
 export async function initSender(): Promise<boolean> {
   return new Promise((resolve) => {
-    ipcRenderer.send('request-listenerId');
+    const requestInterval = setInterval(() => ipcRenderer.send('request-listenerId'), 2);
     ipcRenderer.once('response-listenerId', ((e: any, id: number) => {
       listenerId = id;
+      clearInterval(requestInterval);
       ipcRenderer.sendTo(id, 'request-channels');
       ipcRenderer.once('response-channels', (e2: any, channels: string[]) => {
         activeChannels = channels;
