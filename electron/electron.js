@@ -5,11 +5,12 @@ const isDev = require('electron-is-dev');
 const path = require('path');
 const os = require('os');
 
+const { initialCheck } = require('./master');
+
 require('electron-reload')(path.join(__dirname));
 
 let mainWindow;
 let backWindow;
-
 
 function createApp() {
   if (isDev) {
@@ -26,6 +27,8 @@ function createApp() {
       ),
     );
   }
+
+  initialCheck();
 
   mainWindow = new BrowserWindow({
     backgroundColor: '#e0e0e0',
