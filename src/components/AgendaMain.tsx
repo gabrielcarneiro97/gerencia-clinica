@@ -12,7 +12,7 @@ import moment from 'moment';
 import AgendaBoardDropabble from './AgendaBoardDroppable';
 import { consultaDb } from '../services/db.service';
 
-import { carregarConsultas } from '../store/paciente';
+import { carregarConsultas } from '../store/agenda';
 
 export default function AgendaMain(): JSX.Element {
   const dispatch = useDispatch();

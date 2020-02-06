@@ -4,7 +4,9 @@ import { Button, message } from 'antd';
 
 import { Store } from '../store/store';
 
-import { PacienteStore, persitido } from '../store/paciente';
+import {
+  PacienteStore, persitido, carregarInfosPessoais, carregarEndereco, carregarContato,
+} from '../store/paciente';
 import { pacienteDb } from '../services/db.service';
 
 export default function PacienteSaveButton(): JSX.Element {
@@ -32,8 +34,13 @@ export default function PacienteSaveButton(): JSX.Element {
     const { endereco, contato } = pacienteStore;
     setLoading(true);
     if (infosPessoais) {
-      const res = await pacienteDb.saveAll(infosPessoais, endereco, contato);
-      if (res) {
+      const pId = await pacienteDb.saveAll(infosPessoais, endereco, contato);
+      if (pId !== -1) {
+        const novoPaciente = await pacienteDb.getById(pId);
+
+        dispatch(carregarInfosPessoais(novoPaciente));
+        dispatch(carregarEndereco({ ...endereco, id: novoPaciente.enderecoId || undefined }));
+        dispatch(carregarContato({ ...contato, id: novoPaciente.contatoId || undefined }));
         dispatch(persitido());
         message.success('Salvo!', 1);
       } else {

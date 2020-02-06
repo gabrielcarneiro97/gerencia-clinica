@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "react-start": "set BROWSER=none&&react-scripts start",
+    "react": "set BROWSER=none&&react-scripts start",
     "react-build": "react-scripts build",
     "react-test": "react-scripts test",
     "react-eject": "react-scripts eject",
-    "electron-start": "electron ./electron/electron.js",
+    "electron": "electron ./electron/electron.js",
     "start": "concurrently \"npm run react-start\" \"npm run electron-start\""
   },
   "dependencies": {

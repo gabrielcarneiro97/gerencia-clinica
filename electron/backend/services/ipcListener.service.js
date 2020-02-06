@@ -4,6 +4,7 @@ const activeChannels = [];
 let working = false;
 
 async function initListener() {
+  ipcRenderer.send('listener-ok');
   ipcRenderer.on('request-channels', (event) => {
     const { senderId } = event;
 

@@ -39,7 +39,7 @@ export const pacienteDb = {
     paciente: Paciente,
     endereco?: Endereco | null,
     contato?: Contato | null,
-  ): Promise<boolean> => request<boolean>('paciente.saveAll', { paciente, endereco, contato }),
+  ): Promise<number> => request<number>('paciente.saveAll', { paciente, endereco, contato }),
 };
 
 export const enderecoDb = {

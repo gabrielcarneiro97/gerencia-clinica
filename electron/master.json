@@ -1,4 +1,7 @@
 {
   "HOME_APP_DIR": ".gerencia_clinica_app",
-  "DB_FILE_NAME": "clinica.db"
+  "DB_FILE_NAME": "clinica.db",
+  "DB_NAME": "clinica",
+  "DB_USER": "dbAdmin",
+  "DB_PASSWORD": "runawayfromhere"
 }

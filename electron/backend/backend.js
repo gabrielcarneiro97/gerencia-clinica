@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { Op } = require('sequelize');
+const Sequelize = require('sequelize');
 const moment = require('moment');
 
 const { initListener, createListener } = require('./services/ipcListener.service');
@@ -10,6 +10,8 @@ const Contato = require('./db/models/Contato');
 const Paciente = require('./db/models/Paciente');
 const ConsultaProcedimento = require('./db/models/ConsultaProcedimento');
 const Endereco = require('./db/models/Endereco');
+
+const { Op } = Sequelize;
 
 async function backend() {
   await dbInit();
@@ -122,11 +124,12 @@ async function backend() {
 
   createListener('paciente.findByName', async (nome) => {
     const pacientes = await Paciente.findAll({
-      where: {
-        nome: {
-          [Op.iLike]: `%${nome}%`,
+      where: Sequelize.where(
+        Sequelize.fn('lower', Sequelize.col('nome')),
+        {
+          [Op.like]: `%${nome.toLowerCase()}%`,
         },
-      },
+      ),
     });
 
     return pacientes.map((c) => c.toJSON());
@@ -153,10 +156,10 @@ async function backend() {
     }
 
     try {
-      await paciente.save();
-      return true;
+      const { id } = await paciente.save();
+      return id;
     } catch (err) {
-      return false;
+      return -1;
     }
   });
 

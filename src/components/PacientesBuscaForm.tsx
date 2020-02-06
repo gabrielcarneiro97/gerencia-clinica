@@ -10,8 +10,6 @@ import {
 import { SelectValue } from 'antd/lib/select';
 import { DataSourceItemType } from 'antd/lib/auto-complete';
 
-import { Op } from 'sequelize';
-
 import { Paciente, Endereco, Contato } from '../types';
 
 import { Store } from '../store/store';
@@ -45,7 +43,6 @@ export default function PacienteBuscaForm(): JSX.Element {
 
     if (value !== '') {
       const pacientes = await pacienteDb.findByName(value as string);
-      console.log(pacientes);
       setPacientesBusca(pacientes);
       setPacientesNomes(pacientes.map(
         (p) => ({ text: p.nome, value: p.id }),
@@ -65,7 +62,6 @@ export default function PacienteBuscaForm(): JSX.Element {
 
     if (pacienteSelecionado) {
       const endereco = await pacienteMethods.getEndereco(pacienteSelecionado);
-      console.log(endereco);
       const contato = await pacienteMethods.getContato(pacienteSelecionado);
 
       dispatch(carregarInfosPessoais(pacienteSelecionado));
