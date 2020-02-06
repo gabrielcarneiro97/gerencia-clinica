@@ -34,6 +34,7 @@ function Index(): JSX.Element {
           !loading
           && <App />
         }
+        {/* <LoadingScreen /> */}
       </ConfigProvider>
     </Provider>
   );

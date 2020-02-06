@@ -6,8 +6,6 @@ import {
 import PacientesMain from './PacientesMain';
 import AgendaMain from './AgendaMain';
 
-const Teste2 = () => <div>Teste2</div>;
-
 export default function Router(): JSX.Element {
   return (
     <Switch>
