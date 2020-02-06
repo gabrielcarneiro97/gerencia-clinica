@@ -8,6 +8,7 @@ const MASTER = require('./master.json');
 
 const appPath = path.join(os.homedir(), MASTER.HOME_APP_DIR);
 const dbPath = path.join(appPath, MASTER.DB_FILE_NAME);
+const dbVerPath = path.join(appPath, MASTER.DB_VERSION_FILE_NAME);
 
 function checkAppDir() {
   const homeDirFiles = fs.readdirSync(os.homedir());
@@ -39,5 +40,6 @@ function initialCheck() {
 module.exports = {
   appPath,
   dbPath,
+  dbVerPath,
   initialCheck,
 };

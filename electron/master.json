@@ -3,5 +3,7 @@
   "DB_FILE_NAME": "clinica.db",
   "DB_NAME": "clinica",
   "DB_USER": "dbAdmin",
-  "DB_PASSWORD": "runawayfromhere"
+  "DB_PASSWORD": "runawayfromhere",
+  "DB_VERSION": "1.0.0",
+  "DB_VERSION_FILE_NAME": "db.ver"
 }
