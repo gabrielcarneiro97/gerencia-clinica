@@ -7,6 +7,7 @@ const sequelize = require('../connect');
 const Endereco = require('./Endereco');
 const Contato = require('./Contato');
 const FichaMedica = require('./FichaMedica');
+const PacienteGrupo = require('./PacienteGrupo');
 
 class Paciente extends Model {
   getIniciais() {
@@ -73,6 +74,20 @@ Paciente.init({
     type: new DataTypes.INTEGER(),
     references: {
       model: Endereco,
+      key: 'id',
+    },
+  },
+  grupo1Id: {
+    type: new DataTypes.INTEGER(),
+    references: {
+      model: PacienteGrupo,
+      key: 'id',
+    },
+  },
+  grupo2Id: {
+    type: new DataTypes.INTEGER(),
+    references: {
+      model: PacienteGrupo,
       key: 'id',
     },
   },

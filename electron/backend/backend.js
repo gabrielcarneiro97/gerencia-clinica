@@ -10,6 +10,7 @@ const Contato = require('./db/models/Contato');
 const Paciente = require('./db/models/Paciente');
 const ConsultaProcedimento = require('./db/models/ConsultaProcedimento');
 const Endereco = require('./db/models/Endereco');
+const PacienteGrupo = require('./db/models/PacienteGrupo');
 
 const { Op } = Sequelize;
 
@@ -166,6 +167,12 @@ async function backend() {
     const endereco = await Endereco.findByPk(enderecoId);
 
     return endereco.toJSON();
+  });
+
+  createListener('pacienteGrupo.getAll', async () => {
+    const grupos = await PacienteGrupo.findAll();
+
+    return grupos.map((g) => g.toJSON());
   });
 
 

@@ -60,3 +60,9 @@ export type Paciente = {
   contatoId?: number | null;
   fichaMedicaId?: number | null;
 }
+
+export type PacienteGrupo = {
+  id?: number;
+  tipo?: number | null;
+  descricao?: string | null;
+}

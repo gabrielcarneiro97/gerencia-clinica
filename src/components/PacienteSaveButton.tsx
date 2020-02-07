@@ -19,16 +19,23 @@ export default function PacienteSaveButton(): JSX.Element {
 
   const { diferenteDoDb, infosPessoais } = pacienteStore;
 
-  const { nome } = infosPessoais || { nome: '' };
+  const { nome, grupo1Id, grupo2Id } = infosPessoais || { nome: '' };
+
+  console.log(nome, grupo1Id, grupo2Id);
 
   useEffect(() => {
-    if (!nome) {
+    if (!nome
+        || grupo1Id === null
+        || grupo2Id === null
+        || grupo1Id === undefined
+        || grupo2Id === undefined
+    ) {
       setFaltaDados(true);
       return;
     }
 
     setFaltaDados(false);
-  }, [nome]);
+  }, [nome, grupo1Id, grupo2Id]);
 
   const handleClick = async (): Promise<void> => {
     const { endereco, contato } = pacienteStore;

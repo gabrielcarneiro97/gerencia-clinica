@@ -1,0 +1,30 @@
+[
+  {
+    "descricao": "Pré",
+    "tipo": 2
+  },
+  {
+    "descricao": "Pós",
+    "tipo": 2
+  },
+  {
+    "descricao": "TMO",
+    "tipo": 1
+  },
+  {
+    "descricao": "TF",
+    "tipo": 1
+  },
+  {
+    "descricao": "TR",
+    "tipo": 1
+  },
+  {
+    "descricao": "TP",
+    "tipo": 1
+  },
+  {
+    "descricao": "Prótese",
+    "tipo": 1
+  }
+]

@@ -1,49 +1,53 @@
 import { request } from './ipcSender.service';
 
 import {
-  Consulta, Paciente, Contato, ConsultaProcedimento, Endereco,
+  Consulta, Paciente, Contato, ConsultaProcedimento, Endereco, PacienteGrupo,
 } from '../types';
 
 export const consultaDb = {
-  getById: async (consultaId: number): Promise<Consulta> => request<Consulta>('consulta.getById', consultaId),
-  findAll: async (findAll: object): Promise<Consulta[]> => request<Consulta[]>('consulta.findAll', findAll),
-  findByDate: async (date: Date): Promise<Consulta[]> => request<Consulta[]>('consulta.findByDate', date),
-  updateStatus: async (consultaId: number, status: number): Promise<boolean> => request<boolean>('consulta.updateStatus', { consultaId, status }),
-  save: async (consulta: Consulta): Promise<number> => request<number>('consulta.save', consulta),
-  delById: async (consultaId: number): Promise<boolean> => request<boolean>('consulta.delById', consultaId),
+  getById: async (consultaId: number): Promise<Consulta> => request('consulta.getById', consultaId),
+  findAll: async (findAll: object): Promise<Consulta[]> => request('consulta.findAll', findAll),
+  findByDate: async (date: Date): Promise<Consulta[]> => request('consulta.findByDate', date),
+  updateStatus: async (consultaId: number, status: number): Promise<boolean> => request('consulta.updateStatus', { consultaId, status }),
+  save: async (consulta: Consulta): Promise<number> => request('consulta.save', consulta),
+  delById: async (consultaId: number): Promise<boolean> => request('consulta.delById', consultaId),
 };
 
 export const consultaProcedimentoDb = {
   findAll: async (
     findAll: object,
-  ): Promise<ConsultaProcedimento[]> => request<ConsultaProcedimento[]>(
+  ): Promise<ConsultaProcedimento[]> => request(
     'consultaProcedimento.findAll', findAll,
   ),
   save: async (
     procedimento: ConsultaProcedimento,
-  ): Promise<boolean> => request<boolean>('consultaProcedimento.save', procedimento),
+  ): Promise<boolean> => request('consultaProcedimento.save', procedimento),
   destroy: async (
     procedimento: ConsultaProcedimento,
-  ): Promise<boolean> => request<boolean>('consultaProcedimento.destroy', procedimento),
+  ): Promise<boolean> => request('consultaProcedimento.destroy', procedimento),
 };
 
 export const contatoDb = {
-  getById: async (contatoId: number): Promise<Contato> => request<Contato>('contato.getById', contatoId),
+  getById: async (contatoId: number): Promise<Contato> => request('contato.getById', contatoId),
 };
 
 export const pacienteDb = {
-  getById: async (pacienteId: number): Promise<Paciente> => request<Paciente>('paciente.getById', pacienteId),
-  findAll: async (findAll: object): Promise<Paciente[]> => request<Paciente[]>('paciente.findAll', findAll),
-  findByName: async (nome: string): Promise<Paciente[]> => request<Paciente[]>('paciente.findByName', nome),
+  getById: async (pacienteId: number): Promise<Paciente> => request('paciente.getById', pacienteId),
+  findAll: async (findAll: object): Promise<Paciente[]> => request('paciente.findAll', findAll),
+  findByName: async (nome: string): Promise<Paciente[]> => request('paciente.findByName', nome),
   saveAll: async (
     paciente: Paciente,
     endereco?: Endereco | null,
     contato?: Contato | null,
-  ): Promise<number> => request<number>('paciente.saveAll', { paciente, endereco, contato }),
+  ): Promise<number> => request('paciente.saveAll', { paciente, endereco, contato }),
 };
 
 export const enderecoDb = {
-  getById: async (enderecoId: number): Promise<Endereco> => request<Endereco>('endereco.getById', enderecoId),
+  getById: async (enderecoId: number): Promise<Endereco> => request('endereco.getById', enderecoId),
+};
+
+export const pacienteGrupoDb = {
+  getAll: async (): Promise<PacienteGrupo[]> => request('pacienteGrupo.getAll'),
 };
 
 export const pacienteMethods = {
