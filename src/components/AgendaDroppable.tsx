@@ -69,7 +69,7 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
   });
 
   return (
-    <div ref={drop}>
+    <div ref={drop} style={{ width: '100%', height: '100%' }}>
       {children}
     </div>
   );

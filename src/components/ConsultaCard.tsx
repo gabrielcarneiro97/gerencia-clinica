@@ -23,6 +23,7 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
   const { id, style } = props;
 
   const [pacienteNome, setPacienteNome] = useState('');
+  const [pacienteId, setPacienteId] = useState(-1);
   const [responsavel, setResponsavel] = useState('');
   const [dataHora, setDataHora] = useState<Moment | null>(moment());
   const [status, setStatus] = useState(0);
@@ -33,7 +34,7 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
     const consulta = await consultaDb.getById(id);
 
     if (consulta) {
-      const { pacienteId, data } = consulta;
+      const { pacienteId: pId, data } = consulta;
 
       const resp = consulta.responsavel;
       const s = consulta.status;
@@ -42,10 +43,11 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       setDataHora(data ? moment(data) : null);
       setStatus(s || 0);
 
-      const paciente = await pacienteDb.getById(pacienteId);
+      const paciente = await pacienteDb.getById(pId);
 
       if (paciente) {
         setPacienteNome(pacienteMethods.getIniciais(paciente));
+        setPacienteId(pId);
 
         const contato = await pacienteMethods.getContato(paciente);
 
@@ -82,6 +84,7 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       <span style={{ textAlign: 'end', width: '30%', display: 'inline-block' }}>
         <ConsultaModal
           id={id}
+          pacienteId={pacienteId}
           saveEnd={getData}
           emitter="agenda"
           buttonSize={13}

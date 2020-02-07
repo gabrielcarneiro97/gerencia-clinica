@@ -38,12 +38,16 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
     dispatch(carregarConsultas(consultas));
   };
 
-  const atualizaOnAgenda = async (): Promise<void> => {
+  const atualizaOnAgenda = async (newId?: number): Promise<void> => {
     const { infos } = consulta;
 
     if (!infos) return;
 
     const { id, status } = infos;
+
+    if (newId && status) {
+      dispatch(adicionarBoardElement(status - 1, -1, newId));
+    }
 
     if (!id || (!status && status !== 0)) return;
 
@@ -59,7 +63,6 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
     if (infos) {
       const id = await consultaDb.save(infos);
 
-
       try {
         await Promise.all(procedimentos.map(async (p): Promise<any> => {
           if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
@@ -74,7 +77,10 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
         ));
 
         if (emitter === 'paciente') await atualizaOnPaciente();
-        if (emitter === 'agenda') await atualizaOnAgenda();
+        if (emitter === 'agenda') {
+          if (!infos.id) await atualizaOnAgenda(id);
+          else await atualizaOnAgenda();
+        }
 
         dispatch(persitido());
 

@@ -45,6 +45,7 @@ export default function PacienteConsultasTable(): JSX.Element {
           buttonFill
           buttonSize="25px"
           emitter="paciente"
+          pacienteId={pacienteId}
         />
       </Col>
     </Row>

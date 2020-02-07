@@ -35,6 +35,18 @@ export type Endereco = {
   cep?: string | null;
 }
 
+export type FichaMedica = {
+  id?: number;
+  tipoSangue?: string | null;
+  altura?: number | null;
+}
+
+export type FichaMedicaDetalhe = {
+  id?: number;
+  descricao?: string | null;
+  fichaMedicaId?: number | null;
+}
+
 export type Paciente = {
   [key: string]: any;
   id?: number;
@@ -46,4 +58,5 @@ export type Paciente = {
   nascimento?: Date | null;
   enderecoId?: number | null;
   contatoId?: number | null;
+  fichaMedicaId?: number | null;
 }

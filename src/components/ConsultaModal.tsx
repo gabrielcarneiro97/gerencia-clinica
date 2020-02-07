@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Modal,
@@ -21,6 +21,7 @@ import { Consulta } from '../types';
 
 type propTypes = {
   id?: number;
+  pacienteId?: number;
   buttonSize?: string | number;
   icon?: string;
   iconRotate?: number;
@@ -36,15 +37,14 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
     iconRotate = 0,
     buttonSize = 20,
     buttonFill = false,
-    id,
     emitter,
     visible: visibleProp,
     saveEnd,
+    id,
+    pacienteId,
   } = props;
 
   const dispatch = useDispatch();
-  const { paciente } = useSelector<Store, Store>((store) => store);
-  const pacienteId = paciente.infosPessoais?.id;
 
   const [visible, setVisible] = useState(visibleProp || false);
 
@@ -70,8 +70,27 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
   const showModal = (): void => setVisible(true);
   const hideModal = (): void => setVisible(false);
 
+  const novaConsulta = () => {
+    if (pacienteId) {
+      dispatch(limparConsulta());
+      const consulta: Consulta = {
+        pacienteId,
+        status: 1,
+      };
+      dispatch(carregarInfos(consulta));
+    }
+  };
+
   const footer = (
-    <Row type="flex" justify="end">
+    <Row type="flex" justify="end" gutter={8}>
+      <Col>
+        <Button
+          onClick={novaConsulta}
+          disabled={(!pacienteId && pacienteId !== 0) || pacienteId === -1}
+        >
+          Nova Consulta
+        </Button>
+      </Col>
       <Col>
         <ConsultaModalSaveButton
           onEnd={() => {

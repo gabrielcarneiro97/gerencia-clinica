@@ -9,6 +9,9 @@ const Contato = require('./models/Contato');
 const Endereco = require('./models/Endereco');
 const Consulta = require('./models/Consulta');
 const ConsultaProcedimento = require('./models/ConsultaProcedimento');
+const FichaMedica = require('./models/FichaMedica');
+const FichaMedicaDetalhe = require('./models/FichaMedicaDetalhe');
+
 
 const defaultConfigs = require('../default_configs.json');
 
@@ -32,6 +35,10 @@ function checkDbVersion() {
   return 'BYPASS';
 }
 
+function removeVerFile() {
+  fs.unlinkSync(dbVerPath);
+}
+
 async function checkConfigs() {
   const configs = await Config.getAll();
 
@@ -42,12 +49,19 @@ async function dbInit() {
   const dbStatus = checkDbVersion();
   await sequelize.authenticate();
   if (dbStatus === 'UPDATE') {
-    await Config.sync({ alter: true });
-    await Contato.sync({ alter: true });
-    await Endereco.sync({ alter: true });
-    await Paciente.sync({ alter: true });
-    await Consulta.sync({ alter: true });
-    await ConsultaProcedimento.sync({ alter: true });
+    try {
+      await Config.sync({ alter: true });
+      await Contato.sync({ alter: true });
+      await Endereco.sync({ alter: true });
+      await FichaMedica.sync({ alter: true });
+      await FichaMedicaDetalhe.sync({ alter: true });
+      await Paciente.sync({ alter: true });
+      await Consulta.sync({ alter: true });
+      await ConsultaProcedimento.sync({ alter: true });
+    } catch (err) {
+      removeVerFile();
+      console.error(err);
+    }
   }
   await checkConfigs();
 }

@@ -32,30 +32,29 @@ export default function AgendaMain(): JSX.Element {
         <Row type="flex" style={{ marginBottom: 12 }}>
           <DatePicker format="DD/MM/YYYY" value={data} onChange={setData} />
         </Row>
-        <Row type="flex">
-          <Col span={1} style={{ minHeight: '100%' }}>
-            <AgendaBoardDrawerDroppable />
-          </Col>
-          <Col span={23}>
-            <Row gutter={4} type="flex" justify="space-between">
-              {/* <Col span={4}>
-            <AgendaBoardDropabble title="Não Compareceu" boardIndex={4} />
-          </Col> */}
-              <Col span={6}>
-                <AgendaBoardDropabble title="Agendados" boardIndex={0} />
-              </Col>
-              <Col span={6}>
-                <AgendaBoardDropabble title="Sala de Espera" boardIndex={1} />
-              </Col>
-              <Col span={6}>
-                <AgendaBoardDropabble title="Em Atendimento" boardIndex={2} />
-              </Col>
-              <Col span={6}>
-                <AgendaBoardDropabble title="Atendimento Concluído" boardIndex={3} />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        <div className="agenda-boards" style={{ overflow: 'hidden', position: 'relative' }}>
+          <Row type="flex">
+            <Col span={2} style={{ minHeight: '100%' }}>
+              <AgendaBoardDrawerDroppable title="Não Compareceu" boardIndex={4} />
+            </Col>
+            <Col span={22}>
+              <Row gutter={4} type="flex" justify="space-between">
+                <Col span={6}>
+                  <AgendaBoardDropabble title="Agendados" boardIndex={0} />
+                </Col>
+                <Col span={6}>
+                  <AgendaBoardDropabble title="Sala de Espera" boardIndex={1} />
+                </Col>
+                <Col span={6}>
+                  <AgendaBoardDropabble title="Em Atendimento" boardIndex={2} />
+                </Col>
+                <Col span={6}>
+                  <AgendaBoardDropabble title="Atendimento Concluído" boardIndex={3} />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
       </div>
     </DndProvider>
   );
