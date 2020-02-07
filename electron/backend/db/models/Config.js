@@ -5,15 +5,15 @@ const sequelize = require('../connect');
 
 class Config extends Model {
   static async getAll() {
-    const db = await Config.findAll();
+    const dbData = await Config.findAll();
 
-    return db.reduce((acc, crr) => ({ ...acc, [crr.varName]: crr.val }), {});
+    return dbData.reduce((acc, crr) => ({ ...acc, [crr.varName]: crr.val }), {});
   }
 
   static async saveConfigs(configs) {
-    const onDb = await this.getAll();
+    const dbData = await this.getAll();
 
-    const newConfigs = { ...onDb, ...configs };
+    const newConfigs = { ...dbData, ...configs };
 
     const promises = Object.keys(newConfigs).map(async (varName) => {
       const val = newConfigs[varName];

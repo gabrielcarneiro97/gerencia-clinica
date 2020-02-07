@@ -1,7 +1,6 @@
 const { ipcRenderer } = window.require('electron');
 
 const activeChannels = [];
-let working = false;
 
 async function initListener() {
   ipcRenderer.send('listener-ok');
@@ -11,14 +10,10 @@ async function initListener() {
     ipcRenderer.sendTo(senderId, 'response-channels', activeChannels);
   });
 
-  working = true;
-
   return true;
 }
 
-async function createListener(channelName, listener) {
-  if (!working) return false;
-
+function createListener(channelName, listener) {
   activeChannels.push(channelName);
   ipcRenderer.on(`request-${channelName}`, async (event, { data, id }) => {
     const response = await listener(data);

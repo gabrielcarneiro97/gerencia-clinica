@@ -15,7 +15,6 @@ const { Op } = Sequelize;
 
 async function backend() {
   await dbInit();
-  await initListener();
 
   createListener('consulta.getById', async (consultaId) => {
     const consulta = await Consulta.findByPk(consultaId);
@@ -168,6 +167,9 @@ async function backend() {
 
     return endereco.toJSON();
   });
+
+
+  await initListener();
 }
 
 backend();
