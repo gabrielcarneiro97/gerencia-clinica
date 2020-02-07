@@ -21,8 +21,6 @@ export default function PacienteSaveButton(): JSX.Element {
 
   const { nome, grupo1Id, grupo2Id } = infosPessoais || { nome: '' };
 
-  console.log(nome, grupo1Id, grupo2Id);
-
   useEffect(() => {
     if (!nome
         || grupo1Id === null
