@@ -75,7 +75,7 @@ type Consulta implements DbBasic {
   id: ID!
   createdAt: Date
   updatedAt: Date
-  data: Date,
+  data: Date
   responsavel: String
   observacoes: String
   status: Int
@@ -91,12 +91,31 @@ type ConsultaProcedimento implements DbBasic {
 }
 
 type Query {
-  pacientes: [Paciente!]!
-  consultas(data: Date): [Consulta!]!
+  pacientes (nome: String): [Paciente!]!
+
+  consultas(data: Date, pacienteId: Int): [Consulta!]!
   consulta(id: ID): Consulta!
+
+  consultaProcedimentos(consultaId: Int): [ConsultaProcedimento!]!
 }
 
 
 type Mutation {
-  consultaUpdateStatus(id: ID!, status: Int): Consulta!
+  consulta(
+    id: ID,
+    del: Boolean,
+    status: Int,
+    data: Date,
+    responsavel: String,
+    observacoes: String,
+    status: Int,
+    pacienteId: Int,
+  ): Consulta!
+
+  consultaProcedimento(
+    id: ID,
+    del: Boolean,
+    consultaId: Int,
+    descricao: String,
+  ): ConsultaProcedimento!
 }
