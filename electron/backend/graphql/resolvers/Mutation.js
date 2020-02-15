@@ -8,14 +8,18 @@ const Consulta = require('../../db/models/Consulta');
 const ConsultaProcedimento = require('../../db/models/ConsultaProcedimento');
 
 async function defaultMutation({ id, del, ...dados }, Type) {
+  console.log(dados);
   if (id) {
     const obj = await Type.findByPk(id);
+
+    console.log(del);
 
     if (del) await obj.destroy();
     else await obj.update(dados);
 
     return obj;
   }
+
 
   const obj = await Type.create(dados);
 

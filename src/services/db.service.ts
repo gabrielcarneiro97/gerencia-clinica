@@ -63,8 +63,55 @@ export const consultaDb = {
 
     return true;
   },
-  save: async (consulta: Consulta): Promise<number> => request('consulta.save', consulta),
-  delById: async (consultaId: number): Promise<boolean> => request('consulta.delById', consultaId),
+  save: async (consulta: Consulta): Promise<number> => {
+    const mutation = gql`
+      mutation Consulta(
+        $id: Int, $data: Date,
+        $responsavel: String, $observacoes: String,
+        $status: Int, $pacienteId: Int) {
+        consulta(
+          id: $id
+          data: $data
+          responsavel: $responsavel
+          observacoes: $observacoes
+          status: $status
+          pacienteId: $pacienteId
+        ) {
+          id
+        }
+      }
+    `;
+
+    try {
+      const res = await apolloClient.mutate({ mutation, variables: { ...consulta } });
+      return res.data.consulta.id;
+    } catch (err) {
+      console.log(err.networkError.result.errors);
+    }
+
+    return -1;
+  },
+  delById: async (consultaId: number): Promise<boolean> => {
+    const mutation = gql`
+      mutation Consulta($consultaId: Int) {
+        consulta(
+          id: $consultaId
+          del: true
+        ) {
+          id
+        }
+      }
+    `;
+
+    try {
+      await apolloClient.mutate({ mutation, variables: { consultaId } });
+      return true;
+    } catch (err) {
+      console.log(err.networkError.result.errors);
+    }
+
+    return false;
+  },
 };
 
 export const consultaProcedimentoDb = {
