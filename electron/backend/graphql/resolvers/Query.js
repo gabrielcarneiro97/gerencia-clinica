@@ -3,13 +3,18 @@ const Sequelize = require('sequelize');
 const moment = require('moment');
 
 const Paciente = require('../../db/models/Paciente');
+const Endereco = require('../../db/models/Endereco');
+const Contato = require('../../db/models/Contato');
+
 const Consulta = require('../../db/models/Consulta');
 const ConsultaProcedimento = require('../../db/models/ConsultaProcedimento');
+
+const PacienteGrupo = require('../../db/models/PacienteGrupo');
 
 const { Op } = Sequelize;
 
 module.exports = {
-  pacientes: (nome) => {
+  pacientes: (_, { nome }) => {
     if (nome) {
       return Paciente.findAll({
         where: Sequelize.where(
@@ -23,6 +28,7 @@ module.exports = {
 
     return Paciente.findAll();
   },
+  paciente: (_, { id }) => Paciente.findByPk(id),
 
   consultas: (_, { data, pacienteId }) => {
     if (data) {
@@ -62,4 +68,10 @@ module.exports = {
 
     return ConsultaProcedimento.findAll();
   },
+
+  endereco: (_, { id }) => Endereco.findByPk(id),
+
+  contato: (_, { id }) => Contato.findByPk(id),
+
+  pacienteGrupos: () => PacienteGrupo.findAll(),
 };
