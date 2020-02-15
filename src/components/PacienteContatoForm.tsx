@@ -75,11 +75,13 @@ export default connect(
 
     if (!contato) return;
 
+    const newContato = { ...contato };
+
     const fieldName = Object.keys(changedFields)[0];
 
-    contato[fieldName] = changedFields[fieldName].value;
+    newContato[fieldName] = changedFields[fieldName].value;
 
-    atualizaContato(contato);
+    atualizaContato(newContato);
   },
   mapPropsToFields(props: any) {
     const { paciente }: { paciente: PacienteStore } = props;

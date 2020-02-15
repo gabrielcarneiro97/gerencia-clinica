@@ -49,7 +49,20 @@ export const consultaDb = {
 
     return res.data.consultas;
   },
-  updateStatus: async (consultaId: number, status: number): Promise<boolean> => request('consulta.updateStatus', { consultaId, status }),
+  updateStatus: async (consultaId: number, status: number): Promise<boolean> => {
+    const mutation = gql`
+      mutation Consulta($consultaId: Int, $status: Int) {
+        consulta(id: $consultaId, status: $status) {
+          id
+        }
+      }
+    `;
+
+    await apolloClient.mutate({ mutation, variables: { consultaId, status } });
+
+
+    return true;
+  },
   save: async (consulta: Consulta): Promise<number> => request('consulta.save', consulta),
   delById: async (consultaId: number): Promise<boolean> => request('consulta.delById', consultaId),
 };

@@ -116,10 +116,12 @@ export default connect(
 
     if (!endereco) return;
 
-    const fieldName = Object.keys(changedFields)[0];
-    endereco[fieldName] = changedFields[fieldName].value;
+    const newEndereco = { ...endereco };
 
-    atualizaEndereco(endereco);
+    const fieldName = Object.keys(changedFields)[0];
+    newEndereco[fieldName] = changedFields[fieldName].value;
+
+    atualizaEndereco(newEndereco);
   },
   mapPropsToFields(props: any) {
     const { paciente }: { paciente: PacienteStore } = props;

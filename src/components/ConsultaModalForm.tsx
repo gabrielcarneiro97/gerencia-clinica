@@ -98,16 +98,19 @@ export default connect(
 
     if (!infos) return;
 
+    const newInfos = { ...infos };
+
     const fieldName = Object.keys(changedFields)[0];
 
     if (fieldName === 'data') {
-      infos[fieldName] = changedFields[fieldName].value
+      newInfos[fieldName] = changedFields[fieldName].value
         ? (changedFields[fieldName].value as Moment).toDate() : null;
     } else {
-      infos[fieldName] = changedFields[fieldName].value;
+      console.log(changedFields[fieldName].value);
+      newInfos[fieldName] = changedFields[fieldName].value;
     }
 
-    atualizaConsulta(infos);
+    atualizaConsulta(newInfos);
   },
   mapPropsToFields(props: any) {
     const { consulta }: { consulta: ConsultaStore } = props;
