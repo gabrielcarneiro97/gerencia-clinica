@@ -30,19 +30,21 @@ module.exports = {
   },
   paciente: (_, { id }) => Paciente.findByPk(id),
 
-  consultas: (_, { data, pacienteId }) => {
+  consultas: async (_, { data, pacienteId }) => {
     if (data) {
       const asDate = new Date(data);
       const start = moment(asDate).startOf('day').toDate();
       const end = moment(asDate).endOf('day').toDate();
 
-      return Consulta.findAll({
+      const consultas = await Consulta.findAll({
         where: {
           data: {
             [Op.between]: [start, end],
           },
         },
       });
+
+      return consultas;
     }
 
     if (pacienteId) {

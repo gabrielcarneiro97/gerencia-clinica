@@ -1,13 +1,54 @@
+import { gql } from '@apollo/client';
 import { request } from './ipcSender.service';
+import apolloClient from './graphql.service';
 
 import {
   Consulta, Paciente, Contato, ConsultaProcedimento, Endereco, PacienteGrupo,
 } from '../types';
 
+
 export const consultaDb = {
-  getById: async (consultaId: number): Promise<Consulta> => request('consulta.getById', consultaId),
-  findAll: async (findAll: object): Promise<Consulta[]> => request('consulta.findAll', findAll),
-  findByDate: async (date: Date): Promise<Consulta[]> => request('consulta.findByDate', date),
+  getById: async (consultaId: number): Promise<Consulta> => {
+    const query = gql`
+      query Consulta($consultaId: Int!) {
+        consulta(id: $consultaId) {
+          id, data, responsavel,
+          observacoes, status, pacienteId
+        }
+      }
+    `;
+
+    const res = await apolloClient.query({ query, variables: { consultaId } });
+
+    return res.data.consulta;
+  },
+  findByPacienteId: async (pacienteId?: number): Promise<Consulta[]> => {
+    const query = gql`
+      query Consultas($pacienteId: Int) {
+        consultas(pacienteId: $pacienteId) {
+          id, data, responsavel,
+          observacoes, status, pacienteId
+        }
+      }
+    `;
+    const res = await apolloClient.query({ query, variables: { pacienteId } });
+
+    return res.data.consultas;
+  },
+  findByDate: async (data: Date): Promise<Consulta[]> => {
+    const query = gql`
+      query Consultas($data: String) {
+        consultas(data: $data) {
+          id, data, responsavel,
+          observacoes, status, pacienteId
+        }
+      }
+    `;
+
+    const res = await apolloClient.query({ query, variables: { data: data.toISOString() } });
+
+    return res.data.consultas;
+  },
   updateStatus: async (consultaId: number, status: number): Promise<boolean> => request('consulta.updateStatus', { consultaId, status }),
   save: async (consulta: Consulta): Promise<number> => request('consulta.save', consulta),
   delById: async (consultaId: number): Promise<boolean> => request('consulta.delById', consultaId),
@@ -34,7 +75,21 @@ export const contatoDb = {
 export const pacienteDb = {
   getById: async (pacienteId: number): Promise<Paciente> => request('paciente.getById', pacienteId),
   findAll: async (findAll: object): Promise<Paciente[]> => request('paciente.findAll', findAll),
-  findByName: async (nome: string): Promise<Paciente[]> => request('paciente.findByName', nome),
+  findByName: async (nome: string): Promise<Paciente[]> => {
+    const query = gql`
+      query Pacientes($nome: String!) {
+        pacientes(nome: $nome) {
+          id, cpf, nome, filiacao1
+          filiacao2, sexo, nascimento,
+          enderecoId, grupo1Id, grupo2Id,
+          contatoId, fichaMedicaId
+        }
+      }
+    `;
+    const res = await apolloClient.query({ query, variables: { nome } });
+
+    return res.data.pacientes;
+  },
   saveAll: async (
     paciente: Paciente,
     endereco?: Endereco | null,
@@ -76,11 +131,7 @@ export const pacienteMethods = {
 
     return enderecoDb.getById(enderecoId);
   },
-  getConsultas: async (paciente: Paciente): Promise<Consulta[]> => consultaDb.findAll({
-    where: {
-      pacienteId: paciente.id,
-    },
-  }),
+  getConsultas: async (paciente: Paciente): Promise<Consulta[]> => consultaDb.findByPacienteId(paciente.id),
 };
 
 export const consultaMethods = {

@@ -60,6 +60,8 @@ export default function PacienteBuscaForm(): JSX.Element {
       (p) => p.id === parseInt(pacienteId as string, 10),
     );
 
+    console.log(pacienteSelecionado, pacientesBusca);
+
     if (pacienteSelecionado) {
       const endereco = await pacienteMethods.getEndereco(pacienteSelecionado);
       const contato = await pacienteMethods.getContato(pacienteSelecionado);

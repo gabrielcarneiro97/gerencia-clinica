@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 import moment from 'moment';
 
-import { ConfigProvider } from 'antd';
+import { ConfigProvider as AntdProvider } from 'antd';
 import ptBR from 'antd/lib/locale/pt_BR';
 import 'antd/dist/antd.min.css';
 
@@ -24,8 +24,8 @@ function Index(): JSX.Element {
   }, []);
 
   return (
-    <Provider store={store}>
-      <ConfigProvider locale={ptBR}>
+    <ReduxProvider store={store}>
+      <AntdProvider locale={ptBR}>
         {
           loading
           && <LoadingScreen />
@@ -35,8 +35,8 @@ function Index(): JSX.Element {
           && <App />
         }
         {/* <LoadingScreen /> */}
-      </ConfigProvider>
-    </Provider>
+      </AntdProvider>
+    </ReduxProvider>
   );
 }
 

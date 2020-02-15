@@ -1,13 +1,13 @@
 scalar Date
 
 interface DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
 }
 
 type Paciente implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   cpf: String
@@ -24,7 +24,7 @@ type Paciente implements DbBasic {
 }
 
 type PacienteGrupo implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   descricao: String
@@ -32,7 +32,7 @@ type PacienteGrupo implements DbBasic {
 }
 
 type Endereco implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   logradouro: String
@@ -46,7 +46,7 @@ type Endereco implements DbBasic {
 }
 
 type Contato implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   email: String
@@ -55,7 +55,7 @@ type Contato implements DbBasic {
 }
 
 type FichaMedica implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   tipoSangue: String
@@ -63,7 +63,7 @@ type FichaMedica implements DbBasic {
 }
 
 type FichaMedicaDetalhe implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   fichaMedicaId: Int
@@ -72,7 +72,7 @@ type FichaMedicaDetalhe implements DbBasic {
 }
 
 type Consulta implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   data: Date
@@ -83,7 +83,7 @@ type Consulta implements DbBasic {
 }
 
 type ConsultaProcedimento implements DbBasic {
-  id: ID!
+  id: Int!
   createdAt: Date
   updatedAt: Date
   consultaId: Int
@@ -92,16 +92,20 @@ type ConsultaProcedimento implements DbBasic {
 
 type Query {
   pacientes (nome: String): [Paciente!]!
-  paciente (id: ID!): Paciente!
+  paciente (id: Int!): Paciente!
 
-  consultas(data: Date, pacienteId: Int): [Consulta!]!
-  consulta(id: ID!): Consulta!
+  consultas(
+    data: String
+    pacienteId: Int
+  ): [Consulta]
+
+  consulta(id: Int!): Consulta!
 
   consultaProcedimentos(consultaId: Int): [ConsultaProcedimento!]!
 
-  endereco(id: ID!): Endereco!
+  endereco(id: Int!): Endereco!
 
-  contato(id: ID!): Contato!
+  contato(id: Int!): Contato!
 
   pacienteGrupos: [PacienteGrupo!]!
 }
@@ -109,7 +113,7 @@ type Query {
 
 type Mutation {
   consulta(
-    id: ID
+    id: Int
     del: Boolean
     status: Int
     data: Date
@@ -120,14 +124,14 @@ type Mutation {
   ): Consulta!
 
   consultaProcedimento(
-    id: ID
+    id: Int
     del: Boolean
     consultaId: Int
     descricao: String
   ): ConsultaProcedimento!
 
   paciente(
-    id: ID
+    id: Int
     del: Boolean
     cpf: String
     nome: String
@@ -143,7 +147,7 @@ type Mutation {
   ): Paciente!
 
   endereco(
-    id: ID
+    id: Int
     del: Boolean
     logradouro: String
     numero: String
@@ -156,7 +160,7 @@ type Mutation {
   ): Endereco!
 
   contato(
-    id: ID
+    id: Int
     del: Boolean
     email: String
     telefone1: String
