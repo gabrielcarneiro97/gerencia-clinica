@@ -5,6 +5,8 @@ const moment = require('moment');
 const { initListener, createListener } = require('./services/ipcListener.service');
 const dbInit = require('./db/db.service');
 
+const graphQlServer = require('./graphql/server');
+
 const Consulta = require('./db/models/Consulta');
 const Contato = require('./db/models/Contato');
 const Paciente = require('./db/models/Paciente');
@@ -179,4 +181,11 @@ async function backend() {
   await initListener();
 }
 
+async function graphQl() {
+  await dbInit();
+  graphQlServer.start(() => console.log('Server is running on localhost:4000'));
+}
+
 backend();
+
+graphQl();

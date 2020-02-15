@@ -1,0 +1,102 @@
+scalar Date
+
+interface DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+}
+
+type Paciente implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  cpf: String
+  nome: String!
+  filiacao1: String
+  filiacao2: String
+  sexo: String
+  nascimento: Date
+  enderecoId: Int
+  grupo1Id: Int
+  grupo2Id: Int
+  contatoId: Int
+  fichaMedicaId: Int
+}
+
+type PacienteGrupo implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  descricao: String
+  tipo: String
+}
+
+type Endereco implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  logradouro: String
+  numero: String
+  complemento: String
+  bairro: String
+  cidade: String
+  estado: String
+  pais: String
+  cep: String
+}
+
+type Contato implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  email: String
+  telefone1: String
+  telefone2: String
+}
+
+type FichaMedica implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  tipoSangue: String
+  altura: Int
+}
+
+type FichaMedicaDetalhe implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  fichaMedicaId: Int
+  descricao: String
+  tipo: Int
+}
+
+type Consulta implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  data: Date,
+  responsavel: String
+  observacoes: String
+  status: Int
+  pacienteId: Int
+}
+
+type ConsultaProcedimento implements DbBasic {
+  id: ID!
+  createdAt: Date
+  updatedAt: Date
+  consultaId: Int
+  descricao: String
+}
+
+type Query {
+  pacientes: [Paciente!]!
+  consultas(data: Date): [Consulta!]!
+  consulta(id: ID): Consulta!
+}
+
+
+type Mutation {
+  consultaUpdateStatus(id: ID!, status: Int): Consulta!
+}
