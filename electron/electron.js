@@ -36,7 +36,7 @@ function createApp() {
     show: false,
     webPreferences: {
       nodeIntegration: true,
-      webSecurity: false,
+      // webSecurity: false,
     },
   });
 
@@ -44,7 +44,7 @@ function createApp() {
     show: false,
     webPreferences: {
       nodeIntegration: true,
-      webSecurity: false,
+      // webSecurity: false,
     },
   });
 

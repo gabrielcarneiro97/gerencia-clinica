@@ -72,7 +72,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
         await Promise.all(procedimentosRemovidos.map(
           async (p) => {
             if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
-            consultaProcedimentoDb.destroy(p);
+            consultaProcedimentoDb.delById(p.id);
           },
         ));
 

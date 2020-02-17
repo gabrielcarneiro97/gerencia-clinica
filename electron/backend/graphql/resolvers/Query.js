@@ -47,10 +47,11 @@ module.exports = {
       return consultas;
     }
 
-    if (pacienteId) {
-      return Consulta.findAll({
+    if (pacienteId || pacienteId === 0) {
+      const consultas = await Consulta.findAll({
         where: { pacienteId },
       });
+      return consultas;
     }
 
     return Consulta.findAll();

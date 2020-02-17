@@ -90,6 +90,65 @@ type ConsultaProcedimento implements DbBasic {
   descricao: String
 }
 
+input ConsultaInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  status: Int
+  data: Date
+  responsavel: String
+  observacoes: String
+  pacienteId: Int
+}
+
+input ConsultaProcedimentoInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  consultaId: Int
+  descricao: String
+}
+
+input PacienteInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  cpf: String
+  nome: String
+  filiacao1: String
+  filiacao2: String
+  sexo: String
+  nascimento: Date
+  enderecoId: Int
+  grupo1Id: Int
+  grupo2Id: Int
+  contatoId: Int
+  fichaMedicaId: Int
+}
+
+input EnderecoInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  logradouro: String
+  numero: String
+  complemento: String
+  bairro: String
+  cidade: String
+  estado: String
+  pais: String
+  cep: String
+}
+
+input ContatoInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  email: String
+  telefone1: String
+  telefone2: String
+}
+
 type Query {
   pacientes (nome: String): [Paciente!]!
   paciente (id: Int!): Paciente!
@@ -108,57 +167,6 @@ type Query {
   contato(id: Int!): Contato!
 
   pacienteGrupos: [PacienteGrupo!]!
-}
-
-input ConsultaInput {
-  id: Int
-  status: Int
-  data: Date
-  responsavel: String
-  observacoes: String
-  status: Int
-  pacienteId: Int
-}
-
-input ConsultaProcedimentoInput {
-  id: Int
-  consultaId: Int
-  descricao: String
-}
-
-input PacienteInput {
-  id: Int
-  cpf: String
-  nome: String
-  filiacao1: String
-  filiacao2: String
-  sexo: String
-  nascimento: Date
-  enderecoId: Int
-  grupo1Id: Int
-  grupo2Id: Int
-  contatoId: Int
-  fichaMedicaId: Int
-}
-
-input EnderecoInput {
-  id: Int
-  del: Boolean
-  logradouro: String
-  numero: String
-  complemento: String
-  bairro: String
-  cidade: String
-  estado: String
-  pais: String
-  cep: String
-}
-
-input ContatoInput {
-  id: Int
-  email: String
-  telefone1: String
-  telefone2: String
 }
 
 type Mutation {

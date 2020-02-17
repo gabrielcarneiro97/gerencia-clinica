@@ -15,7 +15,9 @@ async function save(data, Type, dataName) {
     return obj;
   }
 
-  return Type.create(dados);
+  const obj = await Type.create(dados);
+
+  return obj;
 }
 
 async function del({ id }, Type) {
