@@ -20,6 +20,7 @@ const { Meta } = Card;
 export default function ConsultaCard(props: propTypes): JSX.Element {
   const { id, style } = props;
 
+  const [isMounted, setIsMounted] = useState<boolean>(true);
   const [pacienteNome, setPacienteNome] = useState('');
   const [pacienteId, setPacienteId] = useState(-1);
   const [responsavel, setResponsavel] = useState('');
@@ -29,6 +30,8 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
   const [loading, setLoading] = useState(true);
 
   const getData = async (): Promise<void> => {
+    if (!isMounted) return;
+
     const consulta = await graphql.consulta.getById(id);
 
     if (consulta) {
@@ -58,7 +61,11 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
   };
 
   useEffect(() => {
-    getData().then(() => setLoading(false));
+    getData().then(() => {
+      if (isMounted) setLoading(false);
+    });
+
+    return (): void => setIsMounted(false);
   }, []);
 
   const pStyle: React.CSSProperties = { marginBottom: '3px' };
