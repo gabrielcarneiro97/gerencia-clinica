@@ -7,7 +7,6 @@ import { ConfigProvider as AntdProvider } from 'antd';
 import ptBR from 'antd/lib/locale/pt_BR';
 import 'antd/dist/antd.min.css';
 
-import './index.css';
 import App from './App';
 
 import store from './store/store';
