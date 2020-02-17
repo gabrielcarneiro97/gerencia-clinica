@@ -10,7 +10,7 @@ import {
 import { Store } from '../store/store';
 import { PacienteStore, carregarConsultas } from '../store/paciente';
 
-import { pacienteMethods, consultaDb } from '../services/db.service';
+import { graphql, methods } from '../services/graphql.service';
 
 type propTypes = {
   id: number;
@@ -27,13 +27,13 @@ export default function ConsultaDeleteButton(props: propTypes): JSX.Element {
 
     if (!infosPessoais) return;
 
-    const consultas = await pacienteMethods.getConsultas(infosPessoais);
+    const consultas = await methods.paciente.getConsultas(infosPessoais);
 
     dispatch(carregarConsultas(consultas));
   };
 
   const confirm = async (): Promise<void> => {
-    await consultaDb.delById(id);
+    await graphql.consulta.delById(id);
     atualizaOnPaciente();
     message.success('Consulta Excluída!', 1);
   };

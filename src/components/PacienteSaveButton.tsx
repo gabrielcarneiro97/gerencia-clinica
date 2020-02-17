@@ -7,7 +7,8 @@ import { Store } from '../store/store';
 import {
   PacienteStore, persitido, carregarInfosPessoais, carregarEndereco, carregarContato,
 } from '../store/paciente';
-import { pacienteDb } from '../services/db.service';
+import { graphql } from '../services/graphql.service';
+
 
 export default function PacienteSaveButton(): JSX.Element {
   const [loading, setLoading] = useState(false);
@@ -39,9 +40,9 @@ export default function PacienteSaveButton(): JSX.Element {
     const { endereco, contato } = pacienteStore;
     setLoading(true);
     if (infosPessoais) {
-      const pId = await pacienteDb.saveAll(infosPessoais, endereco, contato);
+      const pId = await graphql.paciente.saveAll(infosPessoais, endereco, contato);
       if (pId !== -1) {
-        const novoPaciente = await pacienteDb.getById(pId);
+        const novoPaciente = await graphql.paciente.getById(pId);
 
         dispatch(carregarInfosPessoais(novoPaciente));
         dispatch(carregarEndereco({ ...endereco, id: novoPaciente.enderecoId || undefined }));

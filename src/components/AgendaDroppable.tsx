@@ -4,7 +4,7 @@ import { useDrop, XYCoord } from 'react-dnd';
 
 import { AgendaStore, removerBoardElement, adicionarBoardElement } from '../store/agenda';
 import { Store } from '../store/store';
-import { consultaDb } from '../services/db.service';
+import { graphql } from '../services/graphql.service';
 
 type propTypes = {
   boardIndex: number;
@@ -63,7 +63,7 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
       const { consultaId } = item;
 
       dispatch(removerBoardElement(oldBoard, oldElementIndex));
-      await consultaDb.updateStatus(consultaId, boardIndex + 1);
+      await graphql.consulta.updateStatus(consultaId, boardIndex + 1);
       dispatch(adicionarBoardElement(newBoard, newElementIndex, consultaId));
     },
   });

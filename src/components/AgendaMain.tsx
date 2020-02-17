@@ -10,7 +10,7 @@ import { DndProvider } from 'react-dnd';
 
 import moment from 'moment';
 import AgendaBoardDropabble from './AgendaBoardDroppable';
-import { consultaDb } from '../services/db.service';
+import { graphql } from '../services/graphql.service';
 
 import { carregarConsultas } from '../store/agenda';
 import AgendaBoardDrawerDroppable from './AgendaBoardDrawerDroppable';
@@ -21,7 +21,7 @@ export default function AgendaMain(): JSX.Element {
   const [data, setData] = useState<moment.Moment | null>(moment());
 
   useEffect(() => {
-    consultaDb.findByDate(
+    graphql.consulta.findByDate(
       data ? data.toDate() : new Date(),
     ).then((c) => (dispatch(carregarConsultas(c))));
   }, [data]);

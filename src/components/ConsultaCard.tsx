@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card,
-  Row,
-  Col,
   Badge,
 } from 'antd';
 import moment, { Moment } from 'moment';
@@ -10,7 +8,7 @@ import moment, { Moment } from 'moment';
 import { blue } from '@ant-design/colors';
 import ConsultaModal from './ConsultaModal';
 
-import { consultaDb, pacienteDb, pacienteMethods } from '../services/db.service';
+import { graphql, methods } from '../services/graphql.service';
 
 type propTypes = {
   id: number;
@@ -31,7 +29,7 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
   const [loading, setLoading] = useState(true);
 
   const getData = async (): Promise<void> => {
-    const consulta = await consultaDb.getById(id);
+    const consulta = await graphql.consulta.getById(id);
 
     if (consulta) {
       const { pacienteId: pId, data } = consulta;
@@ -43,13 +41,13 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       setDataHora(data ? moment(data) : null);
       setStatus(s || 0);
 
-      const paciente = await pacienteDb.getById(pId);
+      const paciente = await graphql.paciente.getById(pId);
 
       if (paciente) {
-        setPacienteNome(pacienteMethods.getIniciais(paciente));
+        setPacienteNome(methods.paciente.getIniciais(paciente));
         setPacienteId(pId);
 
-        const contato = await pacienteMethods.getContato(paciente);
+        const contato = await methods.paciente.getContato(paciente);
 
         if (contato) {
           const { telefone1 } = contato;

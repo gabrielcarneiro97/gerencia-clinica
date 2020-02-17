@@ -5,7 +5,8 @@ import { Button, message } from 'antd';
 import { Store } from '../store/store';
 import { persitido } from '../store/consulta';
 import { carregarConsultas } from '../store/paciente';
-import { pacienteMethods, consultaProcedimentoDb, consultaDb } from '../services/db.service';
+import { graphql, methods } from '../services/graphql.service';
+
 import { acharERemoverBoardElement, adicionarBoardElement } from '../store/agenda';
 
 type propTypes = {
@@ -33,7 +34,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
 
     if (!infosPessoais) return;
 
-    const consultas = await pacienteMethods.getConsultas(infosPessoais);
+    const consultas = await methods.paciente.getConsultas(infosPessoais);
 
     dispatch(carregarConsultas(consultas));
   };
@@ -61,18 +62,18 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
     const { procedimentos, procedimentosRemovidos, infos } = consulta;
 
     if (infos) {
-      const id = await consultaDb.save(infos);
+      const id = await graphql.consulta.save(infos);
 
       try {
         await Promise.all(procedimentos.map(async (p): Promise<any> => {
           if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
-          if (p.descricao) return consultaProcedimentoDb.save(p);
+          if (p.descricao) return graphql.consultaProcedimento.save(p);
           return false;
         }));
         await Promise.all(procedimentosRemovidos.map(
           async (p) => {
             if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
-            consultaProcedimentoDb.delById(p.id);
+            graphql.consultaProcedimento.delById(p.id);
           },
         ));
 

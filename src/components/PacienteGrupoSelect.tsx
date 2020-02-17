@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Select } from 'antd';
 
-import { pacienteGrupoDb } from '../services/db.service';
+import { graphql } from '../services/graphql.service';
 import { PacienteGrupo } from '../types';
 
 const { Option } = Select;
@@ -14,7 +14,7 @@ const PacienteGrupoSelect = React.forwardRef((props: any, ref): JSX.Element => {
   const [grupos, setGrupos] = useState<PacienteGrupo[]>([]);
 
   useEffect(() => {
-    pacienteGrupoDb.getAll().then((gs) => {
+    graphql.pacienteGrupo.getAll().then((gs) => {
       console.log(gs);
       setGrupos(gs.filter((g) => g.tipo === tipo));
     });

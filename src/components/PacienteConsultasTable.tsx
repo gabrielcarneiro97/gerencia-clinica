@@ -12,7 +12,8 @@ import { Store } from '../store/store';
 import { PacienteStore, carregarConsultas } from '../store/paciente';
 import ConsultaModal from './ConsultaModal';
 import ConsultaDeleteButton from './ConsultaDeleteButton';
-import { pacienteMethods } from '../services/db.service';
+import { methods } from '../services/graphql.service';
+
 import { Consulta } from '../types';
 
 export default function PacienteConsultasTable(): JSX.Element {
@@ -26,7 +27,7 @@ export default function PacienteConsultasTable(): JSX.Element {
 
   useEffect(() => {
     if (consultas.length === 0 && infosPessoais) {
-      pacienteMethods.getConsultas(infosPessoais).then(
+      methods.paciente.getConsultas(infosPessoais).then(
         (cons) => dispatch(carregarConsultas(cons)),
       );
     }

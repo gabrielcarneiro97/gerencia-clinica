@@ -20,8 +20,8 @@ import {
   carregarContato,
   limparPaciente,
 } from '../store/paciente';
-import { pacienteDb, pacienteMethods } from '../services/db.service';
 
+import { graphql, methods } from '../services/graphql.service';
 
 export default function PacienteBuscaForm(): JSX.Element {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ export default function PacienteBuscaForm(): JSX.Element {
     setSearchString(value);
 
     if (value !== '') {
-      const pacientes = await pacienteDb.findByName(value as string);
+      const pacientes = await graphql.paciente.findByName(value as string);
       setPacientesBusca(pacientes);
       setPacientesNomes(pacientes.map(
         (p) => ({ text: p.nome, value: p.id }),
@@ -63,8 +63,8 @@ export default function PacienteBuscaForm(): JSX.Element {
     console.log(pacienteSelecionado, pacientesBusca);
 
     if (pacienteSelecionado) {
-      const endereco = await pacienteMethods.getEndereco(pacienteSelecionado);
-      const contato = await pacienteMethods.getContato(pacienteSelecionado);
+      const endereco = await methods.paciente.getEndereco(pacienteSelecionado);
+      const contato = await methods.paciente.getContato(pacienteSelecionado);
 
       dispatch(carregarInfosPessoais(pacienteSelecionado));
       if (endereco) dispatch(carregarEndereco(endereco));
