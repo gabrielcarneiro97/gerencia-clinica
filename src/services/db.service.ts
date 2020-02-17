@@ -6,7 +6,6 @@ import {
   Consulta, Paciente, Contato, ConsultaProcedimento, Endereco, PacienteGrupo,
 } from '../types';
 
-
 export const consultaDb = {
   getById: async (consultaId: number): Promise<Consulta> => {
     const query = gql`
@@ -49,55 +48,41 @@ export const consultaDb = {
 
     return res.data.consultas;
   },
-  updateStatus: async (consultaId: number, status: number): Promise<boolean> => {
+  updateStatus: async (id: number, status: number): Promise<boolean> => {
     const mutation = gql`
-      mutation Consulta($consultaId: Int, $status: Int) {
-        consulta(id: $consultaId, status: $status) {
+      mutation Consulta($consulta: ConsultaInput) {
+        saveConsulta(consulta: $consulta) {
           id
         }
       }
     `;
 
-    await apolloClient.mutate({ mutation, variables: { consultaId, status } });
+    await apolloClient.mutate({ mutation, variables: { consulta: { id, status } } });
 
 
     return true;
   },
   save: async (consulta: Consulta): Promise<number> => {
     const mutation = gql`
-      mutation Consulta(
-        $id: Int, $data: Date,
-        $responsavel: String, $observacoes: String,
-        $status: Int, $pacienteId: Int) {
-        consulta(
-          id: $id
-          data: $data
-          responsavel: $responsavel
-          observacoes: $observacoes
-          status: $status
-          pacienteId: $pacienteId
-        ) {
+      mutation Consulta($consulta: ConsultaInput) {
+        saveConsulta(consulta: $consulta) {
           id
         }
       }
     `;
 
     try {
-      const res = await apolloClient.mutate({ mutation, variables: { ...consulta } });
+      const res = await apolloClient.mutate({ mutation, variables: { consulta } });
       return res.data.consulta.id;
     } catch (err) {
       console.log(err.networkError.result.errors);
+      return -1;
     }
-
-    return -1;
   },
   delById: async (consultaId: number): Promise<boolean> => {
     const mutation = gql`
       mutation Consulta($consultaId: Int) {
-        consulta(
-          id: $consultaId
-          del: true
-        ) {
+        deleteConsulta(id: $consultaId) {
           id
         }
       }
@@ -108,9 +93,8 @@ export const consultaDb = {
       return true;
     } catch (err) {
       console.log(err.networkError.result.errors);
+      return false;
     }
-
-    return false;
   },
 };
 
@@ -191,7 +175,9 @@ export const pacienteMethods = {
 
     return enderecoDb.getById(enderecoId);
   },
-  getConsultas: async (paciente: Paciente): Promise<Consulta[]> => consultaDb.findByPacienteId(paciente.id),
+  getConsultas: async (
+    paciente: Paciente,
+  ): Promise<Consulta[]> => consultaDb.findByPacienteId(paciente.id),
 };
 
 export const consultaMethods = {

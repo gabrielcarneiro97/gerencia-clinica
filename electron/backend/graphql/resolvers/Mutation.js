@@ -7,33 +7,42 @@ const Contato = require('../../db/models/Contato');
 const Consulta = require('../../db/models/Consulta');
 const ConsultaProcedimento = require('../../db/models/ConsultaProcedimento');
 
-async function defaultMutation({ id, del, ...dados }, Type) {
-  console.log(dados);
+async function save(data, Type, dataName) {
+  const { id, ...dados } = data[dataName];
   if (id) {
     const obj = await Type.findByPk(id);
-
-    console.log(del);
-
-    if (del) await obj.destroy();
-    else await obj.update(dados);
-
+    await obj.update(dados);
     return obj;
   }
 
+  return Type.create(dados);
+}
 
-  const obj = await Type.create(dados);
+async function del({ id }, Type) {
+  if (id) {
+    const obj = await Type.findByPk(id);
+    try {
+      await obj.destroy();
+      return obj;
+    } catch (e) {
+      console.error(e);
+      return { id: -1 };
+    }
+  }
 
-  return obj;
+  return { id: -1 };
 }
 
 module.exports = {
-  consulta: (_, data) => defaultMutation(data, Consulta),
+  saveConsulta: (_, data) => save(data, Consulta, 'consulta'),
+  deleteConsulta: (_, data) => del(data, Consulta),
 
-  consultaProcedimento: (_, data) => defaultMutation(data, ConsultaProcedimento),
+  saveConsultaProcedimento: (_, data) => save(data, ConsultaProcedimento, 'consultaProcedimento'),
+  deleteConsultaProcedimento: (_, data) => del(data, ConsultaProcedimento),
 
-  paciente: (_, data) => defaultMutation(data, Paciente),
+  savePaciente: (_, data) => save(data, Paciente, 'paciente'),
 
-  endereco: (_, data) => defaultMutation(data, Endereco),
+  saveEndereco: (_, data) => save(data, Endereco, 'endereco'),
 
-  contato: (_, data) => defaultMutation(data, Contato),
+  saveContato: (_, data) => save(data, Contato, 'contato'),
 };
