@@ -68,16 +68,15 @@ function createApp() {
     backWindow = null;
   });
 
-  let listenerOk = false;
+  let serverOk = false;
 
-  ipcMain.on('listener-ok', () => {
-    listenerOk = true;
+  ipcMain.on('server-ok', () => {
+    serverOk = true;
   });
 
-  ipcMain.on('request-listenerId', (event) => {
-    const listenerId = backWindow.webContents.id;
-
-    if (listenerOk) event.reply('response-listenerId', listenerId);
+  ipcMain.on('server-status', (event) => {
+    if (serverOk) event.reply('server-ok');
+    else event.reply('server-loading');
   });
 }
 

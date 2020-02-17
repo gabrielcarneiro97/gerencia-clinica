@@ -11,7 +11,7 @@ import './index.css';
 import App from './App';
 
 import store from './store/store';
-import { initSender } from './services/ipcSender.service';
+import waitServer from './services/server.service';
 import LoadingScreen from './components/LoadingScreen';
 
 moment.locale('pt-br');
@@ -20,7 +20,7 @@ function Index(): JSX.Element {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    initSender().then(() => setLoading(false));
+    waitServer().then(() => setLoading(false));
   }, []);
 
   return (

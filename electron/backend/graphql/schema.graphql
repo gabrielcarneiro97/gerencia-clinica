@@ -28,7 +28,7 @@ type PacienteGrupo implements DbBasic {
   createdAt: Date
   updatedAt: Date
   descricao: String
-  tipo: String
+  tipo: Int
 }
 
 type Endereco implements DbBasic {
