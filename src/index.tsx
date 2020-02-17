@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 import moment from 'moment';
 
-import { ConfigProvider } from 'antd';
+import { ConfigProvider as AntdProvider } from 'antd';
 import ptBR from 'antd/lib/locale/pt_BR';
 import 'antd/dist/antd.min.css';
 
@@ -11,7 +11,7 @@ import './index.css';
 import App from './App';
 
 import store from './store/store';
-import { initSender } from './services/ipcSender.service';
+import waitServer from './services/server.service';
 import LoadingScreen from './components/LoadingScreen';
 
 moment.locale('pt-br');
@@ -20,12 +20,12 @@ function Index(): JSX.Element {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    initSender().then(() => setLoading(false));
+    waitServer().then(() => setLoading(false));
   }, []);
 
   return (
-    <Provider store={store}>
-      <ConfigProvider locale={ptBR}>
+    <ReduxProvider store={store}>
+      <AntdProvider locale={ptBR}>
         {
           loading
           && <LoadingScreen />
@@ -35,8 +35,8 @@ function Index(): JSX.Element {
           && <App />
         }
         {/* <LoadingScreen /> */}
-      </ConfigProvider>
-    </Provider>
+      </AntdProvider>
+    </ReduxProvider>
   );
 }
 

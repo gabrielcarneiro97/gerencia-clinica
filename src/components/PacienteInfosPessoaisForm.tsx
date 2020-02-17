@@ -137,15 +137,17 @@ export default connect(
 
     if (!infosPessoais) return;
 
+    const newInfosPessoais = { ...infosPessoais };
+
     const fieldName = Object.keys(changedFields)[0];
     if (fieldName === 'nascimento') {
-      infosPessoais[fieldName] = changedFields[fieldName].value
+      newInfosPessoais[fieldName] = changedFields[fieldName].value
         ? (changedFields[fieldName].value as Moment).toDate()
         : null;
     } else {
-      infosPessoais[fieldName] = changedFields[fieldName].value;
+      newInfosPessoais[fieldName] = changedFields[fieldName].value;
     }
-    atualizaInfosPessoais(infosPessoais);
+    atualizaInfosPessoais(newInfosPessoais);
   },
   mapPropsToFields(props: any) {
     const { paciente }: { paciente: PacienteStore } = props;

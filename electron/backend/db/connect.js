@@ -15,7 +15,7 @@ const sequelize = new Sequelize(
     dialect: 'sqlite',
     dialectModule: sqlite3,
     storage: dbPath,
-    // logging: false,
+    logging: false,
   },
 );
 
