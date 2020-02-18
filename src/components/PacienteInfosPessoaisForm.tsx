@@ -15,7 +15,7 @@ import {
 import { FormComponentProps } from 'antd/lib/form';
 
 import { Store } from '../store/store';
-import { carregarInfosPessoais, PacienteStore, mudou } from '../store/paciente';
+import { carregarPaciente, PacienteStore, mudou } from '../store/paciente';
 
 import { Paciente } from '../types';
 import PacienteGrupoSelect from './PacienteGrupoSelect';
@@ -115,47 +115,47 @@ function PacienteInfosPessoaisForm(props: FormComponentProps): JSX.Element {
 }
 
 export default connect(
-  ({ paciente }: Store) => ({ paciente }),
+  ({ paciente }: Store) => ({ pacienteStore: paciente }),
   (dispatch: any) => ({
-    atualizaInfosPessoais(paciente: Paciente): void {
+    atualizaPaciente(paciente: Paciente): void {
       dispatch(mudou());
-      dispatch(carregarInfosPessoais(paciente));
+      dispatch(carregarPaciente(paciente));
     },
   }),
 )(Form.create({
   name: 'pacienteInfosPessoaisForm',
   onFieldsChange(props: any, changedFields: any) {
     const {
-      atualizaInfosPessoais,
-      paciente,
+      atualizaPaciente,
+      pacienteStore,
     }: {
-      atualizaInfosPessoais: (paciente: Paciente) => void;
-      paciente: PacienteStore;
+      atualizaPaciente: (paciente: Paciente) => void;
+      pacienteStore: PacienteStore;
     } = props;
 
-    const { infosPessoais } = paciente;
+    const { paciente } = pacienteStore;
 
-    if (!infosPessoais) return;
+    if (!paciente) return;
 
-    const newInfosPessoais = { ...infosPessoais };
+    const newPaciente = { ...paciente };
 
     const fieldName = Object.keys(changedFields)[0];
     if (fieldName === 'nascimento') {
-      newInfosPessoais[fieldName] = changedFields[fieldName].value
+      newPaciente[fieldName] = changedFields[fieldName].value
         ? (changedFields[fieldName].value as Moment).toDate()
         : null;
     } else {
-      newInfosPessoais[fieldName] = changedFields[fieldName].value;
+      newPaciente[fieldName] = changedFields[fieldName].value;
     }
-    atualizaInfosPessoais(newInfosPessoais);
+    atualizaPaciente(newPaciente);
   },
   mapPropsToFields(props: any) {
-    const { paciente }: { paciente: PacienteStore } = props;
+    const { pacienteStore }: { pacienteStore: PacienteStore } = props;
 
-    const { infosPessoais } = paciente;
+    const { paciente } = pacienteStore;
 
     const createField = (fieldName: string) => {
-      const field = infosPessoais && infosPessoais[fieldName];
+      const field = paciente && paciente[fieldName];
 
       return {
         [fieldName]: Form.createFormField({

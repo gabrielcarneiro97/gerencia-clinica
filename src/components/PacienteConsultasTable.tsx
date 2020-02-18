@@ -17,17 +17,19 @@ import { methods } from '../services/graphql.service';
 import { Consulta } from '../types';
 
 export default function PacienteConsultasTable(): JSX.Element {
-  const paciente = useSelector<Store, PacienteStore>((store) => store.paciente);
+  const pacienteStore = useSelector<Store, PacienteStore>((store) => store.paciente);
   const dispatch = useDispatch();
 
-  const { consultas, infosPessoais } = paciente;
+  const { paciente } = pacienteStore;
 
-  const pacienteId = infosPessoais?.id || 0;
+  const { consultas } = paciente;
+
+  const pacienteId = paciente.id;
   const temConsultas = consultas.length > 0;
 
   useEffect(() => {
-    if (consultas.length === 0 && infosPessoais) {
-      methods.paciente.getConsultas(infosPessoais).then(
+    if (consultas.length === 0 && (pacienteId || pacienteId === 0)) {
+      methods.paciente.getConsultas(pacienteId).then(
         (cons) => dispatch(carregarConsultas(cons)),
       );
     }

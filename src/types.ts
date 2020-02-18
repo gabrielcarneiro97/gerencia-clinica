@@ -6,6 +6,7 @@ export type Consulta = {
   observacoes?: string | null;
   status?: number | null;
   pacienteId: number;
+  procedimentos?: ConsultaProcedimento[];
 }
 
 export type ConsultaProcedimento = {
@@ -59,6 +60,16 @@ export type Paciente = {
   enderecoId?: number | null;
   contatoId?: number | null;
   fichaMedicaId?: number | null;
+  grupo1Id?: number | null;
+  grupo2Id?: number | null;
+
+  endereco?: Endereco | null;
+  contato?: Contato | null;
+  fichaMedica?: FichaMedica | null;
+  grupo1?: PacienteGrupo | null;
+  grupo2?: PacienteGrupo | null;
+
+  consultas: Consulta[];
 }
 
 export type PacienteGrupo = {

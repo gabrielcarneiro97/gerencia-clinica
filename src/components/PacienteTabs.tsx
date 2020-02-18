@@ -7,19 +7,21 @@ import PacienteDadosTabs from './PacienteDadosTabs';
 import { Store } from '../store/store';
 import PacienteConsultasTable from './PacienteConsultasTable';
 
-import { Paciente } from '../types';
+import { PacienteStore } from '../store/paciente';
 
 
 const { TabPane } = Tabs;
 
 export default function PacienteTabs(): JSX.Element {
-  const infosPessoais = useSelector<Store, Paciente | null>(
-    (state) => state.paciente.infosPessoais,
+  const pacienteStore = useSelector<Store, PacienteStore>(
+    (state) => state.paciente,
   );
+
+  const { paciente } = pacienteStore;
 
   const [activeTab, setActiveTab] = useState('1');
 
-  const pacienteNoBanco = infosPessoais && infosPessoais.id;
+  const pacienteNoBanco = paciente && paciente.id;
 
   useEffect(() => {
     if (!pacienteNoBanco) setActiveTab('1');
@@ -30,10 +32,10 @@ export default function PacienteTabs(): JSX.Element {
       <TabPane
         key="1"
         tab="Dados"
-        disabled={!infosPessoais}
+        disabled={!paciente}
       >
         {
-          infosPessoais
+          paciente
           && <PacienteDadosTabs />
         }
       </TabPane>

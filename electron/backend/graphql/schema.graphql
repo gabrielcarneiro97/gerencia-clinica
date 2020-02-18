@@ -110,6 +110,8 @@ input ConsultaInput {
   responsavel: String
   observacoes: String
   pacienteId: Int
+
+  procedimentos: [ConsultaProcedimentoInput!]
 }
 
 input ConsultaProcedimentoInput {
@@ -135,6 +137,21 @@ input PacienteInput {
   grupo2Id: Int
   contatoId: Int
   fichaMedicaId: Int
+
+  consultas: [ConsultaInput!]
+  endereco: EnderecoInput
+  contato: ContatoInput
+  fichaMedica: FichaMedicaInput
+  grupo1: PacienteGrupoInput
+  grupo2: PacienteGrupoInput
+}
+
+input PacienteGrupoInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  descricao: String
+  tipo: Int
 }
 
 input EnderecoInput {
@@ -158,6 +175,25 @@ input ContatoInput {
   email: String
   telefone1: String
   telefone2: String
+}
+
+input FichaMedicaInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  tipoSangue: String
+  altura: Int
+
+  detalhes: [FichaMedicaDetalheInput!]
+}
+
+input FichaMedicaDetalheInput {
+  id: Int
+  createdAt: Date
+  updatedAt: Date
+  fichaMedicaId: Int
+  descricao: String
+  tipo: Int
 }
 
 type Query {

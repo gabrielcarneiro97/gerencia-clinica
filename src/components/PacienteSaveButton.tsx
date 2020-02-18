@@ -5,7 +5,7 @@ import { Button, message } from 'antd';
 import { Store } from '../store/store';
 
 import {
-  PacienteStore, persitido, carregarInfosPessoais, carregarEndereco, carregarContato,
+  PacienteStore, persitido, carregarPaciente,
 } from '../store/paciente';
 import { graphql } from '../services/graphql.service';
 
@@ -18,9 +18,14 @@ export default function PacienteSaveButton(): JSX.Element {
     (store) => store.paciente,
   );
 
-  const { diferenteDoDb, infosPessoais } = pacienteStore;
+  const { paciente, diferenteDoDb } = pacienteStore;
 
-  const { nome, grupo1Id, grupo2Id } = infosPessoais || { nome: '' };
+  const {
+    endereco,
+    contato,
+  } = paciente;
+
+  const { nome, grupo1Id, grupo2Id } = paciente || { nome: '' };
 
   useEffect(() => {
     if (!nome
@@ -37,16 +42,13 @@ export default function PacienteSaveButton(): JSX.Element {
   }, [nome, grupo1Id, grupo2Id]);
 
   const handleClick = async (): Promise<void> => {
-    const { endereco, contato } = pacienteStore;
     setLoading(true);
-    if (infosPessoais) {
-      const pId = await graphql.paciente.saveAll(infosPessoais, endereco, contato);
+    if (paciente) {
+      const pId = await graphql.paciente.saveAll(paciente, endereco, contato);
       if (pId !== -1) {
         const novoPaciente = await graphql.paciente.getById(pId);
 
-        dispatch(carregarInfosPessoais(novoPaciente));
-        dispatch(carregarEndereco({ ...endereco, id: novoPaciente.enderecoId || undefined }));
-        dispatch(carregarContato({ ...contato, id: novoPaciente.contatoId || undefined }));
+        dispatch(carregarPaciente(novoPaciente));
         dispatch(persitido());
         message.success('Salvo!', 1);
       } else {

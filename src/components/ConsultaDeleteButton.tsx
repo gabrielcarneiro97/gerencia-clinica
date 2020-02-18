@@ -19,15 +19,16 @@ type propTypes = {
 export default function ConsultaDeleteButton(props: propTypes): JSX.Element {
   const { id } = props;
 
-  const paciente = useSelector<Store, PacienteStore>((store) => store.paciente);
+  const pacienteStore = useSelector<Store, PacienteStore>((store) => store.paciente);
   const dispatch = useDispatch();
 
   const atualizaOnPaciente = async (): Promise<void> => {
-    const { infosPessoais } = paciente;
+    const { paciente } = pacienteStore;
+    const { id: pacienteId } = paciente;
 
-    if (!infosPessoais) return;
+    if (!pacienteId) return;
 
-    const consultas = await methods.paciente.getConsultas(infosPessoais);
+    const consultas = await methods.paciente.getConsultas(pacienteId);
 
     dispatch(carregarConsultas(consultas));
   };

@@ -15,20 +15,23 @@ import { Paciente, Endereco, Contato } from '../types';
 import { Store } from '../store/store';
 
 import {
-  carregarInfosPessoais,
+  carregarPaciente,
   carregarEndereco,
   carregarContato,
   limparPaciente,
+  PacienteStore,
 } from '../store/paciente';
 
-import { graphql, methods } from '../services/graphql.service';
+import { graphql } from '../services/graphql.service';
 
 export default function PacienteBuscaForm(): JSX.Element {
   const dispatch = useDispatch();
 
-  const infosPessoais = useSelector<Store, Paciente | null>(
-    (store) => store.paciente.infosPessoais,
+  const pacienteStore = useSelector<Store, PacienteStore>(
+    (store) => store.paciente,
   );
+
+  const { paciente } = pacienteStore;
 
   const [searchString, setSearchString] = useState();
   const [pacientesBusca, setPacientesBusca]: [Paciente[], Function] = useState([]);
@@ -52,7 +55,7 @@ export default function PacienteBuscaForm(): JSX.Element {
       setPacientesNomes([]);
     }
 
-    if (infosPessoais) dispatch(limparPaciente());
+    if (paciente.nome) dispatch(limparPaciente());
   };
 
   const handleSelect = async (pacienteId: SelectValue): Promise<void> => {
@@ -60,26 +63,21 @@ export default function PacienteBuscaForm(): JSX.Element {
       (p) => p.id === parseInt(pacienteId as string, 10),
     );
 
-    console.log(pacienteSelecionado, pacientesBusca);
-
     if (pacienteSelecionado) {
-      const endereco = await methods.paciente.getEndereco(pacienteSelecionado);
-      const contato = await methods.paciente.getContato(pacienteSelecionado);
-
-      dispatch(carregarInfosPessoais(pacienteSelecionado));
-      if (endereco) dispatch(carregarEndereco(endereco));
-      if (contato) dispatch(carregarContato(contato));
+      dispatch(carregarPaciente(pacienteSelecionado));
     }
   };
 
   const handleNovo = (): void => {
-    const paciente: Paciente = {};
+    const pacienteEmpty: Paciente = {
+      consultas: [],
+    };
     const endereco: Endereco = {};
     const contato: Contato = {};
 
     setSearchString('');
     dispatch(limparPaciente());
-    dispatch(carregarInfosPessoais(paciente));
+    dispatch(carregarPaciente(pacienteEmpty));
     dispatch(carregarEndereco(endereco));
     dispatch(carregarContato(contato));
   };

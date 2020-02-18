@@ -53,7 +53,7 @@ function PacienteContatosForm(props: FormComponentProps): JSX.Element {
 }
 
 export default connect(
-  ({ paciente }: Store) => ({ paciente }),
+  ({ paciente }: Store) => ({ pacienteStore: paciente }),
   (dispatch: any) => ({
     atualizaContato(contato: Contato): void {
       dispatch(mudou());
@@ -65,13 +65,13 @@ export default connect(
   onFieldsChange(props: any, changedFields: any) {
     const {
       atualizaContato,
-      paciente,
+      pacienteStore,
     }: {
       atualizaContato: (contato: Contato) => void;
-      paciente: PacienteStore;
+      pacienteStore: PacienteStore;
     } = props;
 
-    const { contato } = paciente;
+    const { contato } = pacienteStore.paciente;
 
     if (!contato) return;
 
@@ -84,9 +84,9 @@ export default connect(
     atualizaContato(newContato);
   },
   mapPropsToFields(props: any) {
-    const { paciente }: { paciente: PacienteStore } = props;
+    const { pacienteStore }: { pacienteStore: PacienteStore } = props;
 
-    const { contato } = paciente;
+    const { contato } = pacienteStore.paciente;
 
     const createField = (fieldName: string) => ({
       [fieldName]: Form.createFormField({

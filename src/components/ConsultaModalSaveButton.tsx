@@ -16,7 +16,7 @@ type propTypes = {
 
 export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
   const dispatch = useDispatch();
-  const { consulta, paciente } = useSelector<Store, Store>((state) => state);
+  const { consulta, paciente: pacienteStore } = useSelector<Store, Store>((state) => state);
 
   const { diferenteDoDb } = consulta;
 
@@ -30,11 +30,12 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
   }, [diferenteDoDb]);
 
   const atualizaOnPaciente = async (): Promise<void> => {
-    const { infosPessoais } = paciente;
+    const { paciente } = pacienteStore;
+    const { id: pacienteId } = paciente;
 
-    if (!infosPessoais) return;
+    if (!pacienteId) return;
 
-    const consultas = await methods.paciente.getConsultas(infosPessoais);
+    const consultas = await methods.paciente.getConsultas(pacienteId);
 
     dispatch(carregarConsultas(consultas));
   };

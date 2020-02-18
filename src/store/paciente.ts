@@ -11,16 +11,13 @@ import {
 type Handlers = { [key: string]: (state?: PacienteStore, action?: Action) => PacienteStore };
 
 export type PacienteStore = {
-  infosPessoais: Paciente | null;
-  endereco: Endereco | null;
-  contato: Contato | null;
-  consultas: Consulta[] | [];
+  paciente: Paciente;
   diferenteDoDb: boolean;
 };
 
 type Action = {
   type: string;
-  infosPessoais?: Paciente;
+  paciente?: Paciente;
   endereco?: Endereco;
   contato?: Contato;
   consultas?: Consulta[];
@@ -28,15 +25,28 @@ type Action = {
   consultaIndex?: number;
 };
 
-const initialState: PacienteStore = {
-  infosPessoais: null,
+const pacienteEmpty = {
   endereco: null,
   contato: null,
+  fichaMedica: null,
+  grupo1: null,
+  grupo2: null,
   consultas: [],
+};
+
+const initialState: PacienteStore = {
+  paciente: {
+    endereco: null,
+    contato: null,
+    fichaMedica: null,
+    grupo1: null,
+    grupo2: null,
+    consultas: [],
+  },
   diferenteDoDb: false,
 };
 
-const CARREGAR_INFOS_PESSOAIS = 'CARREGAR_INFOS_PESSOAIS';
+const CARREGAR_PACIENTE = 'CARREGAR_PACIENTE';
 const CARREGAR_ENDERECO = 'CARREGAR_ENDERECO';
 const CARREGAR_CONTATO = 'CARREGAR_CONTATO';
 const CARREGAR_CONSULTAS = 'CARREGAR_CONSULTAS';
@@ -47,14 +57,14 @@ const MUDOU_PACIENTE = 'MUDOU_PACIENTE';
 const PERSISTIDO_PACIENTE = 'PERSISTIDO_PACIENTE';
 const LIMPAR_PACIENTE = 'LIMPAR_PACIENTE';
 
-function carregarInfosPessoaisHandler(state = initialState, action?: Action): PacienteStore {
+function carregarPacienteHandler(state = initialState, action?: Action): PacienteStore {
   if (!action) return { ...state };
 
-  const { infosPessoais = null } = action;
+  const { paciente = { ...pacienteEmpty } } = action;
 
   return {
     ...state,
-    infosPessoais,
+    paciente,
   };
 }
 
@@ -65,18 +75,24 @@ function carregarEnderecoHandler(state = initialState, action?: Action): Pacient
 
   return {
     ...state,
-    endereco,
+    paciente: {
+      ...state.paciente,
+      endereco,
+    },
   };
 }
 
 function carregarContatoHandler(state = initialState, action?: Action): PacienteStore {
   if (!action) return { ...state };
 
-  const { contato = null } = action;
+  const { contato = { ...pacienteEmpty } } = action;
 
   return {
     ...state,
-    contato,
+    paciente: {
+      ...state.paciente,
+      contato,
+    },
   };
 }
 
@@ -87,7 +103,10 @@ function carregarConsultasHandler(state = initialState, action?: Action): Pacien
 
   return {
     ...state,
-    consultas,
+    paciente: {
+      ...state.paciente,
+      consultas,
+    },
   };
 }
 
@@ -98,13 +117,16 @@ function adicionarConsultaHandler(state = initialState, action?: Action): Pacien
 
   if (!consulta) return { ...state };
 
-  const consultas = [...state.consultas];
+  const consultas = [...state.paciente.consultas];
 
   consultas.push(consulta);
 
   return {
     ...state,
-    consultas,
+    paciente: {
+      ...state.paciente,
+      consultas,
+    },
   };
 }
 
@@ -115,13 +137,16 @@ function modificarConsultaHandler(state = initialState, action?: Action): Pacien
 
   if (!consulta || (!consultaIndex && consultaIndex !== 0)) return { ...state };
 
-  const consultas = [...state.consultas];
+  const consultas = [...state.paciente.consultas];
 
   consultas[consultaIndex] = consulta;
 
   return {
     ...state,
-    consultas,
+    paciente: {
+      ...state.paciente,
+      consultas,
+    },
   };
 }
 
@@ -132,13 +157,16 @@ function removerConsultaHandler(state = initialState, action?: Action): Paciente
 
   if (!consultaIndex && consultaIndex !== 0) return { ...state };
 
-  const consultas = [...state.consultas];
+  const consultas = [...state.paciente.consultas];
 
   consultas.splice(consultaIndex, 1);
 
   return {
     ...state,
-    consultas,
+    paciente: {
+      ...state.paciente,
+      consultas,
+    },
   };
 }
 
@@ -166,7 +194,7 @@ function limparPacienteHandler(): PacienteStore {
 
 const reducer: Reducer = (state: PacienteStore = initialState, action: Action): PacienteStore => {
   const handlers: Handlers = {
-    [CARREGAR_INFOS_PESSOAIS]: carregarInfosPessoaisHandler,
+    [CARREGAR_PACIENTE]: carregarPacienteHandler,
     [CARREGAR_ENDERECO]: carregarEnderecoHandler,
     [CARREGAR_CONTATO]: carregarContatoHandler,
     [CARREGAR_CONSULTAS]: carregarConsultasHandler,
@@ -183,10 +211,10 @@ const reducer: Reducer = (state: PacienteStore = initialState, action: Action): 
   return newState;
 };
 
-export function carregarInfosPessoais(infosPessoais: Paciente): Action {
+export function carregarPaciente(paciente: Paciente): Action {
   return {
-    type: CARREGAR_INFOS_PESSOAIS,
-    infosPessoais,
+    type: CARREGAR_PACIENTE,
+    paciente,
   };
 }
 

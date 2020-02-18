@@ -199,7 +199,30 @@ const pacienteDb = {
           id, cpf, nome, filiacao1
           filiacao2, sexo, nascimento
           enderecoId, grupo1Id, grupo2Id
-          contatoId, fichaMedicaId
+          contatoId, fichaMedicaId,
+          endereco {
+            id, logradouro, numero, complemento,
+            bairro, cidade, estado, pais, cep
+          }
+          contato {
+            id, telefone1, telefone2, email
+          }
+          fichaMedica {
+            id, tipoSangue, altura
+          }
+          grupo1 {
+            id, descricao, tipo
+          }
+          grupo2 {
+            id, descricao, tipo
+          }
+          consultas {
+            id, data, responsavel,
+            observacoes, status
+            procedimentos {
+              id, descricao
+            }
+          }
         }
       }
     `;
@@ -213,9 +236,32 @@ const pacienteDb = {
       query Pacientes($nome: String!) {
         pacientes(nome: $nome) {
           id, cpf, nome, filiacao1
-          filiacao2, sexo, nascimento,
-          enderecoId, grupo1Id, grupo2Id,
-          contatoId, fichaMedicaId
+          filiacao2, sexo, nascimento
+          enderecoId, grupo1Id, grupo2Id
+          contatoId, fichaMedicaId,
+          endereco {
+            id, logradouro, numero, complemento,
+            bairro, cidade, estado, pais, cep
+          }
+          contato {
+            id, telefone1, telefone2, email
+          }
+          fichaMedica {
+            id, tipoSangue, altura
+          }
+          grupo1 {
+            id, descricao, tipo
+          }
+          grupo2 {
+            id, descricao, tipo
+          }
+          consultas {
+            id, data, responsavel,
+            observacoes, status
+            procedimentos {
+              id, descricao
+            }
+          }
         }
       }
     `;
@@ -333,8 +379,26 @@ const pacienteMethods = {
     return enderecoDb.getById(enderecoId);
   },
   getConsultas: async (
-    paciente: Paciente,
-  ): Promise<Consulta[]> => consultaDb.findByPacienteId(paciente.id),
+    pacienteId: number,
+  ): Promise<Consulta[]> => {
+    const query = gql`
+      query Consultas($pacienteId: Int!) {
+        paciente(id: $pacienteId) {
+          consultas {
+            id, data, responsavel,
+            observacoes, status
+            procedimentos {
+              id, descricao
+            }
+          }
+        }
+      }
+    `;
+
+    const res = await apolloClient.query({ query, variables: { pacienteId } });
+
+    return res.data.paciente.consultas;
+  },
 };
 
 const consultaMethods = {

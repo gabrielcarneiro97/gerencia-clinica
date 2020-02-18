@@ -94,7 +94,7 @@ function PacienteEnderecoForm(props: FormComponentProps): JSX.Element {
 }
 
 export default connect(
-  ({ paciente }: Store) => ({ paciente }),
+  ({ paciente }: Store) => ({ pacienteStore: paciente }),
   (dispatch: any) => ({
     atualizaEndereco(endereco: Endereco): void {
       dispatch(mudou());
@@ -106,13 +106,13 @@ export default connect(
   onFieldsChange(props: any, changedFields: any) {
     const {
       atualizaEndereco,
-      paciente,
+      pacienteStore,
     }: {
       atualizaEndereco: (endereco: Endereco) => void;
-      paciente: PacienteStore;
+      pacienteStore: PacienteStore;
     } = props;
 
-    const { endereco } = paciente;
+    const { endereco } = pacienteStore.paciente;
 
     if (!endereco) return;
 
@@ -124,9 +124,9 @@ export default connect(
     atualizaEndereco(newEndereco);
   },
   mapPropsToFields(props: any) {
-    const { paciente }: { paciente: PacienteStore } = props;
+    const { pacienteStore }: { pacienteStore: PacienteStore } = props;
 
-    const { endereco } = paciente;
+    const { endereco } = pacienteStore.paciente;
 
     const createField = (fieldName: string) => ({
       [fieldName]: Form.createFormField({
