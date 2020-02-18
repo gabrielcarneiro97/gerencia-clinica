@@ -17,6 +17,7 @@ import ConsultaModalSaveButton from './ConsultaModalSaveButton';
 import { graphql, methods } from '../services/graphql.service';
 
 import { Consulta } from '../types';
+import ConsultaModalNovaButton from './ConsultaModalNovaButton';
 
 type propTypes = {
   id?: number;
@@ -69,30 +70,14 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
   const showModal = (): void => setVisible(true);
   const hideModal = (): void => setVisible(false);
 
-  const novaConsulta = () => {
-    if (pacienteId) {
-      dispatch(limparConsulta());
-      const consulta: Consulta = {
-        pacienteId,
-        status: 1,
-      };
-      dispatch(carregarInfos(consulta));
-    }
-  };
-
   const footer = (
     <Row type="flex" justify="end" gutter={8}>
       <Col>
-        <Button
-          onClick={novaConsulta}
-          disabled={(!pacienteId && pacienteId !== 0) || pacienteId === -1}
-        >
-          Nova Consulta
-        </Button>
+        <ConsultaModalNovaButton pacienteId={pacienteId} />
       </Col>
       <Col>
         <ConsultaModalSaveButton
-          onEnd={() => {
+          onEnd={(): void => {
             hideModal();
             if (saveEnd) saveEnd();
           }}

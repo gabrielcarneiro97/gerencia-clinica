@@ -55,8 +55,7 @@ const consultaDb = {
     const query = gql`
       query Consultas($data: String) {
         consultas(data: $data) {
-          id, data, responsavel,
-          observacoes, status, pacienteId
+          id, status
         }
       }
     `;
