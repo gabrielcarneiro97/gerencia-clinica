@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Tabs } from 'antd';
+import { Tabs, Row } from 'antd';
 
 import PacienteDadosTabs from './PacienteDadosTabs';
 
@@ -28,24 +28,26 @@ export default function PacienteTabs(): JSX.Element {
   }, [pacienteNoBanco]);
 
   return (
-    <Tabs activeKey={activeTab} onTabClick={setActiveTab}>
-      <TabPane
-        key="1"
-        tab="Dados"
-        disabled={!paciente}
-      >
-        {
+    <Row>
+      <Tabs activeKey={activeTab} onTabClick={setActiveTab}>
+        <TabPane
+          key="1"
+          tab="Dados"
+          disabled={!paciente}
+        >
+          {
           (paciente.id || paciente.id === null)
           && <PacienteDadosTabs />
         }
-      </TabPane>
-      <TabPane
-        key="2"
-        tab="Consultas"
-        disabled={!pacienteNoBanco}
-      >
-        <PacienteConsultasTable />
-      </TabPane>
-    </Tabs>
+        </TabPane>
+        <TabPane
+          key="2"
+          tab="Consultas"
+          disabled={!pacienteNoBanco}
+        >
+          <PacienteConsultasTable />
+        </TabPane>
+      </Tabs>
+    </Row>
   );
 }
