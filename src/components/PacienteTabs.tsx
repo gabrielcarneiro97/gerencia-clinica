@@ -35,7 +35,7 @@ export default function PacienteTabs(): JSX.Element {
         disabled={!paciente}
       >
         {
-          paciente
+          (paciente.id || paciente.id === null)
           && <PacienteDadosTabs />
         }
       </TabPane>

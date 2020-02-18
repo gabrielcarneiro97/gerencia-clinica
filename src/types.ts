@@ -50,7 +50,7 @@ export type FichaMedicaDetalhe = {
 
 export type Paciente = {
   [key: string]: any;
-  id?: number;
+  id?: number | null;
   cpf?: string | null;
   nome?: string | null;
   filiacao1?: string | null;

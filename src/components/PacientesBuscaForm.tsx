@@ -59,9 +59,7 @@ export default function PacienteBuscaForm(): JSX.Element {
   };
 
   const handleSelect = async (pacienteId: SelectValue): Promise<void> => {
-    const pacienteSelecionado = pacientesBusca.find(
-      (p) => p.id === parseInt(pacienteId as string, 10),
-    );
+    const pacienteSelecionado = await graphql.paciente.getById(parseInt(pacienteId.toString(), 10));
 
     if (pacienteSelecionado) {
       dispatch(carregarPaciente(pacienteSelecionado));
@@ -70,8 +68,10 @@ export default function PacienteBuscaForm(): JSX.Element {
 
   const handleNovo = (): void => {
     const pacienteEmpty: Paciente = {
+      id: null,
       consultas: [],
     };
+
     const endereco: Endereco = {};
     const contato: Contato = {};
 

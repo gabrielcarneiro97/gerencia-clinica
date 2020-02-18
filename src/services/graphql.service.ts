@@ -235,33 +235,7 @@ const pacienteDb = {
     const query = gql`
       query Pacientes($nome: String!) {
         pacientes(nome: $nome) {
-          id, cpf, nome, filiacao1
-          filiacao2, sexo, nascimento
-          enderecoId, grupo1Id, grupo2Id
-          contatoId, fichaMedicaId,
-          endereco {
-            id, logradouro, numero, complemento,
-            bairro, cidade, estado, pais, cep
-          }
-          contato {
-            id, telefone1, telefone2, email
-          }
-          fichaMedica {
-            id, tipoSangue, altura
-          }
-          grupo1 {
-            id, descricao, tipo
-          }
-          grupo2 {
-            id, descricao, tipo
-          }
-          consultas {
-            id, data, responsavel,
-            observacoes, status
-            procedimentos {
-              id, descricao
-            }
-          }
+          id, nome
         }
       }
     `;

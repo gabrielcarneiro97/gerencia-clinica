@@ -20,7 +20,7 @@ import { Consulta } from '../types';
 
 type propTypes = {
   id?: number;
-  pacienteId?: number;
+  pacienteId?: number | null;
   buttonSize?: string | number;
   icon?: string;
   iconRotate?: number;
