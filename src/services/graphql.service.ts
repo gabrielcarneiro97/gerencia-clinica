@@ -219,9 +219,6 @@ const pacienteDb = {
           consultas {
             id, data, responsavel,
             observacoes, status
-            procedimentos {
-              id, descricao
-            }
           }
         }
       }

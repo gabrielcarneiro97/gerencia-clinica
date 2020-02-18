@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 import {
   Table, Row, Col,
@@ -9,16 +9,14 @@ import moment from 'moment';
 
 import { Store } from '../store/store';
 
-import { PacienteStore, carregarConsultas } from '../store/paciente';
+import { PacienteStore } from '../store/paciente';
 import ConsultaModal from './ConsultaModal';
 import ConsultaDeleteButton from './ConsultaDeleteButton';
-import { methods } from '../services/graphql.service';
 
 import { Consulta } from '../types';
 
 export default function PacienteConsultasTable(): JSX.Element {
   const pacienteStore = useSelector<Store, PacienteStore>((store) => store.paciente);
-  const dispatch = useDispatch();
 
   const { paciente } = pacienteStore;
 
@@ -26,14 +24,6 @@ export default function PacienteConsultasTable(): JSX.Element {
 
   const pacienteId = paciente.id;
   const temConsultas = consultas.length > 0;
-
-  useEffect(() => {
-    if (consultas.length === 0 && (pacienteId || pacienteId === 0)) {
-      methods.paciente.getConsultas(pacienteId).then(
-        (cons) => dispatch(carregarConsultas(cons)),
-      );
-    }
-  }, [pacienteId]);
 
   const header = (): JSX.Element => (
     <Row gutter={8}>
@@ -79,22 +69,13 @@ export default function PacienteConsultasTable(): JSX.Element {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (v: number) => {
-        switch (v) {
-          case 1:
-            return 'Agendado';
-          case 2:
-            return 'Em Espera';
-          case 3:
-            return 'Em Atendimento';
-          case 4:
-            return 'Atendimento Concluído';
-          case 5:
-            return 'Não Compareceu';
-          default:
-            return '';
-        }
-      },
+      render: (v: number) => [
+        'Agendado',
+        'Em Espera',
+        'Em Atendimento',
+        'Atendimento Concluído',
+        'Não Compareceu',
+      ][v - 1],
     },
     {
       title: 'Ações',

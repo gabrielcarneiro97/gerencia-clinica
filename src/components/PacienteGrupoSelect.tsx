@@ -15,7 +15,6 @@ const PacienteGrupoSelect = React.forwardRef((props: any, ref): JSX.Element => {
 
   useEffect(() => {
     graphql.pacienteGrupo.getAll().then((gs) => {
-      console.log(gs);
       setGrupos(gs.filter((g) => g.tipo === tipo));
     });
   }, []);
