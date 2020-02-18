@@ -26,10 +26,6 @@ export default function PacienteBuscaInput(): JSX.Element {
   const [searchString, setSearchString] = useState();
   const [pacientesNomes, setPacientesNomes]: [DataSourceItemType[], Function] = useState([]);
 
-  useEffect(() => () => {
-    dispatch(limparPaciente());
-  }, []);
-
   useEffect(() => {
     if (paciente.id === null) setSearchString('');
   }, [paciente]);

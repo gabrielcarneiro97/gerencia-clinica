@@ -12,7 +12,7 @@ type propTypes = {
   title?: string;
 }
 
-export default function AgendaBoard(props: propTypes) {
+export default function AgendaBoard(props: propTypes): JSX.Element {
   const {
     title = '',
     boardIndex,

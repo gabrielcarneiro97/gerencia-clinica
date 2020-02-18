@@ -1,11 +1,14 @@
 import { Reducer } from 'redux';
+import { Moment } from 'moment';
 
 import { Consulta } from '../types';
+
 
 type Handlers = { [key: string]: (state?: AgendaStore, action?: Action) => AgendaStore };
 
 export type AgendaStore = {
   boards: Array<number[]>;
+  data: Moment | null;
 };
 
 type Action = {
@@ -14,10 +17,12 @@ type Action = {
   boardId?: number;
   elementId?: number;
   element?: number;
+  data?: Moment | null;
 };
 
 const initialState: AgendaStore = {
   boards: [[], [], [], [], []],
+  data: null,
 };
 
 const CARREGAR_CONSULTAS = 'CARREGAR_CONSULTAS_AGENDA';
@@ -25,6 +30,7 @@ const LIMPAR_AGENDA = 'LIMPAR_AGENDA';
 const ACHAR_E_REMOVER_BOARD_ELEMENT = 'ACHAR_E_REMOVER_BOARD_ELEMENT';
 const REMOVER_BOARD_ELEMENT = 'REMOVER_BOARD_ELEMENT';
 const ADICIONAR_BOARD_ELEMENT = 'ADICIONAR_BOARD_ELEMENT';
+const CARREGAR_DATA = 'CARREGAR_DATA';
 
 function carregarConsultasHandler(state = initialState, action?: Action): AgendaStore {
   if (!action) return { ...state };
@@ -124,6 +130,19 @@ function adicionarBoardElementHandler(state = initialState, action?: Action): Ag
   };
 }
 
+function carregarDataHandler(state = initialState, action?: Action): AgendaStore {
+  if (!action) return { ...state };
+
+  const { data } = action;
+
+  if (!data && data !== null) return { ...state };
+
+  return {
+    ...state,
+    data,
+  };
+}
+
 function limparAgendaHandler(): AgendaStore {
   return { ...initialState };
 }
@@ -134,6 +153,7 @@ const reducer: Reducer = (state: AgendaStore = initialState, action: Action): Ag
     [ACHAR_E_REMOVER_BOARD_ELEMENT]: acharERemoverBoardElementHandler,
     [REMOVER_BOARD_ELEMENT]: removerBoardElementHandler,
     [ADICIONAR_BOARD_ELEMENT]: adicionarBoardElementHandler,
+    [CARREGAR_DATA]: carregarDataHandler,
     [LIMPAR_AGENDA]: limparAgendaHandler,
   };
 
@@ -170,6 +190,13 @@ export function adicionarBoardElement(boardId: number, elementId: number, elemen
     boardId,
     elementId,
     element,
+  };
+}
+
+export function carregarData(data: Moment | null): Action {
+  return {
+    type: CARREGAR_DATA,
+    data,
   };
 }
 

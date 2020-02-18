@@ -10,13 +10,13 @@ type propTypes = {
   title?: string;
 }
 
-export default function AgendaBoardDrawerDroppable(props: propTypes) {
+export default function AgendaBoardDrawerDroppable(props: propTypes): JSX.Element {
   const { boardIndex, title = '' } = props;
 
   const [visible, setVisible] = useState(false);
 
-  const show = () => setVisible(true);
-  const hide = () => setVisible(false);
+  const show = (): void => setVisible(true);
+  const hide = (): void => setVisible(false);
 
   return (
     <AgendaDroppable boardIndex={boardIndex}>
