@@ -4,8 +4,18 @@ const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../connect');
 
 const Paciente = require('./Paciente');
+const ConsultaProcedimento = require('./ConsultaProcedimento');
 
 class Consulta extends Model {
+  async withProcedimentos() {
+    const procedimentos = await ConsultaProcedimento.findAll({ where: { consultaId: this.id } });
+
+    return {
+      ...this.toJSON(),
+      procedimentos: procedimentos.map((p) => p.toJSON()),
+    };
+  }
+
   async getPaciente() {
     const pacienteId = this.getDataValue('pacienteId');
     if (!pacienteId) return null;

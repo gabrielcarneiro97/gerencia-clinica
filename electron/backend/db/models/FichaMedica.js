@@ -3,7 +3,22 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../connect');
 
-class FichaMedica extends Model {}
+const FichaMedicaDetalhe = require('./FichaMedicaDetalhe');
+
+class FichaMedica extends Model {
+  static async withDetalhes(id, pacienteId) {
+    const ficha = id
+      ? (await FichaMedica.findByPk(id))
+      : (await FichaMedica.findAll({ where: pacienteId }))[0];
+
+    const detalhes = await FichaMedicaDetalhe.findAll({ where: { fichaMedicaId: ficha.id } });
+
+    return {
+      ...ficha.toJSON(),
+      detalhes,
+    };
+  }
+}
 
 FichaMedica.init({
   id: {

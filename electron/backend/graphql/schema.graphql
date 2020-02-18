@@ -21,6 +21,13 @@ type Paciente implements DbBasic {
   grupo2Id: Int
   contatoId: Int
   fichaMedicaId: Int
+
+  consultas: [Consulta!]
+  endereco: Endereco
+  contato: Contato
+  fichaMedica: FichaMedica
+  grupo1: PacienteGrupo
+  grupo2: PacienteGrupo
 }
 
 type PacienteGrupo implements DbBasic {
@@ -60,6 +67,8 @@ type FichaMedica implements DbBasic {
   updatedAt: Date
   tipoSangue: String
   altura: Int
+
+  detalhes: [FichaMedicaDetalhe!]
 }
 
 type FichaMedicaDetalhe implements DbBasic {
@@ -80,6 +89,8 @@ type Consulta implements DbBasic {
   observacoes: String
   status: Int
   pacienteId: Int
+
+  procedimentos: [ConsultaProcedimento!]
 }
 
 type ConsultaProcedimento implements DbBasic {

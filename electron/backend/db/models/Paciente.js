@@ -8,8 +8,36 @@ const Endereco = require('./Endereco');
 const Contato = require('./Contato');
 const FichaMedica = require('./FichaMedica');
 const PacienteGrupo = require('./PacienteGrupo');
+const Consulta = require('./Consulta');
 
 class Paciente extends Model {
+  async completo() {
+    const pacienteId = this.id;
+
+    const finder = { where: { pacienteId } };
+
+    const [consultasDb, endereco, contato, grupo1, grupo2] = await Promise.all([
+      Consulta.findAll(finder),
+      Endereco.findByPk(this.enderecoId),
+      Contato.findByPk(this.contatoId),
+      PacienteGrupo.findByPk(this.grupo1Id),
+      PacienteGrupo.findByPk(this.grupo2Id),
+      // FichaMedica.findByPk(pacienteDb.fichaMedicaId),
+    ]);
+
+    const consultas = await Promise.all(consultasDb.map(async (c) => c.withProcedimentos()));
+
+    return {
+      ...this.toJSON(),
+      endereco: endereco.toJSON(),
+      contato: contato.toJSON(),
+      grupo1: grupo1.toJSON(),
+      grupo2: grupo2.toJSON(),
+      // fichaMedica,
+      consultas,
+    };
+  }
+
   getIniciais() {
     const nome = this.getDataValue('nome');
 

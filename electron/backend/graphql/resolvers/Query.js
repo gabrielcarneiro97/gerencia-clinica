@@ -14,67 +14,65 @@ const PacienteGrupo = require('../../db/models/PacienteGrupo');
 const { Op } = Sequelize;
 
 module.exports = {
-  pacientes: (_, { nome }) => {
-    if (nome) {
-      return Paciente.findAll({
-        where: Sequelize.where(
-          Sequelize.fn('lower', Sequelize.col('nome')),
-          {
-            [Op.like]: `%${nome.toLowerCase()}%`,
-          },
-        ),
-      });
-    }
+  pacientes: async (_, { nome }) => {
+    const pacientes = nome ? await Paciente.findAll({
+      where: Sequelize.where(
+        Sequelize.fn('lower', Sequelize.col('nome')),
+        {
+          [Op.like]: `%${nome.toLowerCase()}%`,
+        },
+      ),
+    }) : await Paciente.findAll();
 
-    return Paciente.findAll();
+    return Promise.all(pacientes.map((p) => p.completo()));
   },
-  paciente: (_, { id }) => Paciente.findByPk(id),
+  paciente: async (_, { id }) => (await Paciente.findByPk(id)).toJSON(),
 
   consultas: async (_, { data, pacienteId }) => {
+    let finder = {};
+
     if (data) {
       const asDate = new Date(data);
       const start = moment(asDate).startOf('day').toDate();
       const end = moment(asDate).endOf('day').toDate();
 
-      const consultas = await Consulta.findAll({
+      finder = {
         where: {
           data: {
             [Op.between]: [start, end],
           },
         },
-      });
-
-      return consultas;
+      };
     }
 
     if (pacienteId || pacienteId === 0) {
-      const consultas = await Consulta.findAll({
+      finder = {
         where: { pacienteId },
-      });
-      return consultas;
+      };
     }
 
-    return Consulta.findAll();
+    const consultas = await Consulta.findAll(finder);
+
+    return consultas.map((c) => c.withProcedimentos());
   },
-  consulta: (_, { id }) => {
-    if (id) return Consulta.findByPk(id);
-
-    return Consulta.build();
-  },
-
-  consultaProcedimentos(_, { consultaId }) {
-    if (consultaId) {
-      return ConsultaProcedimento.findAll({
-        where: { consultaId },
-      });
-    }
-
-    return ConsultaProcedimento.findAll();
+  consulta: async (_, { id }) => {
+    const consulta = id ? await Consulta.findByPk(id) : Consulta.build();
+    return consulta.withProcedimentos();
   },
 
-  endereco: (_, { id }) => Endereco.findByPk(id),
+  consultaProcedimentos: async (_, { consultaId }) => {
+    const finder = consultaId ? {
+      where: { consultaId },
+    } : {};
 
-  contato: (_, { id }) => Contato.findByPk(id),
+    const procedimentos = await ConsultaProcedimento.findAll(finder);
 
-  pacienteGrupos: () => PacienteGrupo.findAll(),
+    return procedimentos.map((p) => p.toJSON());
+  },
+
+  endereco: async (_, { id }) => (await Endereco.findByPk(id)).toJSON(),
+
+  contato: async (_, { id }) => (await Contato.findByPk(id)).toJSON(),
+
+  pacienteGrupos: async () => (await PacienteGrupo.findAll()).map((pg) => pg.toJSON()),
 };
