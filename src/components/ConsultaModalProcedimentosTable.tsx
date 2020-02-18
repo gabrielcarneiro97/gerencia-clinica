@@ -18,12 +18,14 @@ import { ConsultaProcedimento } from '../types';
 
 
 export default function ConsultaModalProcedimentosTable(): JSX.Element {
-  const { procedimentos, infos } = useSelector<Store, ConsultaStore>(
+  const { consulta } = useSelector<Store, ConsultaStore>(
     (store: Store) => store.consulta,
   );
   const dispatch = useDispatch();
 
-  const consultaId = (infos && infos.id);
+  const { procedimentos } = consulta;
+
+  const consultaId = (consulta && consulta.id);
 
   const header = () => (
     <Row gutter={8}>

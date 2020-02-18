@@ -5,28 +5,31 @@ import { Consulta, ConsultaProcedimento } from '../types';
 type Handlers = { [key: string]: (state?: ConsultaStore, action?: Action) => ConsultaStore };
 
 export type ConsultaStore = {
-  infos: Consulta | null;
-  procedimentos: ConsultaProcedimento[];
+  consulta: Consulta;
   procedimentosRemovidos: ConsultaProcedimento[];
   diferenteDoDb: boolean;
 };
 
 type Action = {
   type: string;
-  consulta?: Consulta | null;
+  consulta?: Consulta;
   procedimentos?: ConsultaProcedimento[];
   procedimento?: ConsultaProcedimento;
   procedimentoIndex?: number;
 };
 
-const initialState: ConsultaStore = {
-  infos: null,
+const consultaEmpty = {
   procedimentos: [],
+  pacienteId: -1,
+};
+
+const initialState: ConsultaStore = {
+  consulta: consultaEmpty,
   procedimentosRemovidos: [],
   diferenteDoDb: false,
 };
 
-const CARREGAR_INFOS = 'CARREGAR_INFOS';
+const CARREGAR_CONSULTA = 'CARREGAR_CONSULTA';
 const CARREGAR_PROCEDIMENTOS = 'CARREGAR_PROCEDIMENTOS';
 const ADICIONAR_PROCEDIMENTO = 'ADICIONAR_PROCEDIMENTO';
 const MODIFICAR_PROCEDIMENTO = 'MODIFICAR_PROCEDIMENTO';
@@ -36,14 +39,14 @@ const MUDOU_CONSULTA = 'MUDOU_CONSULTA';
 const PERSISTIDO_CONSULTA = 'PERSISTIDO_CONSULTA';
 const LIMPAR_CONSULTA = 'LIMPAR_CONSULTA';
 
-function carregarInfosHandler(state = initialState, action?: Action): ConsultaStore {
+function carregarConsultaHandler(state = initialState, action?: Action): ConsultaStore {
   if (!action) return { ...state };
 
-  const { consulta = null } = action;
+  const { consulta = { ...consultaEmpty } } = action;
 
   return {
     ...state,
-    infos: consulta,
+    consulta,
   };
 }
 
@@ -54,7 +57,10 @@ function carregarProcedimentosHandler(state = initialState, action?: Action): Co
 
   return {
     ...state,
-    procedimentos,
+    consulta: {
+      ...state.consulta,
+      procedimentos,
+    },
   };
 }
 
@@ -65,13 +71,16 @@ function adicionarProcedimentoHandler(state = initialState, action?: Action): Co
 
   if (!procedimento) return { ...state };
 
-  const procedimentos = [...state.procedimentos];
+  const procedimentos = [...state.consulta.procedimentos];
 
   procedimentos.push(procedimento);
 
   return {
     ...state,
-    procedimentos,
+    consulta: {
+      ...state.consulta,
+      procedimentos,
+    },
   };
 }
 
@@ -82,13 +91,16 @@ function modificarProcedimentoHandler(state = initialState, action?: Action): Co
 
   if (!procedimento || (!procedimentoIndex && procedimentoIndex !== 0)) return { ...state };
 
-  const procedimentos = [...state.procedimentos];
+  const procedimentos = [...state.consulta.procedimentos];
 
   procedimentos[procedimentoIndex] = procedimento;
 
   return {
     ...state,
-    procedimentos,
+    consulta: {
+      ...state.consulta,
+      procedimentos,
+    },
   };
 }
 
@@ -99,7 +111,7 @@ function removerProcedimentoHandler(state = initialState, action?: Action): Cons
 
   if (!procedimentoIndex && procedimentoIndex !== 0) return { ...state };
 
-  const procedimentos = [...state.procedimentos];
+  const procedimentos = [...state.consulta.procedimentos];
   const procedimentosRemovidos = [
     ...state.procedimentosRemovidos,
     ...procedimentos.splice(procedimentoIndex, 1),
@@ -107,7 +119,10 @@ function removerProcedimentoHandler(state = initialState, action?: Action): Cons
 
   return {
     ...state,
-    procedimentos,
+    consulta: {
+      ...state.consulta,
+      procedimentos,
+    },
     procedimentosRemovidos,
   };
 }
@@ -145,7 +160,7 @@ function limparConsultaHandler(): ConsultaStore {
 
 const reducer: Reducer = (state: ConsultaStore = initialState, action: Action): ConsultaStore => {
   const handlers: Handlers = {
-    [CARREGAR_INFOS]: carregarInfosHandler,
+    [CARREGAR_CONSULTA]: carregarConsultaHandler,
     [CARREGAR_PROCEDIMENTOS]: carregarProcedimentosHandler,
     [ADICIONAR_PROCEDIMENTO]: adicionarProcedimentoHandler,
     [MODIFICAR_PROCEDIMENTO]: modificarProcedimentoHandler,
@@ -161,10 +176,10 @@ const reducer: Reducer = (state: ConsultaStore = initialState, action: Action): 
   return (handlers[action.type] || undefinedHandler)(state, action);
 };
 
-export function carregarInfos(consulta: Consulta | null): Action {
+export function carregarConsulta(consulta: Consulta | null): Action {
   return {
-    type: CARREGAR_INFOS,
-    consulta,
+    type: CARREGAR_CONSULTA,
+    consulta: consulta || consultaEmpty,
   };
 }
 

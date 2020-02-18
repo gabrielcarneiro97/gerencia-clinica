@@ -50,7 +50,7 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
         setPacienteNome(methods.paciente.getIniciais(paciente));
         setPacienteId(pId);
 
-        const contato = await methods.paciente.getContato(paciente);
+        const { contato } = paciente;
 
         if (contato) {
           const { telefone1 } = contato;

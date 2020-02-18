@@ -18,7 +18,7 @@ import { Store } from '../store/store';
 
 import { Consulta } from '../types';
 
-import { ConsultaStore, carregarInfos, mudou } from '../store/consulta';
+import { ConsultaStore, carregarConsulta, mudou } from '../store/consulta';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -76,11 +76,11 @@ function ConsultaModalForm(props: FormComponentProps): JSX.Element {
 }
 
 export default connect(
-  ({ consulta }: Store) => ({ consulta }),
+  ({ consulta }: Store) => ({ consultaStore: consulta }),
   (dispatch: any) => ({
     atualizaConsulta(consulta: Consulta): void {
       dispatch(mudou());
-      dispatch(carregarInfos(consulta));
+      dispatch(carregarConsulta(consulta));
     },
   }),
 )(Form.create({
@@ -88,37 +88,37 @@ export default connect(
   onFieldsChange(props: any, changedFields: any) {
     const {
       atualizaConsulta,
-      consulta,
+      consultaStore,
     }: {
       atualizaConsulta: (consulta: Consulta) => void;
-      consulta: ConsultaStore;
+      consultaStore: ConsultaStore;
     } = props;
 
-    const { infos } = consulta;
+    const { consulta } = consultaStore;
 
-    if (!infos) return;
+    if (!consulta) return;
 
-    const newInfos = { ...infos };
+    const newConsulta = { ...consulta };
 
     const fieldName = Object.keys(changedFields)[0];
 
     if (fieldName === 'data') {
-      newInfos[fieldName] = changedFields[fieldName].value
+      newConsulta[fieldName] = changedFields[fieldName].value
         ? (changedFields[fieldName].value as Moment).toDate() : null;
     } else {
       console.log(changedFields[fieldName].value);
-      newInfos[fieldName] = changedFields[fieldName].value;
+      newConsulta[fieldName] = changedFields[fieldName].value;
     }
 
-    atualizaConsulta(newInfos);
+    atualizaConsulta(newConsulta);
   },
   mapPropsToFields(props: any) {
-    const { consulta }: { consulta: ConsultaStore } = props;
+    const { consultaStore }: { consultaStore: ConsultaStore } = props;
 
-    const { infos } = consulta;
+    const { consulta } = consultaStore;
 
     const createField = (fieldName: string) => {
-      const field = infos && infos[fieldName];
+      const field = consulta && consulta[fieldName];
 
       return ({
         [fieldName]: Form.createFormField({

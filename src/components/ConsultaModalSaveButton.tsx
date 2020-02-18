@@ -16,9 +16,12 @@ type propTypes = {
 
 export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
   const dispatch = useDispatch();
-  const { consulta, paciente: pacienteStore } = useSelector<Store, Store>((state) => state);
+  const {
+    consulta: consultaStore,
+    paciente: pacienteStore,
+  } = useSelector<Store, Store>((state) => state);
 
-  const { diferenteDoDb } = consulta;
+  const { diferenteDoDb } = consultaStore;
 
   const { onEnd, emitter } = props;
 
@@ -41,11 +44,11 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
   };
 
   const atualizaOnAgenda = async (newId?: number): Promise<void> => {
-    const { infos } = consulta;
+    const { consulta } = consultaStore;
 
-    if (!infos) return;
+    if (!consulta) return;
 
-    const { id, status } = infos;
+    const { id, status } = consulta;
 
     if (newId && status) {
       dispatch(adicionarBoardElement(status - 1, -1, newId));
@@ -60,10 +63,11 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
 
   const handleClick = async (): Promise<void> => {
     setLoading(true);
-    const { procedimentos, procedimentosRemovidos, infos } = consulta;
+    const { procedimentosRemovidos, consulta } = consultaStore;
+    const { procedimentos } = consulta;
 
-    if (infos) {
-      const id = await graphql.consulta.save(infos);
+    if (consulta) {
+      const id = await graphql.consulta.save(consulta);
 
       try {
         await Promise.all(procedimentos.map(async (p): Promise<any> => {
@@ -80,7 +84,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
 
         if (emitter === 'paciente') await atualizaOnPaciente();
         if (emitter === 'agenda') {
-          if (!infos.id) await atualizaOnAgenda(id);
+          if (!consulta.id) await atualizaOnAgenda(id);
           else await atualizaOnAgenda();
         }
 

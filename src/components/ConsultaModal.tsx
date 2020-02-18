@@ -11,7 +11,7 @@ import {
 import ConsultaModalForm from './ConsultaModalForm';
 import ConsultaModalProcedimentosTable from './ConsultaModalProcedimentosTable';
 
-import { carregarInfos, carregarProcedimentos, limparConsulta } from '../store/consulta';
+import { carregarConsulta, carregarProcedimentos, limparConsulta } from '../store/consulta';
 import ConsultaModalSaveButton from './ConsultaModalSaveButton';
 
 import { graphql, methods } from '../services/graphql.service';
@@ -53,14 +53,12 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
       const consulta: Consulta = {
         pacienteId,
         status: 1,
+        procedimentos: [],
       };
-      dispatch(carregarInfos(consulta));
+      dispatch(carregarConsulta(consulta));
     } else if (visible && id) {
       graphql.consulta.getById(id).then(async (consulta) => {
-        const procedimentos = await methods.consulta.getProcedimentos(consulta);
-
-        dispatch(carregarProcedimentos(procedimentos));
-        dispatch(carregarInfos(consulta));
+        dispatch(carregarConsulta(consulta));
       });
     } else {
       dispatch(limparConsulta());

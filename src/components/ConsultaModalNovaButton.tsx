@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
 import { Consulta } from '../types';
-import { limparConsulta, carregarInfos } from '../store/consulta';
+import { limparConsulta, carregarConsulta } from '../store/consulta';
 
 type propTypes = {
   pacienteId?: number | null;
@@ -19,8 +19,9 @@ export default function ConsultaModalNovaButton(props: propTypes): JSX.Element {
       const consulta: Consulta = {
         pacienteId,
         status: 1,
+        procedimentos: [],
       };
-      dispatch(carregarInfos(consulta));
+      dispatch(carregarConsulta(consulta));
     }
   };
 
