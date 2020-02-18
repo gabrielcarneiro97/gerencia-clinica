@@ -24,7 +24,7 @@ module.exports = {
       ),
     }) : await Paciente.findAll();
 
-    return Promise.all(pacientes.map((p) => p.completo()));
+    return Promise.all(pacientes.map((p) => p.toJSON()));
   },
   paciente: async (_, { id }) => (await Paciente.findByPk(id)).toJSON(),
 
@@ -53,11 +53,11 @@ module.exports = {
 
     const consultas = await Consulta.findAll(finder);
 
-    return consultas.map((c) => c.withProcedimentos());
+    return consultas.map((c) => c.toJSON());
   },
   consulta: async (_, { id }) => {
     const consulta = id ? await Consulta.findByPk(id) : Consulta.build();
-    return consulta.withProcedimentos();
+    return consulta.toJSON();
   },
 
   consultaProcedimentos: async (_, { consultaId }) => {
