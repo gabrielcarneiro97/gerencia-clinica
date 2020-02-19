@@ -30,9 +30,7 @@ const consultaDb = {
         consulta(id: $consultaId) {
           id, data, responsavel,
           observacoes, status, pacienteId,
-          procedimentos {
-            id, descricao
-          }
+          procedimentos { id, descricao }
         }
       }
     `;
@@ -44,9 +42,7 @@ const consultaDb = {
   findByDate: async (data: Date): Promise<Consulta[]> => {
     const query = gql`
       query Consultas($data: String) {
-        consultas(data: $data) {
-          id, status
-        }
+        consultas(data: $data) { id, status }
       }
     `;
 
@@ -57,9 +53,7 @@ const consultaDb = {
   updateStatus: async (id: number, status: number): Promise<boolean> => {
     const mutation = gql`
       mutation Consulta($consulta: ConsultaInput) {
-        saveConsulta(consulta: $consulta) {
-          id
-        }
+        saveConsulta(consulta: $consulta) { id }
       }
     `;
 
@@ -71,9 +65,7 @@ const consultaDb = {
   save: async (consulta: Consulta): Promise<number> => {
     const mutation = gql`
       mutation Consulta($consulta: ConsultaInput) {
-        saveConsulta(consulta: $consulta) {
-          id
-        }
+        saveConsulta(consulta: $consulta) { id }
       }
     `;
 
@@ -89,9 +81,7 @@ const consultaDb = {
   delById: async (consultaId: number): Promise<boolean> => {
     const mutation = gql`
       mutation Consulta($consultaId: Int) {
-        deleteConsulta(id: $consultaId) {
-          id
-        }
+        deleteConsulta(id: $consultaId) { id }
       }
     `;
 
@@ -111,9 +101,7 @@ const consultaProcedimentoDb = {
   ): Promise<boolean> => {
     const mutation = gql`
       mutation ConsultaProcedimento($procedimento: ConsultaProcedimentoInput) {
-        saveConsultaProcedimento(consultaProcedimento: $procedimento) {
-          id
-        }
+        saveConsultaProcedimento(consultaProcedimento: $procedimento) { id }
       }
     `;
 
@@ -130,10 +118,8 @@ const consultaProcedimentoDb = {
     id?: number,
   ): Promise<boolean> => {
     const mutation = gql`
-    mutation Consulta($id: Int) {
-      deleteConsultaProcedimento(id: $id) {
-        id
-      }
+    mutation ConsultaProcedimento($id: Int) {
+      deleteConsultaProcedimento(id: $id) { id }
     }
   `;
 
@@ -162,18 +148,10 @@ const pacienteDb = {
             id, logradouro, numero, complemento,
             bairro, cidade, estado, pais, cep
           }
-          contato {
-            id, telefone1, telefone2, email
-          }
-          fichaMedica {
-            id, tipoSangue, altura
-          }
-          grupo1 {
-            id, descricao, tipo
-          }
-          grupo2 {
-            id, descricao, tipo
-          }
+          contato { id, telefone1, telefone2, email }
+          fichaMedica { id, tipoSangue, altura }
+          grupo1 { id, descricao, tipo }
+          grupo2 { id, descricao, tipo }
           consultas {
             id, data, responsavel,
             observacoes, status
@@ -189,9 +167,7 @@ const pacienteDb = {
   findByName: async (nome: string): Promise<Paciente[]> => {
     const query = gql`
       query Pacientes($nome: String!) {
-        pacientes(nome: $nome) {
-          id, nome
-        }
+        pacientes(nome: $nome) { id, nome }
       }
     `;
     const res = await apolloClient.query({ query, variables: { nome } });
@@ -208,9 +184,7 @@ const pacienteDb = {
     if (endereco) {
       const mutation = gql`
         mutation Endereco($endereco: EnderecoInput) {
-          saveEndereco(endereco: $endereco) {
-            id
-          }
+          saveEndereco(endereco: $endereco) { id }
         }
       `;
       const enderecoRes = await apolloClient.mutate({ mutation, variables: { endereco } });
@@ -220,9 +194,7 @@ const pacienteDb = {
     if (contato) {
       const mutation = gql`
         mutation Contato($contato: ContatoInput) {
-          saveContato(contato: $contato) {
-            id
-          }
+          saveContato(contato: $contato) { id }
         }
       `;
       const contatoRes = await apolloClient.mutate({ mutation, variables: { contato } });
@@ -251,9 +223,7 @@ const pacienteGrupoDb = {
   getAll: async (): Promise<PacienteGrupo[]> => {
     const query = gql`
       query PacienteGrupos {
-        pacienteGrupos {
-          id, descricao, tipo
-        }
+        pacienteGrupos { id, descricao, tipo }
       }
     `;
 
@@ -286,9 +256,7 @@ const pacienteMethods = {
           consultas {
             id, data, responsavel,
             observacoes, status
-            procedimentos {
-              id, descricao
-            }
+            procedimentos { id, descricao }
           }
         }
       }
