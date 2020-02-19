@@ -93,6 +93,11 @@ type Consulta implements DbBasic {
   procedimentos: [ConsultaProcedimento!]
 }
 
+type ConsultaPaciente {
+  consulta: Consulta
+  paciente: Paciente
+}
+
 type ConsultaProcedimento implements DbBasic {
   id: Int!
   createdAt: Date
@@ -206,6 +211,8 @@ type Query {
   ): [Consulta]
 
   consulta(id: Int!): Consulta!
+
+  consultaPaciente(id: Int!): ConsultaPaciente!
 
   consultaProcedimentos(consultaId: Int): [ConsultaProcedimento!]!
 

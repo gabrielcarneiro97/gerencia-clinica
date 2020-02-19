@@ -8,7 +8,7 @@ import moment, { Moment } from 'moment';
 import { blue } from '@ant-design/colors';
 import ConsultaModal from './ConsultaModal';
 
-import { graphql, methods } from '../services/graphql.service';
+import { methods, hooks } from '../services/graphql.service';
 
 type propTypes = {
   id: number;
@@ -20,55 +20,26 @@ const { Meta } = Card;
 export default function ConsultaCard(props: propTypes): JSX.Element {
   const { id, style } = props;
 
-  const [isMounted, setIsMounted] = useState<boolean>(true);
   const [pacienteNome, setPacienteNome] = useState('');
   const [pacienteId, setPacienteId] = useState(-1);
   const [responsavel, setResponsavel] = useState('');
   const [dataHora, setDataHora] = useState<Moment | null>(moment());
   const [status, setStatus] = useState(0);
   const [telefone, setTelefone] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  const getData = async (): Promise<void> => {
-    if (!isMounted) return;
-
-    const consulta = await graphql.consulta.getById(id);
-
-    if (consulta) {
-      const { pacienteId: pId, data } = consulta;
-
-      const resp = consulta.responsavel;
-      const s = consulta.status;
-
-      setResponsavel(resp || '');
-      setDataHora(data ? moment(data) : null);
-      setStatus(s || 0);
-
-      if (pId) {
-        const paciente = await graphql.paciente.getById(pId);
-
-        if (paciente) {
-          setPacienteNome(methods.paciente.getIniciais(paciente));
-          setPacienteId(pId);
-
-          const { contato } = paciente;
-
-          if (contato) {
-            const { telefone1 } = contato;
-            setTelefone(telefone1 || '');
-          }
-        }
-      }
-    }
-  };
+  const { loading, data } = hooks.useConsultaPaciente(id);
 
   useEffect(() => {
-    getData().then(() => {
-      if (isMounted) setLoading(false);
-    });
+    if (data && !loading) {
+      const { consulta, paciente } = data.consultaPaciente;
 
-    return (): void => setIsMounted(false);
-  }, []);
+      setPacienteNome(methods.paciente.getIniciais(paciente) || '');
+      if (paciente.id) setPacienteId(paciente.id);
+      if (paciente.contato?.telefone1) setTelefone(paciente.contato?.telefone1);
+      if (consulta.responsavel) setResponsavel(consulta.responsavel);
+      setDataHora(consulta.data ? moment(consulta.data) : null);
+      if (consulta.status) setStatus(consulta.status);
+    }
+  }, [loading]);
 
   const pStyle: React.CSSProperties = { marginBottom: '3px' };
 
@@ -92,7 +63,6 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
         <ConsultaModal
           id={id}
           pacienteId={pacienteId}
-          saveEnd={getData}
           emitter="agenda"
           buttonSize={13}
         />

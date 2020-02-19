@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux';
+import { ApolloProvider } from '@apollo/client';
 import moment from 'moment';
 
 import { ConfigProvider as AntdProvider } from 'antd';
@@ -13,6 +14,8 @@ import store from './store/store';
 import waitServer from './services/server.service';
 import LoadingScreen from './components/LoadingScreen';
 
+import apolloClient from './services/graphql.service';
+
 moment.locale('pt-br');
 
 function Index(): JSX.Element {
@@ -24,17 +27,12 @@ function Index(): JSX.Element {
 
   return (
     <ReduxProvider store={store}>
-      <AntdProvider locale={ptBR}>
-        {
-          loading
-          && <LoadingScreen />
-        }
-        {
-          !loading
-          && <App />
-        }
-        {/* <LoadingScreen /> */}
-      </AntdProvider>
+      <ApolloProvider client={apolloClient}>
+        <AntdProvider locale={ptBR}>
+          { loading ? <LoadingScreen /> : <App /> }
+          {/* <LoadingScreen /> */}
+        </AntdProvider>
+      </ApolloProvider>
     </ReduxProvider>
   );
 }

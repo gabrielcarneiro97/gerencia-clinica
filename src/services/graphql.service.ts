@@ -7,10 +7,16 @@ import {
   MutationOptions,
   ApolloQueryResult,
   FetchResult,
+  useQuery,
 } from '@apollo/client';
 
 import {
-  Consulta, Paciente, Contato, ConsultaProcedimento, Endereco, PacienteGrupo,
+  Consulta,
+  Paciente,
+  Contato,
+  ConsultaProcedimento,
+  Endereco,
+  PacienteGrupo,
 } from '../types';
 
 const apolloClient = new ApolloClient({
@@ -93,6 +99,21 @@ const queries = {
     `,
     variables: { pacienteId },
   }),
+  CONSULTA_PACIENTE: (consultaId: number): QueryBaseOptions => ({
+    query: gql`
+      query ConsultaPaciente($consultaId: Int!) {
+        consultaPaciente(id: $consultaId) {
+          consulta {
+            id, data, responsavel, status
+          }
+          paciente {
+            nome, contato { telefone1 }
+          }
+        }
+      }
+    `,
+    variables: { consultaId },
+  }),
   PACIENTE: (pacienteId: number): QueryBaseOptions => ({
     query: gql`
       query Paciente($pacienteId: Int!) {
@@ -133,6 +154,21 @@ const queries = {
       }
     `,
   }),
+};
+
+export const hooks = {
+  useConsulta: (consultaId: number) => {
+    const { query, ...options } = queries.CONSULTA(consultaId);
+    return useQuery<Consulta>(query, options);
+  },
+  usePaciente: (pacienteId: number) => {
+    const { query, ...options } = queries.PACIENTE(pacienteId);
+    return useQuery<Paciente>(query, options);
+  },
+  useConsultaPaciente: (consultaId: number) => {
+    const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
+    return useQuery<{ consultaPaciente: { consulta: Consulta; paciente: Paciente } }>(query, options);
+  },
 };
 
 const mutations = {
