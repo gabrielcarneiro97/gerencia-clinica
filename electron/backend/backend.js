@@ -8,6 +8,7 @@ async function graphQl() {
   await dbInit();
   graphQlServer.start(() => {
     ipcRenderer.send('server-ok');
+    console.log('Server running on localhost:4000');
   });
 }
 

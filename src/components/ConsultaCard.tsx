@@ -44,17 +44,19 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       setDataHora(data ? moment(data) : null);
       setStatus(s || 0);
 
-      const paciente = await graphql.paciente.getById(pId);
+      if (pId) {
+        const paciente = await graphql.paciente.getById(pId);
 
-      if (paciente) {
-        setPacienteNome(methods.paciente.getIniciais(paciente));
-        setPacienteId(pId);
+        if (paciente) {
+          setPacienteNome(methods.paciente.getIniciais(paciente));
+          setPacienteId(pId);
 
-        const { contato } = paciente;
+          const { contato } = paciente;
 
-        if (contato) {
-          const { telefone1 } = contato;
-          setTelefone(telefone1 || '');
+          if (contato) {
+            const { telefone1 } = contato;
+            setTelefone(telefone1 || '');
+          }
         }
       }
     }

@@ -5,7 +5,7 @@ export type Consulta = {
   responsavel?: string | null;
   observacoes?: string | null;
   status?: number | null;
-  pacienteId: number;
+  pacienteId?: number;
   procedimentos: ConsultaProcedimento[];
 }
 
