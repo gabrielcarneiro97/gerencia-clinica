@@ -71,7 +71,7 @@ function adicionarProcedimentoHandler(state = initialState, action?: Action): Co
 
   if (!procedimento) return { ...state };
 
-  const procedimentos = [...state.consulta.procedimentos];
+  const procedimentos = [...state.consulta.procedimentos || []];
 
   procedimentos.push(procedimento);
 
@@ -91,7 +91,7 @@ function modificarProcedimentoHandler(state = initialState, action?: Action): Co
 
   if (!procedimento || (!procedimentoIndex && procedimentoIndex !== 0)) return { ...state };
 
-  const procedimentos = [...state.consulta.procedimentos];
+  const procedimentos = [...state.consulta.procedimentos || []];
 
   procedimentos[procedimentoIndex] = procedimento;
 
@@ -111,7 +111,7 @@ function removerProcedimentoHandler(state = initialState, action?: Action): Cons
 
   if (!procedimentoIndex && procedimentoIndex !== 0) return { ...state };
 
-  const procedimentos = [...state.consulta.procedimentos];
+  const procedimentos = [...state.consulta.procedimentos || []];
   const procedimentosRemovidos = [
     ...state.procedimentosRemovidos,
     ...procedimentos.splice(procedimentoIndex, 1),

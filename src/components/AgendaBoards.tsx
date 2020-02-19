@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import {
   Row,
   Col,
-  DatePicker,
 } from 'antd';
 import Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 
-import moment from 'moment';
 import AgendaBoardDropabble from './AgendaBoardDroppable';
-import { graphql } from '../services/graphql.service';
 
-import { carregarConsultas } from '../store/agenda';
 import AgendaBoardDrawerDroppable from './AgendaBoardDrawerDroppable';
 
 export default function AgendaBoards(): JSX.Element {

@@ -9,6 +9,7 @@ import {
   FetchResult,
   useQuery,
   useLazyQuery,
+  useMutation,
 } from '@apollo/client';
 
 import {
@@ -157,33 +158,8 @@ const queries = {
   }),
 };
 
-type ConsultaPaciente = { consulta: Consulta; paciente: Paciente };
-
-export const hooks = {
-  useConsulta: (consultaId: number) => {
-    const { query, ...options } = queries.CONSULTA(consultaId);
-    return useQuery<{ consulta: Consulta }>(query, options);
-  },
-  usePaciente: (pacienteId: number) => {
-    const { query, ...options } = queries.PACIENTE(pacienteId);
-    return useQuery<{ paciente: Paciente }>(query, options);
-  },
-  usePacienteLazy: (pacienteId?: number) => {
-    const { query, ...options } = queries.PACIENTE(pacienteId || -1);
-    return useLazyQuery<{ paciente: Paciente }>(query, options);
-  },
-  usePacientesByNameLazy: (nome?: string) => {
-    const { query, ...options } = queries.PACIENTES_BY_NAME(nome || '');
-    return useLazyQuery<{ pacientes: Paciente[] }>(query, options);
-  },
-  useConsultaPaciente: (consultaId: number) => {
-    const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
-    return useQuery<{ consultaPaciente: ConsultaPaciente }>(query, options);
-  },
-};
-
 const mutations = {
-  SAVE_CONSULTA: (consulta: Consulta): MutationOptions => ({
+  SAVE_CONSULTA: (consulta?: Consulta): MutationOptions => ({
     mutation: gql`
       mutation Consulta($consulta: ConsultaInput) {
         saveConsulta(consulta: $consulta) { id }
@@ -241,6 +217,35 @@ const mutations = {
   }),
 };
 
+type ConsultaPaciente = { consulta: Consulta; paciente: Paciente };
+
+export const hooks = {
+  useConsulta: (consultaId: number) => {
+    const { query, ...options } = queries.CONSULTA(consultaId);
+    return useQuery<{ consulta: Consulta }>(query, options);
+  },
+  usePaciente: (pacienteId: number) => {
+    const { query, ...options } = queries.PACIENTE(pacienteId);
+    return useQuery<{ paciente: Paciente }>(query, options);
+  },
+  usePacienteLazy: (pacienteId?: number) => {
+    const { query, ...options } = queries.PACIENTE(pacienteId === undefined ? -1 : pacienteId);
+    return useLazyQuery<{ paciente: Paciente }>(query, options);
+  },
+  usePacientesByNameLazy: (nome = '') => {
+    const { query, ...options } = queries.PACIENTES_BY_NAME(nome);
+    return useLazyQuery<{ pacientes: Paciente[] }>(query, options);
+  },
+  useConsultaPaciente: (consultaId: number) => {
+    const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
+    return useQuery<{ consultaPaciente: ConsultaPaciente }>(query, options);
+  },
+  useSaveConsulta: () => {
+    const { mutation } = mutations.SAVE_CONSULTA();
+    return useMutation<{ consulta: { id: number } }>(mutation);
+  },
+};
+
 const consultaDb = {
   getById: async (consultaId: number): Promise<Consulta> => {
     const res = await executeQuery(queries.CONSULTA(consultaId));
@@ -256,10 +261,7 @@ const consultaDb = {
   },
   updateStatus: async (id: number, status: number): Promise<boolean> => {
     try {
-      await executeMutation(mutations.SAVE_CONSULTA({
-        id, status, procedimentos: [],
-
-      }));
+      await executeMutation(mutations.SAVE_CONSULTA({ id, status }));
       return true;
     } catch {
       return false;

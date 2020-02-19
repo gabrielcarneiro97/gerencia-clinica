@@ -54,26 +54,29 @@ export default function ConsultaModalProcedimentosTable(): JSX.Element {
     </Row>
   );
 
-  const dataSource = procedimentos.map((p, i) => ({ ...p, key: i }));
+  const dataSource = procedimentos?.map((p, i) => ({ ...p, key: i })) ?? [];
 
   const columns: any[] = [
     {
       title: 'Descrição',
       dataIndex: 'descricao',
       key: 'descricao',
-      render: (v: any, d: any): JSX.Element => {
+      render: (v: any, d: any): JSX.Element | string => {
         const i = d.key;
-        return (
-          <Input
-            value={procedimentos[i].descricao || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              const procedimento = procedimentos[i];
-              procedimento.descricao = e.target.value;
-              dispatch(modificarProcedimento(procedimento, i));
-              dispatch(mudou());
-            }}
-          />
-        );
+        if (procedimentos) {
+          return (
+            <Input
+              value={procedimentos[i].descricao || ''}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                const procedimento = procedimentos[i];
+                procedimento.descricao = e.target.value;
+                dispatch(modificarProcedimento(procedimento, i));
+                dispatch(mudou());
+              }}
+            />
+          );
+        }
+        return '';
       },
     },
     {

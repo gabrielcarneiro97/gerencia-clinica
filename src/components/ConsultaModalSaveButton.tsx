@@ -69,12 +69,15 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
     if (consulta) {
       const id = await graphql.consulta.save(consulta);
 
-      try {
+      if (procedimentos) {
         await Promise.all(procedimentos.map(async (p): Promise<any> => {
           if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
           if (p.descricao) return graphql.consultaProcedimento.save(p);
           return false;
         }));
+      }
+
+      try {
         await Promise.all(procedimentosRemovidos.map(
           async (p) => {
             if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign

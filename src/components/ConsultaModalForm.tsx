@@ -106,7 +106,6 @@ export default connect(
       newConsulta[fieldName] = changedFields[fieldName].value
         ? (changedFields[fieldName].value as Moment).toDate() : null;
     } else {
-      console.log(changedFields[fieldName].value);
       newConsulta[fieldName] = changedFields[fieldName].value;
     }
 
