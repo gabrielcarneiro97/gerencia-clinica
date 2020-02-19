@@ -8,6 +8,7 @@ import {
   ApolloQueryResult,
   FetchResult,
   useQuery,
+  useLazyQuery,
 } from '@apollo/client';
 
 import {
@@ -156,18 +157,28 @@ const queries = {
   }),
 };
 
+type ConsultaPaciente = { consulta: Consulta; paciente: Paciente };
+
 export const hooks = {
   useConsulta: (consultaId: number) => {
     const { query, ...options } = queries.CONSULTA(consultaId);
-    return useQuery<Consulta>(query, options);
+    return useQuery<{ consulta: Consulta }>(query, options);
   },
   usePaciente: (pacienteId: number) => {
     const { query, ...options } = queries.PACIENTE(pacienteId);
-    return useQuery<Paciente>(query, options);
+    return useQuery<{ paciente: Paciente }>(query, options);
+  },
+  usePacienteLazy: (pacienteId?: number) => {
+    const { query, ...options } = queries.PACIENTE(pacienteId || -1);
+    return useLazyQuery<{ paciente: Paciente }>(query, options);
+  },
+  usePacientesByNameLazy: (nome?: string) => {
+    const { query, ...options } = queries.PACIENTES_BY_NAME(nome || '');
+    return useLazyQuery<{ pacientes: Paciente[] }>(query, options);
   },
   useConsultaPaciente: (consultaId: number) => {
     const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
-    return useQuery<{ consultaPaciente: { consulta: Consulta; paciente: Paciente } }>(query, options);
+    return useQuery<{ consultaPaciente: ConsultaPaciente }>(query, options);
   },
 };
 

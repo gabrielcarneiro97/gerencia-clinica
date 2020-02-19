@@ -12,7 +12,8 @@ import {
   PacienteStore,
 } from '../store/paciente';
 
-import { graphql } from '../services/graphql.service';
+import { hooks } from '../services/graphql.service';
+import { Paciente } from '../types';
 
 export default function PacienteBuscaInput(): JSX.Element {
   const dispatch = useDispatch();
@@ -21,23 +22,41 @@ export default function PacienteBuscaInput(): JSX.Element {
     (store) => store.paciente,
   );
 
-  const { paciente } = pacienteStore;
-
   const [searchString, setSearchString] = useState();
   const [pacientesNomes, setPacientesNomes]: [DataSourceItemType[], Function] = useState([]);
+
+  const { paciente } = pacienteStore;
+
+  const setPaciente = (p: Paciente) => dispatch(carregarPaciente(p));
 
   useEffect(() => {
     if (paciente.id === null) setSearchString('');
   }, [paciente]);
 
+  const [executeSelecionado, selecionadoHook] = hooks.usePacienteLazy();
+
+  useEffect(() => {
+    const { loading, data, called } = selecionadoHook;
+    if (!loading && called && data) setPaciente(data.paciente);
+  }, [selecionadoHook.loading, selecionadoHook.called, selecionadoHook.data]);
+
+  const [executePacientes, pacientesHook] = hooks.usePacientesByNameLazy();
+
+  useEffect(() => {
+    const { loading, data, called } = pacientesHook;
+    if (!loading && called && data) {
+      const { pacientes } = data;
+      setPacientesNomes(pacientes.map(
+        (p) => ({ text: p.nome, value: p.id }),
+      ));
+    }
+  }, [pacientesHook.loading, pacientesHook.called, pacientesHook.data]);
+
   const handleChange = async (value: SelectValue): Promise<void> => {
     setSearchString(value);
 
     if (value !== '') {
-      const pacientes = await graphql.paciente.findByName(value as string);
-      setPacientesNomes(pacientes.map(
-        (p) => ({ text: p.nome, value: p.id }),
-      ));
+      executePacientes({ variables: { nome: value as string } });
     } else {
       setPacientesNomes([]);
     }
@@ -46,11 +65,7 @@ export default function PacienteBuscaInput(): JSX.Element {
   };
 
   const handleSelect = async (pacienteId: SelectValue): Promise<void> => {
-    const pacienteSelecionado = await graphql.paciente.getById(parseInt(pacienteId.toString(), 10));
-
-    if (pacienteSelecionado) {
-      dispatch(carregarPaciente(pacienteSelecionado));
-    }
+    executeSelecionado({ variables: { pacienteId: parseInt(pacienteId.toString(), 10) } });
   };
 
   return (
