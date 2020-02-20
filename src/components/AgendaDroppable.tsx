@@ -4,7 +4,7 @@ import { useDrop, XYCoord } from 'react-dnd';
 
 import { AgendaStore, removerBoardElement, adicionarBoardElement } from '../store/agenda';
 import { Store } from '../store/store';
-import { graphql, hooks } from '../services/graphql.service';
+import { hooks } from '../services/graphql.service';
 
 type propTypes = {
   boardIndex: number;
@@ -20,11 +20,8 @@ const firstCardY = 31/* head */ + 8/* padding */;
 
 const firstCardMidY = (cardHeight / 2) + firstCardY + boardsY;
 
-export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
-  const {
-    boardIndex,
-    children,
-  } = props;
+function useComponent(props: propTypes) {
+  const { boardIndex } = props;
 
   const dispatch = useDispatch();
   const { boards } = useSelector<Store, AgendaStore>((store) => store.agenda);
@@ -72,6 +69,18 @@ export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
       dispatch(adicionarBoardElement(newBoard, newElementIndex, consultaId));
     },
   });
+
+  return {
+    state: {
+      drop,
+    },
+  };
+}
+
+export default function AgendaBoardDropabble(props: propTypes): JSX.Element {
+  const { children } = props;
+  const { state } = useComponent(props);
+  const { drop } = state;
 
   return (
     <div ref={drop} style={{ width: '100%', height: '100%' }}>

@@ -87,7 +87,7 @@ const queries = {
     `,
     variables: { data: data.toISOString() },
   }),
-  CONSULTAS_BY_PACIENTE_ID: (pacienteId: number): QueryBaseOptions => ({
+  CONSULTAS_BY_PACIENTE_ID: (pacienteId?: number): QueryBaseOptions => ({
     query: gql`
       query Consultas($pacienteId: Int!) {
         paciente(id: $pacienteId) {
@@ -167,7 +167,7 @@ const mutations = {
     `,
     variables: { consulta },
   }),
-  DELETE_CONSULTA: (consultaId: number): MutationOptions => ({
+  DELETE_CONSULTA: (consultaId?: number): MutationOptions => ({
     mutation: gql`
       mutation Consulta($consultaId: Int) {
         deleteConsulta(id: $consultaId) { id }
@@ -224,6 +224,10 @@ export const hooks = {
     const { query, ...options } = queries.CONSULTA(consultaId);
     return useQuery<{ consulta: Consulta }>(query, options);
   },
+  useConsultasByPacienteIdLazy: (pacienteId?: number) => {
+    const { query, ...options } = queries.CONSULTAS_BY_PACIENTE_ID(pacienteId);
+    return useLazyQuery<{ consultas: Consulta[] }>(query, options);
+  },
   usePaciente: (pacienteId: number) => {
     const { query, ...options } = queries.PACIENTE(pacienteId);
     return useQuery<{ paciente: Paciente }>(query, options);
@@ -242,6 +246,10 @@ export const hooks = {
   },
   useSaveConsulta: () => {
     const { mutation } = mutations.SAVE_CONSULTA();
+    return useMutation<{ consulta: { id: number } }>(mutation);
+  },
+  useDeleteConsulta: () => {
+    const { mutation } = mutations.DELETE_CONSULTA();
     return useMutation<{ consulta: { id: number } }>(mutation);
   },
 };
