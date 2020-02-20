@@ -5,8 +5,6 @@ import {
   gql,
   QueryBaseOptions,
   MutationOptions,
-  ApolloQueryResult,
-  FetchResult,
   useQuery,
   useLazyQuery,
   useMutation,
@@ -41,28 +39,6 @@ const apolloClient = new ApolloClient({
     },
   },
 });
-
-async function executeMutation(mutation: MutationOptions): Promise<FetchResult<{
-  [key: string]: any;
-}, Record<string, any>, Record<string, any>>> {
-  try {
-    return apolloClient.mutate(mutation);
-  } catch (err) {
-    console.log(err);
-    if (err.networkError) console.log(err.networkError.result.errors);
-    throw err;
-  }
-}
-
-async function executeQuery<T = any>(query: QueryBaseOptions): Promise<ApolloQueryResult<T>> {
-  try {
-    return apolloClient.query(query);
-  } catch (err) {
-    if (err.networkError) console.log(err.networkError.result.errors);
-    console.log(err);
-    throw err;
-  }
-}
 
 const queries = {
   CONSULTA: (consultaId?: number): QueryBaseOptions => ({
@@ -309,115 +285,6 @@ export const hooks = {
   /* PACIENTE_GRUPO END */
 };
 
-const consultaDb = {
-  getById: async (consultaId: number): Promise<Consulta> => {
-    const res = await executeQuery(queries.CONSULTA(consultaId));
-    return res.data.consulta;
-  },
-  findByDate: async (data: Date): Promise<Consulta[]> => {
-    try {
-      const res = await executeQuery(queries.CONSULTAS_BY_DATE(data));
-      return res.data.consultas;
-    } catch {
-      return [];
-    }
-  },
-  updateStatus: async (id: number, status: number): Promise<boolean> => {
-    try {
-      await executeMutation(mutations.SAVE_CONSULTA({ id, status }));
-      return true;
-    } catch {
-      return false;
-    }
-  },
-  save: async (consulta: Consulta): Promise<number> => {
-    try {
-      const res = await executeMutation(mutations.SAVE_CONSULTA(consulta));
-      return res?.data?.saveConsulta.id ?? -99;
-    } catch {
-      return -1;
-    }
-  },
-  delById: async (consultaId: number): Promise<boolean> => {
-    try {
-      await executeMutation(mutations.DELETE_CONSULTA(consultaId));
-      return true;
-    } catch {
-      return false;
-    }
-  },
-};
-
-const consultaProcedimentoDb = {
-  save: async (
-    procedimento: ConsultaProcedimento,
-  ): Promise<boolean> => {
-    try {
-      await executeMutation(mutations.SAVE_PROCEDIMENTO(procedimento));
-      return true;
-    } catch {
-      return false;
-    }
-  },
-  delById: async (
-    id?: number,
-  ): Promise<boolean> => {
-    if (!id && id !== 0) return false;
-
-    try {
-      await executeMutation(mutations.DELETE_PROCEDIMENTO(id));
-      return true;
-    } catch {
-      return false;
-    }
-  },
-};
-
-const pacienteDb = {
-  getById: async (pacienteId: number): Promise<Paciente> => {
-    const res = await executeQuery(queries.PACIENTE(pacienteId));
-    return res.data.paciente;
-  },
-  findByName: async (nome: string): Promise<Paciente[]> => {
-    const res = await executeQuery(queries.PACIENTES_BY_NAME(nome));
-    return res.data.pacientes;
-  },
-  saveAll: async (
-    paciente: Paciente,
-    endereco?: Endereco | null,
-    contato?: Contato | null,
-  ): Promise<number> => {
-    let enderecoId: number | null = null;
-    let contatoId: number | null = null;
-    if (endereco) {
-      const enderecoRes = await executeMutation(mutations.SAVE_ENDERECO(endereco));
-      enderecoId = enderecoRes?.data?.saveEndereco.id ?? null;
-    }
-
-    if (contato) {
-      const contatoRes = await executeMutation(mutations.SAVE_CONTATO(contato));
-      contatoId = contatoRes?.data?.saveContato.id ?? null;
-    }
-
-    const pacienteNew = {
-      ...paciente,
-      enderecoId: paciente.enderecoId || enderecoId,
-      contatoId: paciente.contatoId || contatoId,
-    };
-
-    const res = await executeMutation(mutations.SAVE_PACIENTE(pacienteNew));
-
-    return res?.data?.savePaciente.id ?? -99;
-  },
-};
-
-const pacienteGrupoDb = {
-  getAll: async (): Promise<PacienteGrupo[]> => {
-    const res = await executeQuery(queries.PACIENTE_GRUPOS());
-    return res.data.pacienteGrupos;
-  },
-};
-
 const pacienteMethods = {
   getIniciais: (paciente: Paciente): string => {
     const { nome } = paciente;
@@ -432,19 +299,6 @@ const pacienteMethods = {
       return `${acc} ${crr[0].toUpperCase()}.`;
     }, '');
   },
-  getConsultas: async (
-    pacienteId: number,
-  ): Promise<Consulta[]> => {
-    const res = await executeQuery(queries.CONSULTAS_BY_PACIENTE_ID(pacienteId));
-    return res.data.paciente.consultas;
-  },
-};
-
-export const graphql = {
-  consulta: consultaDb,
-  consultaProcedimento: consultaProcedimentoDb,
-  paciente: pacienteDb,
-  pacienteGrupo: pacienteGrupoDb,
 };
 
 export const methods = {
