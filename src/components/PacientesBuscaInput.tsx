@@ -15,7 +15,34 @@ import {
 import { hooks } from '../services/graphql.service';
 import { Paciente } from '../types';
 
-export default function PacienteBuscaInput(): JSX.Element {
+function usePacienteLazy(setPaciente: Function) {
+  const [executeSelecionado, selecionadoHook] = hooks.usePacienteLazy();
+
+  useEffect(() => {
+    const { loading, data, called } = selecionadoHook;
+    if (!loading && called && data) setPaciente(data.paciente);
+  }, [selecionadoHook.loading, selecionadoHook.called, selecionadoHook.data]);
+
+  return executeSelecionado;
+}
+
+function usePacientesByNameLazy(setPacientesNomes: Function) {
+  const [executePacientes, pacientesHook] = hooks.usePacientesByNameLazy();
+
+  useEffect(() => {
+    const { loading, data, called } = pacientesHook;
+    if (!loading && called && data) {
+      const { pacientes } = data;
+      setPacientesNomes(pacientes.map(
+        (p) => ({ text: p.nome, value: p.id }),
+      ));
+    }
+  }, [pacientesHook.loading, pacientesHook.called, pacientesHook.data]);
+
+  return executePacientes;
+}
+
+function useComponent() {
   const dispatch = useDispatch();
 
   const pacienteStore = useSelector<Store, PacienteStore>(
@@ -29,28 +56,13 @@ export default function PacienteBuscaInput(): JSX.Element {
 
   const setPaciente = (p: Paciente) => dispatch(carregarPaciente(p));
 
+  const executeSelecionado = usePacienteLazy(setPaciente);
+  const executePacientes = usePacientesByNameLazy(setPacientesNomes);
+
   useEffect(() => {
     if (paciente.id === null) setSearchString('');
   }, [paciente]);
 
-  const [executeSelecionado, selecionadoHook] = hooks.usePacienteLazy();
-
-  useEffect(() => {
-    const { loading, data, called } = selecionadoHook;
-    if (!loading && called && data) setPaciente(data.paciente);
-  }, [selecionadoHook.loading, selecionadoHook.called, selecionadoHook.data]);
-
-  const [executePacientes, pacientesHook] = hooks.usePacientesByNameLazy();
-
-  useEffect(() => {
-    const { loading, data, called } = pacientesHook;
-    if (!loading && called && data) {
-      const { pacientes } = data;
-      setPacientesNomes(pacientes.map(
-        (p) => ({ text: p.nome, value: p.id }),
-      ));
-    }
-  }, [pacientesHook.loading, pacientesHook.called, pacientesHook.data]);
 
   const handleChange = async (value: SelectValue): Promise<void> => {
     setSearchString(value);
@@ -67,6 +79,24 @@ export default function PacienteBuscaInput(): JSX.Element {
   const handleSelect = async (pacienteId: SelectValue): Promise<void> => {
     executeSelecionado({ variables: { pacienteId: parseInt(pacienteId.toString(), 10) } });
   };
+
+  return {
+    state: {
+      pacientesNomes,
+      searchString,
+    },
+    methods: {
+      handleChange,
+      handleSelect,
+    },
+  };
+}
+
+export default function PacienteBuscaInput(): JSX.Element {
+  const { state, methods } = useComponent();
+
+  const { pacientesNomes, searchString } = state;
+  const { handleChange, handleSelect } = methods;
 
   return (
     <AutoComplete
