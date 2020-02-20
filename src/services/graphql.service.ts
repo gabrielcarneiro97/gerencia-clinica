@@ -77,7 +77,7 @@ const queries = {
     `,
     variables: { consultaId },
   }),
-  CONSULTAS_BY_DATE: (data: Date): QueryBaseOptions => ({
+  CONSULTAS_BY_DATE: (data?: Date): QueryBaseOptions => ({
     query: gql`
       query Consultas($data: String) {
         consultas(data: $data) {
@@ -85,7 +85,7 @@ const queries = {
         }
       }
     `,
-    variables: { data: data.toISOString() },
+    variables: { data: data?.toISOString() },
   }),
   CONSULTAS_BY_PACIENTE_ID: (pacienteId?: number): QueryBaseOptions => ({
     query: gql`
@@ -223,6 +223,10 @@ export const hooks = {
   useConsulta: (consultaId: number) => {
     const { query, ...options } = queries.CONSULTA(consultaId);
     return useQuery<{ consulta: Consulta }>(query, options);
+  },
+  useConsultasByDateLazy: (data?: Date) => {
+    const { query, ...options } = queries.CONSULTAS_BY_DATE(data);
+    return useLazyQuery<{ consultas: Consulta[] }>(query, options);
   },
   useConsultasByPacienteIdLazy: (pacienteId?: number) => {
     const { query, ...options } = queries.CONSULTAS_BY_PACIENTE_ID(pacienteId);

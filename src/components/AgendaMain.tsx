@@ -5,22 +5,46 @@ import {
   Layout,
 } from 'antd';
 
-import { graphql } from '../services/graphql.service';
+import { hooks } from '../services/graphql.service';
 
 import { carregarConsultas, AgendaStore } from '../store/agenda';
 import { Store } from '../store/store';
 import AgendaDataPicker from './AgendaDataPicker';
 import AgendaBoards from './AgendaBoards';
 
-export default function AgendaMain(): JSX.Element {
+function useGetConsultas() {
   const dispatch = useDispatch();
-  const { data } = useSelector<Store, AgendaStore>((store) => store.agenda);
+
+  const [getConsultas, {
+    data,
+    loading,
+  }] = hooks.useConsultasByDateLazy();
 
   useEffect(() => {
-    graphql.consulta.findByDate(
-      data ? data.toDate() : new Date(),
-    ).then((c) => (dispatch(carregarConsultas(c))));
-  }, [data]);
+    if (data && !loading) {
+      const { consultas } = data;
+      dispatch(carregarConsultas(consultas));
+    }
+  }, [data, loading]);
+
+  return getConsultas;
+}
+
+function useComponent() {
+  const { data: dataHora } = useSelector<Store, AgendaStore>((store) => store.agenda);
+  const getConsultas = useGetConsultas();
+
+  useEffect(() => {
+    getConsultas({
+      variables: {
+        data: dataHora ? dataHora.toDate() : new Date(),
+      },
+    });
+  }, [dataHora]);
+}
+
+export default function AgendaMain(): JSX.Element {
+  useComponent();
 
   return (
     <Layout>
