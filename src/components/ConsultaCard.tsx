@@ -4,7 +4,7 @@ import moment, { Moment } from 'moment';
 
 import { blue } from '@ant-design/colors';
 
-import { methods, hooks } from '../services/graphql.service';
+import { hooks } from '../services/graphql.service';
 import ConsultaCardTitle from './ConsultaCardTitle';
 import ConsultaCardDesc from './ConsultaCardDesc';
 
