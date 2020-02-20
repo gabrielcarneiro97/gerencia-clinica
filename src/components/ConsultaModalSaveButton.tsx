@@ -19,16 +19,15 @@ function useGetConsultas() {
 
   const [
     getConsultas,
-    { data: getConsultasData, loading: getConsultasLoading },
+    { data, loading },
   ] = hooks.useConsultasByPacienteIdLazy();
 
-
   useEffect(() => {
-    if (getConsultasData && !getConsultasLoading) {
-      const { consultas } = getConsultasData;
+    if (data && !loading) {
+      const { consultas } = data.paciente;
       dispatch(carregarConsultas(consultas));
     }
-  }, [getConsultasData, getConsultasLoading]);
+  }, [data, loading]);
 
   return getConsultas;
 }

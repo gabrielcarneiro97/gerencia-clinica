@@ -26,7 +26,7 @@ function useComponent(props: propTypes) {
 
   useEffect(() => {
     if (data && !loading) {
-      const { consultas } = data;
+      const { consultas } = data.paciente;
       dispatch(carregarConsultas(consultas));
     }
   }, [data, loading]);

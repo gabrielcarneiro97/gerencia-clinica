@@ -220,7 +220,7 @@ export const hooks = {
   },
   useConsultasByPacienteIdLazy: (pacienteId?: number) => {
     const { query, ...options } = queries.CONSULTAS_BY_PACIENTE_ID(pacienteId);
-    return useLazyQuery<{ consultas: Consulta[] }>(query, options);
+    return useLazyQuery<{ paciente: Paciente }>(query, options);
   },
   useConsultaPaciente: (consultaId: number) => {
     const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
