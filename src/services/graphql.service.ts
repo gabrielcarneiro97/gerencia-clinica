@@ -175,7 +175,7 @@ const mutations = {
     `,
     variables: { consultaId },
   }),
-  SAVE_PROCEDIMENTO: (procedimento: ConsultaProcedimento): MutationOptions => ({
+  SAVE_PROCEDIMENTO: (procedimento?: ConsultaProcedimento): MutationOptions => ({
     mutation: gql`
       mutation ConsultaProcedimento($procedimento: ConsultaProcedimentoInput) {
         saveConsultaProcedimento(consultaProcedimento: $procedimento) { id }
@@ -183,7 +183,7 @@ const mutations = {
     `,
     variables: { procedimento },
   }),
-  DELETE_PROCEDIMENTO: (id: number): MutationOptions => ({
+  DELETE_PROCEDIMENTO: (id?: number): MutationOptions => ({
     mutation: gql`
       mutation ConsultaProcedimento($id: Int) {
         deleteConsultaProcedimento(id: $id) { id }
@@ -246,11 +246,19 @@ export const hooks = {
   },
   useSaveConsulta: () => {
     const { mutation } = mutations.SAVE_CONSULTA();
-    return useMutation<{ consulta: { id: number } }>(mutation);
+    return useMutation<{ saveConsulta: { id: number } }>(mutation);
   },
   useDeleteConsulta: () => {
     const { mutation } = mutations.DELETE_CONSULTA();
-    return useMutation<{ consulta: { id: number } }>(mutation);
+    return useMutation<{ deleteConsulta: { id: number } }>(mutation);
+  },
+  useDeleteProcedimento: (id?: number) => {
+    const { mutation } = mutations.DELETE_PROCEDIMENTO(id);
+    return useMutation<{ deleteConsultaProcedimento: { id: number } }>(mutation);
+  },
+  useSaveProcedimento: (procedimento?: ConsultaProcedimento) => {
+    const { mutation } = mutations.SAVE_PROCEDIMENTO(procedimento);
+    return useMutation<{ saveConsultaProcedimento: { id: number } }>(mutation);
   },
 };
 

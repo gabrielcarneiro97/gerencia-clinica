@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  Button,
-  Modal,
-  Icon,
-  Row,
-  Col,
-} from 'antd';
+import { Modal } from 'antd';
 
 import ConsultaModalForm from './ConsultaModalForm';
 import ConsultaModalProcedimentosTable from './ConsultaModalProcedimentosTable';
 
 import { carregarConsulta, limparConsulta } from '../store/consulta';
-import ConsultaModalSaveButton from './ConsultaModalSaveButton';
 
 import { graphql } from '../services/graphql.service';
 
 import { Consulta } from '../types';
-import ConsultaModalNovaButton from './ConsultaModalNovaButton';
 import ConsultaModalFooter from './ConsultaModalFooter';
 import ConsultaModalButton from './ConsultaModalButton';
 

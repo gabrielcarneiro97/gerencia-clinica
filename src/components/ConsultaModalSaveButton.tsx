@@ -5,7 +5,7 @@ import { Button, message } from 'antd';
 import { Store } from '../store/store';
 import { persitido } from '../store/consulta';
 import { carregarConsultas } from '../store/paciente';
-import { graphql, methods } from '../services/graphql.service';
+import { hooks } from '../services/graphql.service';
 
 import { acharERemoverBoardElement, adicionarBoardElement } from '../store/agenda';
 
@@ -14,7 +14,26 @@ type propTypes = {
   emitter?: string;
 }
 
-export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
+function useGetConsultas() {
+  const dispatch = useDispatch();
+
+  const [
+    getConsultas,
+    { data: getConsultasData, loading: getConsultasLoading },
+  ] = hooks.useConsultasByPacienteIdLazy();
+
+
+  useEffect(() => {
+    if (getConsultasData && !getConsultasLoading) {
+      const { consultas } = getConsultasData;
+      dispatch(carregarConsultas(consultas));
+    }
+  }, [getConsultasData, getConsultasLoading]);
+
+  return getConsultas;
+}
+
+function useComponent(props: propTypes) {
   const dispatch = useDispatch();
   const {
     consulta: consultaStore,
@@ -28,6 +47,12 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
   const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  const [saveConsulta] = hooks.useSaveConsulta();
+  const [saveProcedimento] = hooks.useSaveProcedimento();
+  const [deleteProcedimento] = hooks.useDeleteProcedimento();
+
+  const getConsultas = useGetConsultas();
+
   useEffect(() => {
     if (diferenteDoDb) setDisabled(false);
   }, [diferenteDoDb]);
@@ -38,9 +63,7 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
 
     if (!pacienteId) return;
 
-    const consultas = await methods.paciente.getConsultas(pacienteId);
-
-    dispatch(carregarConsultas(consultas));
+    getConsultas({ variables: { pacienteId } });
   };
 
   const atualizaOnAgenda = async (newId?: number): Promise<void> => {
@@ -67,42 +90,61 @@ export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
     const { procedimentos } = consulta;
 
     if (consulta) {
-      const id = await graphql.consulta.save(consulta);
+      const { data } = await saveConsulta({ variables: { consulta } });
 
-      if (procedimentos) {
-        await Promise.all(procedimentos.map(async (p): Promise<any> => {
-          if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
-          if (p.descricao) return graphql.consultaProcedimento.save(p);
-          return false;
-        }));
-      }
+      if (data) {
+        const { id } = data.saveConsulta;
 
-      try {
-        await Promise.all(procedimentosRemovidos.map(
-          async (p) => {
-            if (!p.consultaId) p.consultaId = id; // eslint-disable-line no-param-reassign
-            graphql.consultaProcedimento.delById(p.id);
-          },
-        ));
-
-        if (emitter === 'paciente') await atualizaOnPaciente();
-        if (emitter === 'agenda') {
-          if (!consulta.id) await atualizaOnAgenda(id);
-          else await atualizaOnAgenda();
+        if (procedimentos) {
+          await Promise.all(procedimentos.map(async (procedimento): Promise<any> => {
+            if (!procedimento.consultaId) {
+              procedimento.consultaId = id; // eslint-disable-line no-param-reassign
+            }
+            if (procedimento.descricao) return saveProcedimento({ variables: { procedimento } });
+            return false;
+          }));
         }
 
-        dispatch(persitido());
+        try {
+          await Promise.all(procedimentosRemovidos.map(
+            async (p) => deleteProcedimento({ variables: { id: p.id } }),
+          ));
 
-        message.success('Consulta Atualizada com Sucesso!', 1);
-      } catch (err) {
-        console.error(err);
-        message.error('Erro ao Salvar a Consulta!', 1);
+          if (emitter === 'paciente') await atualizaOnPaciente();
+          if (emitter === 'agenda') {
+            if (!consulta.id) await atualizaOnAgenda(id);
+            else await atualizaOnAgenda();
+          }
+
+          dispatch(persitido());
+
+          message.success('Consulta Atualizada com Sucesso!', 1);
+        } catch (err) {
+          console.error(err);
+          message.error('Erro ao Salvar a Consulta!', 1);
+        }
+        setLoading(false);
+
+        if (onEnd) onEnd(id);
       }
-      setLoading(false);
-
-      if (onEnd) onEnd(id);
     }
   };
+
+  return {
+    state: {
+      disabled,
+      loading,
+    },
+    methods: {
+      handleClick,
+    },
+  };
+}
+
+export default function ConsultaModalSaveButton(props: propTypes): JSX.Element {
+  const { state, methods } = useComponent(props);
+  const { disabled, loading } = state;
+  const { handleClick } = methods;
 
   return (
     <Button
