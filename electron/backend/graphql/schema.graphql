@@ -22,6 +22,7 @@ type Paciente implements DbBasic {
   contatoId: Int
   fichaMedicaId: Int
 
+  nomeAbreviado: String
   consultas: [Consulta!]
   endereco: Endereco
   contato: Contato

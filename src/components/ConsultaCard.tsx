@@ -30,7 +30,7 @@ function useComponent(props: propTypes) {
     if (data && !loading) {
       const { consulta, paciente } = data.consultaPaciente;
 
-      setPacienteNome(methods.paciente.getIniciais(paciente) || '');
+      setPacienteNome(paciente.nomeAbreviado || '');
       if (paciente.id) setPacienteId(paciente.id);
       if (paciente.contato?.telefone1) setTelefone(paciente.contato?.telefone1);
       if (consulta.responsavel) setResponsavel(consulta.responsavel);

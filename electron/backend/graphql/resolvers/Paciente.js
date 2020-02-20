@@ -42,4 +42,17 @@ module.exports = {
     const consultas = await Consulta.findAll({ where: { pacienteId: paciente.id } });
     return consultas.map((c) => c.toJSON());
   },
+  nomeAbreviado: async (paciente) => {
+    const { nome } = paciente;
+
+    if (!nome) return '';
+
+    const nomes = nome.split(' ');
+
+    return nomes.reduce((acc, crr, i) => {
+      if (i === 0) return crr;
+      if (crr.length <= 2) return acc;
+      return `${acc} ${crr[0].toUpperCase()}.`;
+    }, '');
+  },
 };

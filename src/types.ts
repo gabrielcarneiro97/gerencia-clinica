@@ -63,6 +63,7 @@ export type Paciente = {
   grupo1Id?: number | null;
   grupo2Id?: number | null;
 
+  nomeAbreviado?: string;
   endereco?: Endereco | null;
   contato?: Contato | null;
   fichaMedica?: FichaMedica | null;
@@ -77,3 +78,5 @@ export type PacienteGrupo = {
   tipo?: number | null;
   descricao?: string | null;
 }
+
+export type ConsultaPaciente = { consulta: Consulta; paciente: Paciente }

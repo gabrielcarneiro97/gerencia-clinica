@@ -17,6 +17,7 @@ import {
   ConsultaProcedimento,
   Endereco,
   PacienteGrupo,
+  ConsultaPaciente,
 } from '../types';
 
 const apolloClient = new ApolloClient({
@@ -85,7 +86,7 @@ const queries = {
             id, data, responsavel, status
           }
           paciente {
-            nome, contato { telefone1 }
+            nomeAbreviado, contato { telefone1 }
           }
         }
       }
@@ -193,8 +194,6 @@ const mutations = {
   }),
 };
 
-type ConsultaPaciente = { consulta: Consulta; paciente: Paciente };
-
 export const hooks = {
   /* CONSULTA BEGIN */
   // Queries
@@ -283,26 +282,6 @@ export const hooks = {
     return useQuery<{ pacienteGrupos: PacienteGrupo[] }>(query);
   },
   /* PACIENTE_GRUPO END */
-};
-
-const pacienteMethods = {
-  getIniciais: (paciente: Paciente): string => {
-    const { nome } = paciente;
-
-    if (!nome) return '';
-
-    const nomes = nome.split(' ');
-
-    return nomes.reduce((acc, crr, i) => {
-      if (i === 0) return crr;
-      if (crr.length <= 2) return acc;
-      return `${acc} ${crr[0].toUpperCase()}.`;
-    }, '');
-  },
-};
-
-export const methods = {
-  paciente: pacienteMethods,
 };
 
 export default apolloClient;
