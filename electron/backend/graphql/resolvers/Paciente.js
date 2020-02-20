@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const moment = require('moment');
 
 const Endereco = require('../../db/models/Endereco');
 const Contato = require('../../db/models/Contato');
@@ -6,6 +7,10 @@ const FichaMedica = require('../../db/models/FichaMedica');
 const PacienteGrupo = require('../../db/models/PacienteGrupo');
 const Consulta = require('../../db/models/Consulta');
 
+async function getConsultas(paciente) {
+  const consultas = await Consulta.findAll({ where: { pacienteId: paciente.id } });
+  return consultas.map((c) => c.toJSON());
+}
 
 module.exports = {
   endereco: async (paciente) => {
@@ -38,10 +43,7 @@ module.exports = {
     const grupo = await PacienteGrupo.findByPk(paciente.grupo2Id);
     return grupo.toJSON();
   },
-  consultas: async (paciente) => {
-    const consultas = await Consulta.findAll({ where: { pacienteId: paciente.id } });
-    return consultas.map((c) => c.toJSON());
-  },
+  consultas: async (paciente) => getConsultas(paciente),
   nomeAbreviado: async (paciente) => {
     const { nome } = paciente;
 
@@ -51,8 +53,18 @@ module.exports = {
 
     return nomes.reduce((acc, crr, i) => {
       if (i === 0) return crr;
-      if (crr.length <= 2) return acc;
+      if (crr.length <= 2 || i >= 4) return acc;
       return `${acc} ${crr[0].toUpperCase()}.`;
     }, '');
+  },
+  primeiraConsulta: async (paciente) => {
+    const consultas = await getConsultas(paciente);
+    const primeira = consultas.reduce(
+      (
+        prev,
+        crr,
+      ) => (moment(crr.data).isBefore(moment(prev.data)) ? crr.data : prev.data), new Date(),
+    );
+    return primeira;
   },
 };

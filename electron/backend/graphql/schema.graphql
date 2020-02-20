@@ -22,6 +22,7 @@ type Paciente implements DbBasic {
   contatoId: Int
   fichaMedicaId: Int
 
+  primeiraConsulta: Date
   nomeAbreviado: String
   consultas: [Consulta!]
   endereco: Endereco
@@ -91,12 +92,8 @@ type Consulta implements DbBasic {
   status: Int
   pacienteId: Int
 
-  procedimentos: [ConsultaProcedimento!]
-}
-
-type ConsultaPaciente {
-  consulta: Consulta
   paciente: Paciente
+  procedimentos: [ConsultaProcedimento!]
 }
 
 type ConsultaProcedimento implements DbBasic {
@@ -212,8 +209,6 @@ type Query {
   ): [Consulta]
 
   consulta(id: Int!): Consulta!
-
-  consultaPaciente(id: Int!): ConsultaPaciente!
 
   consultaProcedimentos(consultaId: Int): [ConsultaProcedimento!]!
 

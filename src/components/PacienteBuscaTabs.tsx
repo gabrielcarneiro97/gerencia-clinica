@@ -12,7 +12,7 @@ import { PacienteStore } from '../store/paciente';
 
 const { TabPane } = Tabs;
 
-export default function PacienteTabs(): JSX.Element {
+export default function PacienteBuscaTabs(): JSX.Element {
   const pacienteStore = useSelector<Store, PacienteStore>(
     (state) => state.paciente,
   );

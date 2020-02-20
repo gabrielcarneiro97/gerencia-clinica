@@ -6,6 +6,8 @@ export type Consulta = {
   observacoes?: string | null;
   status?: number | null;
   pacienteId?: number;
+
+  paciente?: Paciente;
   procedimentos?: ConsultaProcedimento[];
 }
 
@@ -78,5 +80,3 @@ export type PacienteGrupo = {
   tipo?: number | null;
   descricao?: string | null;
 }
-
-export type ConsultaPaciente = { consulta: Consulta; paciente: Paciente }

@@ -28,11 +28,13 @@ function useComponent(props: propTypes) {
 
   useEffect(() => {
     if (data && !loading) {
-      const { consulta, paciente } = data.consultaPaciente;
+      const { paciente, ...consulta } = data.consulta;
 
-      setPacienteNome(paciente.nomeAbreviado || '');
-      if (paciente.id) setPacienteId(paciente.id);
-      if (paciente.contato?.telefone1) setTelefone(paciente.contato?.telefone1);
+      if (paciente) {
+        setPacienteNome(paciente.nomeAbreviado || '');
+        if (paciente.id) setPacienteId(paciente.id);
+        if (paciente.contato?.telefone1) setTelefone(paciente.contato?.telefone1);
+      }
       if (consulta.responsavel) setResponsavel(consulta.responsavel);
       setDataHora(consulta.data ? moment(consulta.data) : null);
       if (consulta.status) setStatus(consulta.status);

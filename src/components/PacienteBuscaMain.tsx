@@ -5,9 +5,8 @@ import { Layout } from 'antd';
 import PacienteHead from './PacienteHead';
 import PacienteBuscaTabs from './PacienteBuscaTabs';
 import { limparPaciente } from '../store/paciente';
-import PacientesTabs from './PacientesTabs';
 
-export default function PacientesMain(): JSX.Element {
+export default function PacienteBuscaMain(): JSX.Element {
   const dispatch = useDispatch();
 
   useEffect(() => () => {
@@ -16,7 +15,8 @@ export default function PacientesMain(): JSX.Element {
 
   return (
     <Layout>
-      <PacientesTabs />
+      <PacienteHead />
+      <PacienteBuscaTabs />
     </Layout>
   );
 }

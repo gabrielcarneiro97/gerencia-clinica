@@ -60,16 +60,6 @@ module.exports = {
     return consulta.toJSON();
   },
 
-  consultaPaciente: async (_, { id }) => {
-    const consulta = await Consulta.findByPk(id);
-    const paciente = await Paciente.findByPk(consulta.pacienteId);
-
-    return {
-      consulta: consulta.toJSON(),
-      paciente: paciente.toJSON(),
-    };
-  },
-
   consultaProcedimentos: async (_, { consultaId }) => {
     const finder = consultaId ? {
       where: { consultaId },

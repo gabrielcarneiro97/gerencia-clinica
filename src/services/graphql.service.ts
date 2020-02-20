@@ -17,7 +17,6 @@ import {
   ConsultaProcedimento,
   Endereco,
   PacienteGrupo,
-  ConsultaPaciente,
 } from '../types';
 
 const apolloClient = new ApolloClient({
@@ -80,11 +79,9 @@ const queries = {
   }),
   CONSULTA_PACIENTE: (consultaId: number): QueryBaseOptions => ({
     query: gql`
-      query ConsultaPaciente($consultaId: Int!) {
-        consultaPaciente(id: $consultaId) {
-          consulta {
-            id, data, responsavel, status
-          }
+      query Consulta($consultaId: Int!) {
+        consulta(id: $consultaId) {
+          id, data, responsavel, status
           paciente {
             nomeAbreviado, contato { telefone1 }
           }
@@ -92,6 +89,18 @@ const queries = {
       }
     `,
     variables: { consultaId },
+  }),
+  CONSULTA_PACIENTES: (): QueryBaseOptions => ({
+    query: gql`
+      query Consultas {
+        consultas {
+          id, data, responsavel, status
+          paciente {
+            nome
+          }
+        }
+      }
+    `,
   }),
   PACIENTE: (pacienteId?: number): QueryBaseOptions => ({
     query: gql`
@@ -213,6 +222,10 @@ export const hooks = {
     const { query, ...options } = queries.CONSULTAS_BY_PACIENTE_ID(pacienteId);
     return useLazyQuery<{ consultas: Consulta[] }>(query, options);
   },
+  useConsultaPaciente: (consultaId: number) => {
+    const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
+    return useQuery<{ consulta: Consulta }>(query, options);
+  },
   // Mutations
   useSaveConsulta: () => {
     const { mutation } = mutations.SAVE_CONSULTA();
@@ -257,13 +270,6 @@ export const hooks = {
     return useMutation<{ saveContato: { id: number } }>(mutation);
   },
   /* CONTATO END */
-  /* CONSULTA_PACIENTE BEGIN */
-  // Queries
-  useConsultaPaciente: (consultaId: number) => {
-    const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
-    return useQuery<{ consultaPaciente: ConsultaPaciente }>(query, options);
-  },
-  /* CONSULTA_PACIENTE END */
   /* CONSULTA_PROCEDIMENTO BEGIN */
   // Mutations
   useDeleteProcedimento: (id?: number) => {
