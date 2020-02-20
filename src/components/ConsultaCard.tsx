@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  Badge,
-} from 'antd';
+import { Card } from 'antd';
 import moment, { Moment } from 'moment';
 
 import { blue } from '@ant-design/colors';
-import ConsultaModal from './ConsultaModal';
 
 import { methods, hooks } from '../services/graphql.service';
+import ConsultaCardTitle from './ConsultaCardTitle';
+import ConsultaCardDesc from './ConsultaCardDesc';
 
 type propTypes = {
   id: number;
@@ -17,8 +15,8 @@ type propTypes = {
 
 const { Meta } = Card;
 
-export default function ConsultaCard(props: propTypes): JSX.Element {
-  const { id, style } = props;
+function useComponent(props: propTypes) {
+  const { id } = props;
 
   const [pacienteNome, setPacienteNome] = useState('');
   const [pacienteId, setPacienteId] = useState(-1);
@@ -41,50 +39,32 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
     }
   }, [loading]);
 
-  const pStyle: React.CSSProperties = { marginBottom: '3px' };
+  return {
+    state: {
+      pacienteNome,
+      pacienteId,
+      responsavel,
+      dataHora,
+      status,
+      telefone,
+      loading,
+    },
+  };
+}
 
-  const title = (
-    <p style={{ ...pStyle }}>
-      <span style={{
-        textAlign: 'start',
-        width: '70%',
-        display: 'inline-block',
-        fontWeight: 500,
-      }}
-      >
-        {pacienteNome}
-        &nbsp;
-        {
-          ((dataHora && dataHora.isBefore(moment().add(-5, 'm'))) && status === 1)
-          && <Badge status="error" />
-        }
-      </span>
-      <span style={{ textAlign: 'end', width: '30%', display: 'inline-block' }}>
-        <ConsultaModal
-          id={id}
-          pacienteId={pacienteId}
-          emitter="agenda"
-          buttonSize={13}
-        />
-      </span>
-    </p>
-  );
+export default function ConsultaCard(props: propTypes): JSX.Element {
+  const { id, style } = props;
+  const { state } = useComponent(props);
 
-  const description = (
-    <>
-      <p style={pStyle}>
-        {dataHora ? dataHora.format('HH:mm') : ''}
-        &nbsp;
-        -
-        &nbsp;
-        {responsavel}
-      </p>
-      <p style={pStyle}>
-        {telefone}
-        &nbsp;
-      </p>
-    </>
-  );
+  const {
+    pacienteNome,
+    pacienteId,
+    responsavel,
+    dataHora,
+    status,
+    telefone,
+    loading,
+  } = state;
 
   return (
     <Card
@@ -104,8 +84,18 @@ export default function ConsultaCard(props: propTypes): JSX.Element {
       <Meta
         description={(
           <>
-            {title}
-            {description}
+            <ConsultaCardTitle
+              consultaId={id}
+              pacienteId={pacienteId}
+              pacienteNome={pacienteNome}
+              status={status}
+              dataHora={dataHora}
+            />
+            <ConsultaCardDesc
+              responsavel={responsavel}
+              telefone={telefone}
+              dataHora={dataHora}
+            />
           </>
         )}
       />
