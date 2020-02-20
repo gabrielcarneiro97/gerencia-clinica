@@ -116,7 +116,7 @@ const queries = {
     `,
     variables: { consultaId },
   }),
-  PACIENTE: (pacienteId: number): QueryBaseOptions => ({
+  PACIENTE: (pacienteId?: number): QueryBaseOptions => ({
     query: gql`
       query Paciente($pacienteId: Int!) {
         paciente(id: $pacienteId) {
@@ -191,7 +191,7 @@ const mutations = {
     `,
     variables: { id },
   }),
-  SAVE_PACIENTE: (paciente: Paciente): MutationOptions => ({
+  SAVE_PACIENTE: (paciente?: Paciente): MutationOptions => ({
     mutation: gql`
       mutation Paciente($paciente: PacienteInput) {
         savePaciente(paciente: $paciente) { id }
@@ -199,7 +199,7 @@ const mutations = {
     `,
     variables: { paciente },
   }),
-  SAVE_ENDERECO: (endereco: Endereco): MutationOptions => ({
+  SAVE_ENDERECO: (endereco?: Endereco): MutationOptions => ({
     mutation: gql`
       mutation Endereco($endereco: EnderecoInput) {
         saveEndereco(endereco: $endereco) { id }
@@ -207,7 +207,7 @@ const mutations = {
     `,
     variables: { endereco },
   }),
-  SAVE_CONTATO: (contato: Contato): MutationOptions => ({
+  SAVE_CONTATO: (contato?: Contato): MutationOptions => ({
     mutation: gql`
       mutation Contato($contato: ContatoInput) {
         saveContato(contato: $contato) { id }
@@ -220,6 +220,8 @@ const mutations = {
 type ConsultaPaciente = { consulta: Consulta; paciente: Paciente };
 
 export const hooks = {
+  /* CONSULTA BEGIN */
+  // Queries
   useConsulta: (consultaId: number) => {
     const { query, ...options } = queries.CONSULTA(consultaId);
     return useQuery<{ consulta: Consulta }>(query, options);
@@ -236,22 +238,7 @@ export const hooks = {
     const { query, ...options } = queries.CONSULTAS_BY_PACIENTE_ID(pacienteId);
     return useLazyQuery<{ consultas: Consulta[] }>(query, options);
   },
-  usePaciente: (pacienteId: number) => {
-    const { query, ...options } = queries.PACIENTE(pacienteId);
-    return useQuery<{ paciente: Paciente }>(query, options);
-  },
-  usePacienteLazy: (pacienteId?: number) => {
-    const { query, ...options } = queries.PACIENTE(pacienteId === undefined ? -1 : pacienteId);
-    return useLazyQuery<{ paciente: Paciente }>(query, options);
-  },
-  usePacientesByNameLazy: (nome = '') => {
-    const { query, ...options } = queries.PACIENTES_BY_NAME(nome);
-    return useLazyQuery<{ pacientes: Paciente[] }>(query, options);
-  },
-  useConsultaPaciente: (consultaId: number) => {
-    const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
-    return useQuery<{ consultaPaciente: ConsultaPaciente }>(query, options);
-  },
+  // Mutations
   useSaveConsulta: () => {
     const { mutation } = mutations.SAVE_CONSULTA();
     return useMutation<{ saveConsulta: { id: number } }>(mutation);
@@ -260,6 +247,50 @@ export const hooks = {
     const { mutation } = mutations.DELETE_CONSULTA();
     return useMutation<{ deleteConsulta: { id: number } }>(mutation);
   },
+  /* CONSULTA END */
+  /* PACIENTE BEGIN */
+  // Queries
+  usePaciente: (pacienteId: number) => {
+    const { query, ...options } = queries.PACIENTE(pacienteId);
+    return useQuery<{ paciente: Paciente }>(query, options);
+  },
+  usePacienteLazy: (pacienteId?: number) => {
+    const { query, ...options } = queries.PACIENTE();
+    return useLazyQuery<{ paciente: Paciente }>(query, options);
+  },
+  usePacientesByNameLazy: (nome = '') => {
+    const { query, ...options } = queries.PACIENTES_BY_NAME(nome);
+    return useLazyQuery<{ pacientes: Paciente[] }>(query, options);
+  },
+  // Mutations
+  useSavePaciente: (paciente?: Paciente) => {
+    const { mutation } = mutations.SAVE_PACIENTE(paciente);
+    return useMutation<{ savePaciente: { id: number } }>(mutation);
+  },
+  /* PACIENTE END */
+  /* ENDERECO BEGIN */
+  // Mutations
+  useSaveEndereco: (endereco?: Endereco) => {
+    const { mutation } = mutations.SAVE_ENDERECO(endereco);
+    return useMutation<{ saveEndereco: { id: number } }>(mutation);
+  },
+  /* ENDERECO END */
+  /* CONTATO BEGIN */
+  // Mutations
+  useSaveContato: (contato?: Contato) => {
+    const { mutation } = mutations.SAVE_CONTATO(contato);
+    return useMutation<{ saveContato: { id: number } }>(mutation);
+  },
+  /* CONTATO END */
+  /* CONSULTA_PACIENTE BEGIN */
+  // Queries
+  useConsultaPaciente: (consultaId: number) => {
+    const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
+    return useQuery<{ consultaPaciente: ConsultaPaciente }>(query, options);
+  },
+  /* CONSULTA_PACIENTE END */
+  /* CONSULTA_PROCEDIMENTO BEGIN */
+  // Mutations
   useDeleteProcedimento: (id?: number) => {
     const { mutation } = mutations.DELETE_PROCEDIMENTO(id);
     return useMutation<{ deleteConsultaProcedimento: { id: number } }>(mutation);
@@ -268,10 +299,14 @@ export const hooks = {
     const { mutation } = mutations.SAVE_PROCEDIMENTO(procedimento);
     return useMutation<{ saveConsultaProcedimento: { id: number } }>(mutation);
   },
+  /* CONSULTA_PROCEDIMENTO END */
+  /* PACIENTE_GRUPO BEGIN */
+  // Queries
   usePacienteGrupos: () => {
     const { query } = queries.PACIENTE_GRUPOS();
     return useQuery<{ pacienteGrupos: PacienteGrupo[] }>(query);
   },
+  /* PACIENTE_GRUPO END */
 };
 
 const consultaDb = {
