@@ -11,13 +11,15 @@ import {
 import ConsultaModalForm from './ConsultaModalForm';
 import ConsultaModalProcedimentosTable from './ConsultaModalProcedimentosTable';
 
-import { carregarConsulta, carregarProcedimentos, limparConsulta } from '../store/consulta';
+import { carregarConsulta, limparConsulta } from '../store/consulta';
 import ConsultaModalSaveButton from './ConsultaModalSaveButton';
 
-import { graphql, methods } from '../services/graphql.service';
+import { graphql } from '../services/graphql.service';
 
 import { Consulta } from '../types';
 import ConsultaModalNovaButton from './ConsultaModalNovaButton';
+import ConsultaModalFooter from './ConsultaModalFooter';
+import ConsultaModalButton from './ConsultaModalButton';
 
 type propTypes = {
   id?: number;
@@ -31,15 +33,9 @@ type propTypes = {
   saveEnd?: Function;
 }
 
-export default function ConsultaModal(props: propTypes): JSX.Element {
+function useComponent(props: propTypes) {
   const {
-    icon = 'info-circle',
-    iconRotate = 0,
-    buttonSize = 20,
-    buttonFill = false,
-    emitter,
     visible: visibleProp,
-    saveEnd,
     id,
     pacienteId,
   } = props;
@@ -68,34 +64,42 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
   const showModal = (): void => setVisible(true);
   const hideModal = (): void => setVisible(false);
 
-  const footer = (
-    <Row type="flex" justify="end" gutter={8}>
-      <Col>
-        <ConsultaModalNovaButton pacienteId={pacienteId} />
-      </Col>
-      <Col>
-        <ConsultaModalSaveButton
-          onEnd={(): void => {
-            hideModal();
-            if (saveEnd) saveEnd();
-          }}
-          emitter={emitter}
-        />
-      </Col>
-    </Row>
-  );
+  return {
+    state: {
+      visible,
+    },
+    methods: {
+      showModal,
+      hideModal,
+    },
+  };
+}
+
+export default function ConsultaModal(props: propTypes): JSX.Element {
+  const {
+    icon,
+    iconRotate,
+    buttonSize,
+    buttonFill,
+    emitter,
+    saveEnd,
+    pacienteId,
+  } = props;
+
+  const { state, methods } = useComponent(props);
+
+  const { visible } = state;
+  const { showModal, hideModal } = methods;
 
   return (
     <>
-
-      <Button
-        shape="circle"
-        type="link"
-        style={{ fontSize: buttonSize }}
-        onClick={showModal}
-      >
-        <Icon type={icon} rotate={iconRotate} theme={buttonFill ? 'filled' : 'outlined'} />
-      </Button>
+      <ConsultaModalButton
+        showModal={showModal}
+        icon={icon}
+        rotate={iconRotate}
+        size={buttonSize}
+        fill={buttonFill}
+      />
 
       <Modal
         title={(
@@ -104,7 +108,14 @@ export default function ConsultaModal(props: propTypes): JSX.Element {
           </div>
         )}
         width={700}
-        footer={footer}
+        footer={(
+          <ConsultaModalFooter
+            hideModal={hideModal}
+            saveEnd={saveEnd}
+            pacienteId={pacienteId}
+            emitter={emitter}
+          />
+        )}
         visible={visible}
         onCancel={hideModal}
         destroyOnClose
