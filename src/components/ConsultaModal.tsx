@@ -7,7 +7,7 @@ import ConsultaModalProcedimentosTable from './ConsultaModalProcedimentosTable';
 
 import { carregarConsulta, limparConsulta } from '../store/consulta';
 
-import { graphql } from '../services/graphql.service';
+import { hooks } from '../services/graphql.service';
 
 import { Consulta } from '../types';
 import ConsultaModalFooter from './ConsultaModalFooter';
@@ -25,6 +25,21 @@ type propTypes = {
   saveEnd?: Function;
 }
 
+function useGetConsulta() {
+  const dispatch = useDispatch();
+
+  const [getConsulta, { data, loading }] = hooks.useConsultaLazy();
+
+  useEffect(() => {
+    if (data && !loading) {
+      const { consulta } = data;
+      dispatch(carregarConsulta(consulta));
+    }
+  }, [data, loading]);
+
+  return getConsulta;
+}
+
 function useComponent(props: propTypes) {
   const {
     visible: visibleProp,
@@ -36,6 +51,8 @@ function useComponent(props: propTypes) {
 
   const [visible, setVisible] = useState(visibleProp || false);
 
+  const getConsulta = useGetConsulta();
+
   useEffect(() => {
     if (visible && !id && pacienteId) {
       const consulta: Consulta = {
@@ -45,9 +62,7 @@ function useComponent(props: propTypes) {
       };
       dispatch(carregarConsulta(consulta));
     } else if (visible && id) {
-      graphql.consulta.getById(id).then(async (consulta) => {
-        dispatch(carregarConsulta(consulta));
-      });
+      getConsulta({ variables: { consultaId: id } });
     } else {
       dispatch(limparConsulta());
     }

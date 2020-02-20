@@ -65,7 +65,7 @@ async function executeQuery<T = any>(query: QueryBaseOptions): Promise<ApolloQue
 }
 
 const queries = {
-  CONSULTA: (consultaId: number): QueryBaseOptions => ({
+  CONSULTA: (consultaId?: number): QueryBaseOptions => ({
     query: gql`
       query Consulta($consultaId: Int!) {
         consulta(id: $consultaId) {
@@ -224,6 +224,10 @@ export const hooks = {
     const { query, ...options } = queries.CONSULTA(consultaId);
     return useQuery<{ consulta: Consulta }>(query, options);
   },
+  useConsultaLazy: (consultaId?: number) => {
+    const { query, ...options } = queries.CONSULTA(consultaId);
+    return useLazyQuery<{ consulta: Consulta }>(query, options);
+  },
   useConsultasByDateLazy: (data?: Date) => {
     const { query, ...options } = queries.CONSULTAS_BY_DATE(data);
     return useLazyQuery<{ consultas: Consulta[] }>(query, options);
@@ -263,6 +267,10 @@ export const hooks = {
   useSaveProcedimento: (procedimento?: ConsultaProcedimento) => {
     const { mutation } = mutations.SAVE_PROCEDIMENTO(procedimento);
     return useMutation<{ saveConsultaProcedimento: { id: number } }>(mutation);
+  },
+  usePacienteGrupos: () => {
+    const { query } = queries.PACIENTE_GRUPOS();
+    return useQuery<{ pacienteGrupos: PacienteGrupo[] }>(query);
   },
 };
 
