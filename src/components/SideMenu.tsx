@@ -29,6 +29,11 @@ export default function SideMenu(): JSX.Element {
           <Icon type="medicine-box" />
         </Link>
       </Item>
+      <Item key="/config" title="Configurações">
+        <Link to="/config">
+          <Icon type="setting" />
+        </Link>
+      </Item>
     </Menu>
   );
 }
