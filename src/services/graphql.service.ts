@@ -96,7 +96,7 @@ const queries = {
         consultas {
           id, data, responsavel, status
           paciente {
-            nome
+            id, nome
           }
         }
       }

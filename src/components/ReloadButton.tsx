@@ -5,7 +5,7 @@ type propTypes = {
   onClick: (event?: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 }
 
-export default function TodosPacientesTableReloadBtn(props: propTypes) {
+export default function ReloadButton(props: propTypes): JSX.Element {
   const { onClick } = props;
   const [spin, setSpin] = useState(false);
 

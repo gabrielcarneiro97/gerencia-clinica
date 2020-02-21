@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Row } from 'antd';
 import moment from 'moment';
 import { hooks } from '../services/graphql.service';
-import TodosPacientesTableReloadBtn from './TodosPacientesTableReloadBtn';
 import { PacienteGrupo, Paciente } from '../types';
+import ReloadButton from './ReloadButton';
 
 function usePacientes() {
   const [dataSource, setDataSource] = useState<any[]>([]);
@@ -117,7 +117,7 @@ export default function TodosPacientesTable(): JSX.Element {
           marginBottom: 10,
         }}
       >
-        <TodosPacientesTableReloadBtn
+        <ReloadButton
           onClick={refresh}
         />
       </Row>
