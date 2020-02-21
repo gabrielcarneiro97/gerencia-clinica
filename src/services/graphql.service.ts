@@ -90,7 +90,7 @@ const queries = {
     `,
     variables: { consultaId },
   }),
-  CONSULTA_PACIENTES: (): QueryBaseOptions => ({
+  CONSULTAS_PACIENTE: (): QueryBaseOptions => ({
     query: gql`
       query Consultas {
         consultas {
@@ -98,6 +98,19 @@ const queries = {
           paciente {
             nome
           }
+        }
+      }
+    `,
+  }),
+  PACIENTES: (): QueryBaseOptions => ({
+    query: gql`
+      query Pacientes {
+        pacientes {
+          id
+          nome
+          primeiraConsulta
+          grupo1 { descricao, id }
+          grupo2 { descricao, id }
         }
       }
     `,
@@ -226,6 +239,10 @@ export const hooks = {
     const { query, ...options } = queries.CONSULTA_PACIENTE(consultaId);
     return useQuery<{ consulta: Consulta }>(query, options);
   },
+  useConsultasPaciente: () => {
+    const { query, ...options } = queries.CONSULTAS_PACIENTE();
+    return useQuery<{ consultas: Consulta[] }>(query, options);
+  },
   // Mutations
   useSaveConsulta: () => {
     const { mutation } = mutations.SAVE_CONSULTA();
@@ -249,6 +266,10 @@ export const hooks = {
   usePacientesByNameLazy: (nome = '') => {
     const { query, ...options } = queries.PACIENTES_BY_NAME(nome);
     return useLazyQuery<{ pacientes: Paciente[] }>(query, options);
+  },
+  usePacientes: () => {
+    const { query, ...options } = queries.PACIENTES();
+    return useQuery<{ pacientes: Paciente[] }>(query, options);
   },
   // Mutations
   useSavePaciente: (paciente?: Paciente) => {
